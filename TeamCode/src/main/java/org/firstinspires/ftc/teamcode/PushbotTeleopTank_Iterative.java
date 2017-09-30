@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
+//import org.firstinspires.ftc.teamcode.HardwarePushbot;
 
 /**
  * This file provides basic Telop driving for a Pushbot robot.
@@ -114,12 +114,18 @@ public class PushbotTeleopTank_Iterative extends OpMode{
         robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);
 
         // Use gamepad buttons to move the arm up (Y) and down (A)
-        if (gamepad1.y)
+        if (gamepad1.y) {
             robot.leftArm.setPower(robot.ARM_UP_POWER);
-        else if (gamepad1.a)
+            robot.rightArm.setPower(robot.ARM_UP_POWER);
+        }
+        else if (gamepad1.a) {
             robot.leftArm.setPower(robot.ARM_DOWN_POWER);
-        else
+            robot.rightArm.setPower(robot.ARM_DOWN_POWER);
+        }
+        else {
             robot.leftArm.setPower(0.0);
+            robot.rightArm.setPower(0.0);
+        }
 
         // Send telemetry message to signify robot running;
         telemetry.addData("claw",  "Offset = %.2f", clawOffset);
