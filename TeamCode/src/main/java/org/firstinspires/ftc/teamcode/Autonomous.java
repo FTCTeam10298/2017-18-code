@@ -28,26 +28,22 @@
  */
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.ConceptVuforiaNavigation;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="OurAutonomous", group ="OurOpModes")
 public class Autonomous extends LinearOpMode {
+
+    HardwarePushbot robot       = new HardwarePushbot();
 
     public static final String TAG = "Vuforia VuMark Sample";
 
@@ -58,6 +54,12 @@ public class Autonomous extends LinearOpMode {
      * localization engine.
      */
     VuforiaLocalizer vuforia;
+
+    ColorSensor color_sensor;
+
+    /**
+     * Color sensor declaration
+     */
 
     @Override public void runOpMode() {
 
@@ -93,12 +95,34 @@ public class Autonomous extends LinearOpMode {
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
         relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
 
+        color_sensor = hardwareMap.colorSensor.get("jewel");
         telemetry.update();
         waitForStart();
 
         relicTrackables.activate();
 
+        int pictograph = GetPictograph(1);
 
+        if (color_sensor.red()>color_sensor.blue()) {
+            robot.leftDrive.setPower(.3);
+            robot.rightDrive.setPower(-.3);
+            sleep(250);
+            robot.leftDrive.setPower(-.3);
+            robot.rightDrive.setPower(.3);
+            sleep(250);
+            robot.leftDrive.setPower(0);
+            robot.rightDrive.setPower(0);
+        }
+        else {
+            robot.leftDrive.setPower(-.3);
+            robot.rightDrive.setPower(.3);
+            sleep(250);
+            robot.leftDrive.setPower(.3);
+            robot.rightDrive.setPower(-.3);
+            sleep(250);
+            robot.leftDrive.setPower(0);
+            robot.rightDrive.setPower(0);
+        }
     }
 
     /*
