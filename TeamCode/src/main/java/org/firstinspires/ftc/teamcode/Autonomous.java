@@ -98,27 +98,47 @@ public class Autonomous extends LinearOpMode {
 
         relicTrackables.activate();
 
-        while (opModeIsActive()) {
 
-            /**
-             * See if any of the instances of {@link relicTemplate} are currently visible.
-             * {@link RelicRecoveryVuMark} is an enum which can have the following values:
-             * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
-             * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
-             */
-            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-                /* Found an instance of the template. In the actual game, you will probably
-                 * loop until this condition occurs, then move on to act accordingly depending
-                 * on which VuMark was visible. */
-                telemetry.addData("VuMark", "%s visible", vuMark);
-            }
-            else {
-                telemetry.addData("VuMark", "not visible");
-            }
+    }
 
-            telemetry.update();
+    /*
+     * Returns 0 for none, 1 for right, 2 for middle, and 3 for left.
+     */
+    int GetPictograph(int accuracy) {
+        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
+
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+        int left = 0;
+        int center = 0;
+        int right = 0;
+        int none = 0;
+        for (int i = 0; i < accuracy; i++) {
+            if (vuMark == RelicRecoveryVuMark.UNKNOWN) {
+                none += 1;
+            }
+            if (vuMark == RelicRecoveryVuMark.LEFT) {
+                left += 1;
+            }
+            if (vuMark == RelicRecoveryVuMark.CENTER) {
+                center += 1 ;
+            }
+            if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                right += 1;
+            }
         }
+        if (left > right && left > center && left > none) {
+            return 3;
+        }
+        if (right > left && right > center && right > none) {
+            return 1;
+        }
+        if (center > left && center > right && center > none) {
+            return 2;
+        }
+        return 0;
     }
 
     String format(OpenGLMatrix transformationMatrix) {
