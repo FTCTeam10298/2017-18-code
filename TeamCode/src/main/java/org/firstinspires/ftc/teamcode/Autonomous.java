@@ -43,7 +43,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="OurAutonomous", group ="OurOpModes")
 public class Autonomous extends LinearOpMode {
 
-    HardwarePushbot robot       = new HardwarePushbot();
+    OurM0BotHardware robot       = new OurM0BotHardware(); // use the class created to define OurM0Bot's hardware
 
     public static final String TAG = "Vuforia VuMark Sample";
 
