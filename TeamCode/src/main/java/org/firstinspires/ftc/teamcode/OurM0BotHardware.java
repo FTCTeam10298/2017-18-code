@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * In this case that robot is OurM0Bot.
  *
  * This hardware class assumes the following device names have been configured on the robot:
- * Note:  All names are lower case and some have single spaces between words.
+ * Note:  All names are lower case.
  *
  * Motor channel:  Left  drive motor:        "left_drive"
  * Motor channel:  Right drive motor:        "right_drive"
@@ -55,7 +55,7 @@ public class OurM0BotHardware
     public DcMotor  leftDrive   = null;
     public DcMotor  rightDrive  = null;
     public DcMotor  leftArm     = null;
-    public DcMotor  rightArm     = null;
+    public DcMotor  rightArm    = null;
     public Servo    leftClaw    = null;
     public Servo    rightClaw   = null;
 
@@ -64,7 +64,7 @@ public class OurM0BotHardware
     public static final double ARM_DOWN_POWER  = -0.45 ;
 
     /* local OpMode members. */
-    HardwareMap hwMap           =  null;
+    HardwareMap hwMap           = null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
@@ -81,7 +81,7 @@ public class OurM0BotHardware
         leftDrive  = hwMap.get(DcMotor.class, "left_drive");
         rightDrive = hwMap.get(DcMotor.class, "right_drive");
         leftArm    = hwMap.get(DcMotor.class, "left_arm");
-        rightArm    = hwMap.get(DcMotor.class, "right_arm");
+        rightArm   = hwMap.get(DcMotor.class, "right_arm");
         leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         rightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         leftArm.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
