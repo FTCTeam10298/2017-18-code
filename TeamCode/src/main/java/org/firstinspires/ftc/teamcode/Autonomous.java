@@ -62,6 +62,10 @@ public class Autonomous extends LinearOpMode {
      */
 
     @Override public void runOpMode() {
+        /* Initialize the hardware variables.
+         * The init() method of the hardware class does all the work here
+         */
+        robot.init(hardwareMap);
 
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor
@@ -97,11 +101,19 @@ public class Autonomous extends LinearOpMode {
 
         color_sensor = hardwareMap.colorSensor.get("jewel");
         telemetry.update();
-        waitForStart();
+
+        robot.leftDrive.setPower(0);
+        robot.rightDrive.setPower(0);
 
         relicTrackables.activate();
 
-        int pictograph = GetPictograph(1);
+        waitForStart();
+
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+        telemetry.addData("VuMark", "%s visible", vuMark);
+        telemetry.update();
+        sleep(10000);
 
         if (color_sensor.red()>color_sensor.blue()) {
             robot.leftDrive.setPower(.3);
@@ -123,46 +135,6 @@ public class Autonomous extends LinearOpMode {
             robot.leftDrive.setPower(0);
             robot.rightDrive.setPower(0);
         }
-    }
-
-    /*
-     * Returns 0 for none, 1 for right, 2 for middle, and 3 for left.
-     */
-    int GetPictograph(int accuracy) {
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
-
-        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-
-        int left = 0;
-        int center = 0;
-        int right = 0;
-        int none = 0;
-        for (int i = 0; i < accuracy; i++) {
-            if (vuMark == RelicRecoveryVuMark.UNKNOWN) {
-                none += 1;
-            }
-            if (vuMark == RelicRecoveryVuMark.LEFT) {
-                left += 1;
-            }
-            if (vuMark == RelicRecoveryVuMark.CENTER) {
-                center += 1 ;
-            }
-            if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                right += 1;
-            }
-        }
-        if (left > right && left > center && left > none) {
-            return 3;
-        }
-        if (right > left && right > center && right > none) {
-            return 1;
-        }
-        if (center > left && center > right && center > none) {
-            return 2;
-        }
-        return 0;
     }
 
     String format(OpenGLMatrix transformationMatrix) {
