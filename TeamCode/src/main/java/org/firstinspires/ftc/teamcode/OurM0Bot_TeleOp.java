@@ -35,18 +35,21 @@ import com.qualcomm.robotcore.util.Range;
 
 //import org.firstinspires.ftc.teamcode.OurM0Bot_Hardware;
 
-/**
- * DOCME
+/*
+ * This is our TeleOp for Meet 0.
  */
 
-@TeleOp(name="OurM0Bot Teleop", group="OurM0Bot")
-public class OurM0Bot_TeleOp extends OpMode{
+@TeleOp(name="OurM0Bot: TeleOp", group="OurM0Bot")
+public class OurM0Bot_TeleOp extends OpMode {
 
     /* Declare OpMode members. */
     OurM0Bot_Hardware robot       = new OurM0Bot_Hardware(); // use the class created to define OurM0Bot's hardware
                                                          // could also use HardwarePushbotMatrix class.
-    double          clawOffset  = 0.0 ;                  // Servo mid position
-    final double    CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
+    double          CLAW_OFFSET = 0.0 ;                  // Servo mid position
+    final double    CLAW_SPEED  = 0.01 ;                 // sets rate to move servo
+
+    boolean togglePressed = false;
+    boolean frontAndBackSwitched = false;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -59,7 +62,7 @@ public class OurM0Bot_TeleOp extends OpMode{
         robot.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Robot", "Initialized");    //
+        telemetry.addData("Robot", "Initialized");
     }
 
     /*
@@ -84,40 +87,53 @@ public class OurM0Bot_TeleOp extends OpMode{
         double left;
         double right;
 
+        if (gamepad1.dpad_down) {
+            togglePressed = true;
+        }
+        else if (togglePressed) {
+            frontAndBackSwitched = !frontAndBackSwitched; // Inverse "frontAndBackSwitched"
+        }
+
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        left = -gamepad1.left_stick_y;
-        right = -gamepad1.right_stick_y;
+        if (!frontAndBackSwitched) {
+            left  = -gamepad1.left_stick_y;
+            right = -gamepad1.right_stick_y;
+        }
+        else { // Drive as if the back is the front
+            left  =  gamepad1.right_stick_y;
+            right =  gamepad1.left_stick_y;
+        }
 
         robot.leftDrive.setPower(left);
         robot.rightDrive.setPower(right);
 
         // Use gamepad left & right Bumpers to open and close the claw
         if (gamepad1.right_bumper)
-            clawOffset += CLAW_SPEED;
+            CLAW_OFFSET += CLAW_SPEED;
         else if (gamepad1.left_bumper)
-            clawOffset -= CLAW_SPEED;
+            CLAW_OFFSET -= CLAW_SPEED;
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
-        clawOffset = Range.clip(clawOffset, -0.5, 0.5);
-        robot.leftClaw.setPosition(robot.MID_SERVO + clawOffset);
-        robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);
+        CLAW_OFFSET = Range.clip(CLAW_OFFSET, -0.5, 0.5);
+        robot.leftBackClaw.setPosition(robot.MID_SERVO + CLAW_OFFSET);
+        robot.rightBackClaw.setPosition(robot.MID_SERVO - CLAW_OFFSET);
 
-        // Use gamepad buttons to move the arm up (Y) and down (A)
-        if (gamepad1.y) {
-            robot.leftArm.setPower(robot.ARM_UP_POWER);
-            robot.rightArm.setPower(robot.ARM_UP_POWER);
-        }
-        else if (gamepad1.a) {
-            robot.leftArm.setPower(robot.ARM_DOWN_POWER);
-            robot.rightArm.setPower(robot.ARM_DOWN_POWER);
-        }
-        else {
-            robot.leftArm.setPower(0.0);
-            robot.rightArm.setPower(0.0);
-        }
+//        // Use gamepad buttons to move the arm up (Y) and down (A)
+//        if (gamepad1.y) {
+//            robot.leftArm.setPower(robot.ARM_UP_POWER);
+//            robot.rightArm.setPower(robot.ARM_UP_POWER);
+//        }
+//        else if (gamepad1.a) {
+//            robot.leftArm.setPower(robot.ARM_DOWN_POWER);
+//            robot.rightArm.setPower(robot.ARM_DOWN_POWER);
+//        }
+//        else {
+//            robot.leftArm.setPower(0.0);
+//            robot.rightArm.setPower(0.0);
+//        }
 
         // Send telemetry message to signify robot running;
-        telemetry.addData("claw",  "Offset = %.2f", clawOffset);
+        telemetry.addData("claw",  "Offset = %.2f", CLAW_OFFSET);
         telemetry.addData("left",  "%.2f", left);
         telemetry.addData("right", "%.2f", right);
     }

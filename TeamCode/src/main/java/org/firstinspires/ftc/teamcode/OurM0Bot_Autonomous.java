@@ -29,18 +29,18 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="OurAutonomous", group ="OurOpModes")
+@Autonomous(name="OurM0Bot: Autonomous", group ="OurM0Bot")
 public class OurM0Bot_Autonomous extends LinearOpMode {
 
     OurM0Bot_Hardware robot       = new OurM0Bot_Hardware(); // use the class created to define OurM0Bot's hardware
@@ -77,8 +77,9 @@ public class OurM0Bot_Autonomous extends LinearOpMode {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
         // OR...  Do Not Activate the Camera Monitor View, to save power
-        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
+        // Our key
         parameters.vuforiaLicenseKey = "AfXF2Nr/////AAAAGdMsV8BsHUFiomBNGmOw3NEPpvX+GToNkTKFRAohdsZ57x+R4vVXCAhd45zcQxYy3psYjXYJaAQtxU9PkBtn2l3T8BTkpEq46FZGRakXKnidi6F3kOYYco4wemaLAii9TcfZ3T7U7BJ3fXs+wRecumf1+e406AOvdiv5EU6PhWsPqjWu25y2Ta4D13WjxTgW6klkpgsTMeeA/4bu1DhcUPkhkA/c+MIf1qFXzidUyuI0DVHH5eO9KxjFzGzAB1e/oQV6ePyPbpnU55xhVtY8vG0ruO8skOweWBP4W+ABjLBrDR+XXeMirX+MsnbbreP4ZDE0NUokTOMqEGS5o0JL/E7FrcVDIFMrr41hlFg8WUR/";
 
         /*
@@ -89,7 +90,7 @@ public class OurM0Bot_Autonomous extends LinearOpMode {
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
-        /**
+        /*
          * Load the data set containing the VuMarks for Relic Recovery. There's only one trackable
          * in this data set: all three of the VuMarks in the game were created from this one
          * template, but differ in their instance id information.
@@ -102,18 +103,17 @@ public class OurM0Bot_Autonomous extends LinearOpMode {
         color_sensor = hardwareMap.colorSensor.get("jewel");
         telemetry.update();
 
-        robot.leftDrive.setPower(0);
-        robot.rightDrive.setPower(0);
-
         relicTrackables.activate();
 
+        /* ******************* */
         waitForStart();
+        /* ******************* */
 
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 
         telemetry.addData("VuMark", "%s visible", vuMark);
         telemetry.update();
-        sleep(10000);
+        //sleep(10000);
 
         if (color_sensor.red()>color_sensor.blue()) {
             robot.leftDrive.setPower(.3);
