@@ -41,9 +41,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="OurAutonomous", group ="OurOpModes")
-public class Autonomous extends LinearOpMode {
+public class OurM0Bot_Autonomous extends LinearOpMode {
 
-    OurM0BotHardware robot       = new OurM0BotHardware(); // use the class created to define OurM0Bot's hardware
+    OurM0Bot_Hardware robot       = new OurM0Bot_Hardware(); // use the class created to define OurM0Bot's hardware
 
     public static final String TAG = "Vuforia VuMark Sample";
 

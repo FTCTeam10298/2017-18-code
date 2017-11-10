@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
-//import org.firstinspires.ftc.teamcode.OurM0BotHardware;
+//import org.firstinspires.ftc.teamcode.OurM0Bot_Hardware;
 
 /**
  * DOCME
@@ -43,7 +43,7 @@ import com.qualcomm.robotcore.util.Range;
 public class OurM0Bot_TeleOp extends OpMode{
 
     /* Declare OpMode members. */
-    OurM0BotHardware robot       = new OurM0BotHardware(); // use the class created to define OurM0Bot's hardware
+    OurM0Bot_Hardware robot       = new OurM0Bot_Hardware(); // use the class created to define OurM0Bot's hardware
                                                          // could also use HardwarePushbotMatrix class.
     double          clawOffset  = 0.0 ;                  // Servo mid position
     final double    CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
