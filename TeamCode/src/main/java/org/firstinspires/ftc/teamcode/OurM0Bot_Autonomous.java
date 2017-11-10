@@ -32,7 +32,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -40,33 +39,58 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
+import ftclib.*;
+import hallib.*;
+
 @Autonomous(name="OurM0Bot: Autonomous", group ="OurM0Bot")
-public class OurM0Bot_Autonomous extends LinearOpMode {
+public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuButtons {
+    public enum Alliance {
+        ALLIANCE_RED,
+        ALLIANCE_BLUE
+    }
+    public enum StartPosition {
+        STARTPOSITION1,
+        STARTPOSITION2
+    }
+    public enum EndPosition {
+        ENDBOARD,
+        ENDNONE
+    }
+    public enum RunMode {
+        RUNMODE_AUTO,
+        RUNMODE_DEBUG
+    }
 
-    OurM0Bot_Hardware robot        = new OurM0Bot_Hardware(); // use the class created to define OurM0Bot's hardware
+    // Menu option variables
+    RunMode        runmode       = RunMode.RUNMODE_AUTO;
+    Alliance       alliance      = Alliance.ALLIANCE_RED;
+    int            delay         = 0;
+    StartPosition  startposition = StartPosition.STARTPOSITION1;
+    EndPosition    endposition   = EndPosition.ENDBOARD;
 
-    //public static final String TAG = "Vuforia VuMark Sample";
-
-    OpenGLMatrix lastLocation = null;
+    private HalDashboard dashboard;
+    OurM0Bot_Hardware robot         = new OurM0Bot_Hardware();
+    ColorSensor       color_sensor  = hardwareMap.colorSensor.get("jewel");
 
     /**
-     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
+     * "vuforia" is the variable we will use to store our instance of the Vuforia
      * localization engine.
      */
     VuforiaLocalizer vuforia;
-
-    ColorSensor color_sensor;
 
     /**
      * Color sensor declaration
      */
 
     @Override public void runOpMode() {
-        /* Initialize the hardware variables.
-         * The init() method of the hardware class does all the work here
-         */
+        // Initialize the hardware -----------------------------------------------------------------
         robot.init(hardwareMap);
+        color_sensor = hardwareMap.colorSensor.get("jewel");
 
+        // Initialize dashboard --------------------------------------------------------------------
+        dashboard = HalDashboard.createInstance(telemetry);
+
+        // Initialize Vuforia ----------------------------------------------------------------------
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor
          * (on the RC phone); If no camera monitor is desired, use the parameterless
@@ -76,7 +100,7 @@ public class OurM0Bot_Autonomous extends LinearOpMode {
                                                     "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        // OR...  Do Not Activate the Camera Monitor View, to save power
+        // Or, don't activate the Camera Monitor view, to save power
         //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         // Our key
@@ -100,14 +124,13 @@ public class OurM0Bot_Autonomous extends LinearOpMode {
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
         relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
 
-        color_sensor = hardwareMap.colorSensor.get("jewel");
-        telemetry.update();
-
         relicTrackables.activate();
 
-        /* ******************* */
+        doMenus();
+        dashboard.displayPrintf(0, "Status: Ready to start");
+
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        /* ******************* */
 
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 
@@ -137,7 +160,88 @@ public class OurM0Bot_Autonomous extends LinearOpMode {
         }
     }
 
-    String format(OpenGLMatrix transformationMatrix) {
-        return (transformationMatrix != null) ? transformationMatrix.formatAsTransform() : "null";
+    boolean DoTask (String taskname, RunMode debug)
+    {
+        dashboard.displayPrintf(0, taskname);
+        if (debug == RunMode.RUNMODE_DEBUG)
+        {
+            dashboard.displayPrintf(1, "Press A to run, B to skip");
+            while(opModeIsActive()) {
+                if(gamepad1.a) {
+                    dashboard.displayPrintf(1, "Run");
+                    return true;
+                }
+                if(gamepad1.b) {
+                    dashboard.displayPrintf(1, "Skip");
+                    sleep(1000);
+                    return false;
+                }
+            }
+        }
+        else
+            return true;
+        return true;
     }
+
+    // MENU ----------------------------------------------------------------------------------------
+    @Override
+    public boolean isMenuUpButton() {
+        return gamepad1.dpad_up;
+    }
+
+    @Override
+    public boolean isMenuDownButton() {
+        return gamepad1.dpad_down;
+    }
+
+    @Override
+    public boolean isMenuEnterButton() {
+        return gamepad1.dpad_right;
+    }
+
+    @Override
+    public boolean isMenuBackButton() {
+        return gamepad1.dpad_left;
+    }
+
+    private void doMenus() {
+        FtcChoiceMenu modeMenu = new FtcChoiceMenu("Run Mode", null, this);
+        FtcChoiceMenu allianceMenu = new FtcChoiceMenu("Alliance:", modeMenu, this);
+        FtcChoiceMenu delayMenu = new FtcChoiceMenu("Delay:", allianceMenu, this);
+        FtcChoiceMenu startpositionMenu = new FtcChoiceMenu("Start Position:", delayMenu, this);
+        FtcChoiceMenu endpositionMenu = new FtcChoiceMenu("End Position:", startpositionMenu, this);
+
+        modeMenu.addChoice("Auto", RunMode.RUNMODE_AUTO, true, allianceMenu);
+        modeMenu.addChoice("Debug", RunMode.RUNMODE_DEBUG, false, allianceMenu);
+
+        allianceMenu.addChoice("Red", Alliance.ALLIANCE_RED, true, delayMenu);
+        allianceMenu.addChoice("Blue", Alliance.ALLIANCE_BLUE, false, delayMenu);
+
+        delayMenu.addChoice("0 seconds", 0, true, startpositionMenu);
+        delayMenu.addChoice("5 seconds", 5000, false, startpositionMenu);
+        delayMenu.addChoice("10 seconds", 10000, false, startpositionMenu);
+        delayMenu.addChoice("15 seconds", 15000, false, startpositionMenu);
+
+        startpositionMenu.addChoice("1", StartPosition.STARTPOSITION1, true, endpositionMenu);
+        startpositionMenu.addChoice("2", StartPosition.STARTPOSITION2, false, endpositionMenu);
+
+        endpositionMenu.addChoice("Balancing Stone", EndPosition.ENDBOARD, false, null);
+        endpositionMenu.addChoice("None", EndPosition.ENDNONE, true, null);
+
+
+        FtcMenu.walkMenuTree(modeMenu, this);
+        runmode = (RunMode) modeMenu.getCurrentChoiceObject();
+        alliance = (Alliance) allianceMenu.getCurrentChoiceObject();
+        delay = (int) delayMenu.getCurrentChoiceObject();
+        startposition = (StartPosition) startpositionMenu.getCurrentChoiceObject();
+        endposition = (EndPosition) endpositionMenu.getCurrentChoiceObject();
+
+        dashboard.displayPrintf(9, "Mode: %s (%s)", modeMenu.getCurrentChoiceText(), runmode.toString());
+        dashboard.displayPrintf(10, "Alliance: %s (%s)", allianceMenu.getCurrentChoiceText(), alliance.toString());
+        dashboard.displayPrintf(11, "Delay = %d msec", delay);
+        dashboard.displayPrintf(12, "Start position: %s (%s)", startpositionMenu.getCurrentChoiceText(), startposition.toString());
+        dashboard.displayPrintf(13, "End Position = %s (%s)", endpositionMenu.getCurrentChoiceText(), endposition.toString());
+    }
+// END MENU ------------------------------------------------------------------------------------
+
 }
