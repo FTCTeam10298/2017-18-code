@@ -57,7 +57,7 @@ public class OurM0Bot_Hardware
     public DcMotor  leftArm       = null;
     public DcMotor  rightArm      = null;
     public DcMotor  backArm       = null;
-    public DcMotor  frontClaw       = null;
+    public DcMotor  frontClaw     = null;
     public Servo    leftBackClaw  = null;
     public Servo    rightBackClaw = null;
 
