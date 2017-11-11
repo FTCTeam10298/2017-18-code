@@ -145,11 +145,10 @@ public class OurM0Bot_TeleOp extends OpMode {
         }
 
         if (gamepad1.right_trigger > 0.5) {
-            robot.frontClaw.setPower(gamepad1.right_trigger);
+            robot.frontClaw.setPower(0.4);
         }
-        else {
-            robot.frontClaw.setPower(-gamepad1.left_trigger);
-
+        else if (gamepad1.left_trigger > 0.5) {
+            robot.frontClaw.setPower(-0.4);
         }
 
         // Send telemetry message to signify robot running;
