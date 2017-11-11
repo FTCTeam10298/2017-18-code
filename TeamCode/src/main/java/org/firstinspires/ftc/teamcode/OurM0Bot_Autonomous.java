@@ -70,10 +70,10 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
 
     private HalDashboard dashboard;
     OurM0Bot_Hardware robot         = new OurM0Bot_Hardware();
-    ColorSensor       color_sensor  = hardwareMap.colorSensor.get("jewel");
+    ColorSensor       color_sensor;
 
     /**
-     * "vuforia" is the variable we will use to store our instance of the Vuforia
+     * Define the variable we will use to store our instance of the Vuforia
      * localization engine.
      */
     VuforiaLocalizer vuforia;
@@ -131,6 +131,13 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+
+        /*
+         * ----- AUTONOMOUS START-------------------------------------------------------------------
+         */
+
+        // Pause the program for the selected delay period
+        sleep(delay);
 
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 

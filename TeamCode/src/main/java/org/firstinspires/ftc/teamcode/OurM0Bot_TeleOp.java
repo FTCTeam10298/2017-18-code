@@ -118,19 +118,19 @@ public class OurM0Bot_TeleOp extends OpMode {
         robot.leftBackClaw.setPosition(robot.MID_SERVO + CLAW_OFFSET);
         robot.rightBackClaw.setPosition(robot.MID_SERVO - CLAW_OFFSET);
 
-//        // Use gamepad buttons to move the arm up (Y) and down (A)
-//        if (gamepad1.y) {
-//            robot.leftArm.setPower(robot.ARM_UP_POWER);
-//            robot.rightArm.setPower(robot.ARM_UP_POWER);
-//        }
-//        else if (gamepad1.a) {
-//            robot.leftArm.setPower(robot.ARM_DOWN_POWER);
-//            robot.rightArm.setPower(robot.ARM_DOWN_POWER);
-//        }
-//        else {
-//            robot.leftArm.setPower(0.0);
-//            robot.rightArm.setPower(0.0);
-//        }
+        // Use gamepad buttons to move the arm up (Y) and down (A)
+        if (gamepad1.y) {
+            robot.leftArm.setPower(robot.ARM_UP_POWER);
+            robot.rightArm.setPower(robot.ARM_UP_POWER);
+        }
+        else if (gamepad1.a) {
+            robot.leftArm.setPower(robot.ARM_DOWN_POWER);
+            robot.rightArm.setPower(robot.ARM_DOWN_POWER);
+        }
+        else {
+            robot.leftArm.setPower(0.0);
+            robot.rightArm.setPower(0.0);
+        }
 
         // Send telemetry message to signify robot running;
         telemetry.addData("claw",  "Offset = %.2f", CLAW_OFFSET);
