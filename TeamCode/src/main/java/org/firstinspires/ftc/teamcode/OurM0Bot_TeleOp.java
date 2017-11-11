@@ -116,17 +116,17 @@ public class OurM0Bot_TeleOp extends OpMode {
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
         CLAW_OFFSET = Range.clip(CLAW_OFFSET, -0.5, 0.5);
-        robot.leftBackClaw.setPosition(robot.MID_SERVO + CLAW_OFFSET);
-        robot.rightBackClaw.setPosition(robot.MID_SERVO - CLAW_OFFSET);
+        robot.leftBackClaw.setPosition(OurM0Bot_Hardware.MID_SERVO + CLAW_OFFSET);
+        robot.rightBackClaw.setPosition(OurM0Bot_Hardware.MID_SERVO - CLAW_OFFSET);
 
         // Use gamepad buttons to move the arm up (Y) and down (A)
         if (gamepad1.y) {
-            robot.leftArm.setPower(robot.ARM_UP_POWER);
-            robot.rightArm.setPower(robot.ARM_UP_POWER);
+            robot.leftArm.setPower(OurM0Bot_Hardware.ARM_UP_POWER);
+            robot.rightArm.setPower(OurM0Bot_Hardware.ARM_UP_POWER);
         }
         else if (gamepad1.a) {
-            robot.leftArm.setPower(robot.ARM_DOWN_POWER);
-            robot.rightArm.setPower(robot.ARM_DOWN_POWER);
+            robot.leftArm.setPower(OurM0Bot_Hardware.ARM_DOWN_POWER);
+            robot.rightArm.setPower(OurM0Bot_Hardware.ARM_DOWN_POWER);
         }
         else {
             robot.leftArm.setPower(0.0);
@@ -135,10 +135,10 @@ public class OurM0Bot_TeleOp extends OpMode {
 
         // Use gamepad buttons to move the claw up (DPAD_UP) and down (DPAD_DOWN)
         if (gamepad1.dpad_up) {
-            robot.backArm.setPower(robot.ARM_UP_POWER);
+            robot.backArm.setPower(OurM0Bot_Hardware.ARM_UP_POWER);
         }
         else if (gamepad1.dpad_down) {
-            robot.backArm.setPower(robot.ARM_DOWN_POWER);
+            robot.backArm.setPower(OurM0Bot_Hardware.ARM_DOWN_POWER);
         }
         else {
             robot.backArm.setPower(0.0);
