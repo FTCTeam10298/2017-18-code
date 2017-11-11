@@ -87,11 +87,12 @@ public class OurM0Bot_TeleOp extends OpMode {
         double left;
         double right;
 
-        if (gamepad1.dpad_down) {
+        if (gamepad1.start) {
             togglePressed = true;
         }
         else if (togglePressed) {
             frontAndBackSwitched = !frontAndBackSwitched; // Inverse "frontAndBackSwitched"
+            togglePressed = false;
         }
 
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
@@ -130,6 +131,25 @@ public class OurM0Bot_TeleOp extends OpMode {
         else {
             robot.leftArm.setPower(0.0);
             robot.rightArm.setPower(0.0);
+        }
+
+        // Use gamepad buttons to move the claw up (DPAD_UP) and down (DPAD_DOWN)
+        if (gamepad1.dpad_up) {
+            robot.backArm.setPower(robot.ARM_UP_POWER);
+        }
+        else if (gamepad1.dpad_down) {
+            robot.backArm.setPower(robot.ARM_DOWN_POWER);
+        }
+        else {
+            robot.backArm.setPower(0.0);
+        }
+
+        if (gamepad1.right_trigger > 0.5) {
+            robot.frontClaw.setPower(gamepad1.right_trigger);
+        }
+        else {
+            robot.frontClaw.setPower(-gamepad1.left_trigger);
+
         }
 
         // Send telemetry message to signify robot running;

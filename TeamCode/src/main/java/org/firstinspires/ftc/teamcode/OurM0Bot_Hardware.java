@@ -32,7 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
+//import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * This is NOT an opmode.
@@ -67,7 +67,7 @@ public class OurM0Bot_Hardware
 
     /* local OpMode members. */
     HardwareMap hwMap           = null;
-    private ElapsedTime period  = new ElapsedTime();
+    //private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
     public OurM0Bot_Hardware() {
@@ -105,10 +105,10 @@ public class OurM0Bot_Hardware
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontClaw.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontClaw.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Define and initialize ALL installed servos.
         leftBackClaw = hwMap.get(Servo.class, "left_back_claw");
