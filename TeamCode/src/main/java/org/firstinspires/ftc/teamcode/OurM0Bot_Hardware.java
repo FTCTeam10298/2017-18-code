@@ -114,5 +114,4 @@ public class OurM0Bot_Hardware
         leftBackClaw.setPosition(MID_SERVO);
         rightBackClaw.setPosition(MID_SERVO);
     }
- }
-
+}
