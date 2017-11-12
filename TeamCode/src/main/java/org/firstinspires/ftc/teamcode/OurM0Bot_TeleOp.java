@@ -43,10 +43,9 @@ import com.qualcomm.robotcore.util.Range;
 public class OurM0Bot_TeleOp extends OpMode {
 
     /* Declare OpMode members. */
-    OurM0Bot_Hardware robot       = new OurM0Bot_Hardware(); // use the class created to define OurM0Bot's hardware
-                                                         // could also use HardwarePushbotMatrix class.
-    double          CLAW_OFFSET = 0.0 ;                  // Servo mid position
-    final double    CLAW_SPEED  = 0.01 ;                 // sets rate to move servo
+    OurM0Bot_Hardware robot     = new OurM0Bot_Hardware(); // use the class created to define OurM0Bot's hardware
+    double          CLAW_OFFSET = 0.0 ;                    // Servo mid position
+    final double    CLAW_SPEED  = 0.005 ;                   // sets rate to move servo
 
     boolean togglePressed = false;
     boolean frontAndBackSwitched = false;
@@ -115,7 +114,7 @@ public class OurM0Bot_TeleOp extends OpMode {
             CLAW_OFFSET -= CLAW_SPEED;
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
-        CLAW_OFFSET = Range.clip(CLAW_OFFSET, -0.5, 0.5);
+        CLAW_OFFSET = Range.clip(CLAW_OFFSET, -0.25, 0.25);
         robot.leftBackClaw.setPosition(OurM0Bot_Hardware.MID_SERVO + CLAW_OFFSET);
         robot.rightBackClaw.setPosition(OurM0Bot_Hardware.MID_SERVO - CLAW_OFFSET);
 

@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-//import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * This is NOT an opmode.
@@ -62,12 +61,11 @@ public class OurM0Bot_Hardware
     public Servo    rightBackClaw = null;
 
     public static final double MID_SERVO       =  0.5 ;
-    public static final double ARM_UP_POWER    =  0.45 ;
-    public static final double ARM_DOWN_POWER  = -0.45 ;
+    public static final double ARM_UP_POWER    = -0.3 ;
+    public static final double ARM_DOWN_POWER  =  0.2 ;
 
     /* local OpMode members. */
     HardwareMap hwMap           = null;
-    //private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
     public OurM0Bot_Hardware() {
