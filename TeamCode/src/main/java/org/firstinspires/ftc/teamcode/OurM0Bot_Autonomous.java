@@ -38,6 +38,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import ftclib.*;
 import hallib.*;
@@ -68,9 +69,16 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
     StartPosition  startposition = StartPosition.STARTPOSITION1;
     EndPosition    endposition   = EndPosition.ENDBOARD;
 
+    /* Declare OpMode members. */
     private HalDashboard dashboard;
     OurM0Bot_Hardware robot         = new OurM0Bot_Hardware();
     ColorSensor       color_sensor;
+
+    static final double     COUNTS_PER_MOTOR_REV      = 2240;    // Rev HD Hex v2 Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION      = 1.0;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES     = 4.0;     // For figuring circumference
+    static final double     COUNTS_PER_INCH           = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1416);
 
     /**
      * Define the variable we will use to store our instance of the Vuforia
@@ -167,6 +175,12 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         }
     }
 
+
+    /**
+     * FUNCTIONS -----------------------------------------------------------------------------------
+     */
+
+
     boolean DoTask (String taskname, RunMode debug)
     {
         dashboard.displayPrintf(0, taskname);
@@ -188,6 +202,73 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         else
             return true;
         return true;
+    }
+
+    void DriveRobotTime(int time, double power)
+    {
+        DrivePowerAll(power);
+
+        sleep(time);
+
+        DrivePowerAll(0);
+    }
+
+    void DriveRobotPosition(double power, int inches)
+    {
+        double position = inches*COUNTS_PER_INCH;
+
+        robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        DrivePowerAll(power);
+
+        robot.leftDrive.setTargetPosition((int)position);
+        robot.rightDrive.setTargetPosition((int)position);
+
+        robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        while (robot.leftDrive.isBusy() && robot.rightDrive.isBusy()) {
+            dashboard.displayPrintf(3,"Left encoder: %d", robot.leftDrive.getCurrentPosition());
+            dashboard.displayPrintf(4,"Right encoder: %d", robot.rightDrive.getCurrentPosition());
+        }
+
+        DrivePowerAll(0);
+
+    }
+
+    void DriveRobotTurn (double power, int degree)
+    {
+        double position = degree*19;
+
+        robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.leftDrive.setPower(power);
+        robot.rightDrive.setPower(-power);
+
+        robot.leftDrive.setTargetPosition((int)position);
+        robot.rightDrive.setTargetPosition(-(int)position);
+
+        robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        while (robot.leftDrive.isBusy() && robot.rightDrive.isBusy()) {
+            dashboard.displayPrintf(3,"Left encoder: %d", robot.leftDrive.getCurrentPosition());
+            dashboard.displayPrintf(4,"Right encoder: %d", robot.rightDrive.getCurrentPosition());
+        }
+
+        DrivePowerAll(0);
+    }
+
+    /**
+     * DrivePowerAll sets all of the drive train motors to the specified power level.
+     * @param power Power level to set motors to
+     */
+    void DrivePowerAll (double power)
+    {
+        robot.leftDrive.setPower(power);
+        robot.rightDrive.setPower(power);
     }
 
     // MENU ----------------------------------------------------------------------------------------
