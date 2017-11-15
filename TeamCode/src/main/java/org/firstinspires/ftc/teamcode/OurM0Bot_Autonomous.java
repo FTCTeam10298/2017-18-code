@@ -175,11 +175,9 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         }
     }
 
-
     /**
      * FUNCTIONS -----------------------------------------------------------------------------------
      */
-
 
     boolean DoTask (String taskname, RunMode debug)
     {
@@ -213,6 +211,11 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         DrivePowerAll(0);
     }
 
+    /**
+     * DrivePowerAll drives the robot the specified number of inches at the specified power level.
+     * @param inches How far to drive, can be negative
+     * @param power Power level to set motors to
+     */
     void DriveRobotPosition(double power, int inches)
     {
         double position = inches*COUNTS_PER_INCH;
@@ -237,6 +240,7 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
 
     }
 
+    // FIXME: position equation
     void DriveRobotTurn (double power, int degree)
     {
         double position = degree*19;
@@ -330,6 +334,5 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         dashboard.displayPrintf(12, "Start position: %s (%s)", startpositionMenu.getCurrentChoiceText(), startposition.toString());
         dashboard.displayPrintf(13, "End Position = %s (%s)", endpositionMenu.getCurrentChoiceText(), endposition.toString());
     }
-// END MENU ------------------------------------------------------------------------------------
-
+    // END MENU ------------------------------------------------------------------------------------
 }
