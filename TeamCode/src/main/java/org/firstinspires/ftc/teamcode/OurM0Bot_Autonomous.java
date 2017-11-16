@@ -75,7 +75,7 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
     ColorSensor       color_sensor;
 
     static final double     COUNTS_PER_MOTOR_REV      = 2240;    // Rev HD Hex v2 Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION      = 1.0;     // This is < 1.0 if geared UP
+    static final double     DRIVE_GEAR_REDUCTION      = 0.8;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES     = 4.0;     // For figuring circumference
     static final double     COUNTS_PER_INCH           = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1416);
@@ -137,6 +137,11 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         doMenus();
         dashboard.displayPrintf(0, "Status: Ready to start");
 
+        robot.jewelArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.jewelArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.jewelArm.setTargetPosition(0);
+        robot.jewelArm.setPower(0.3);
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
@@ -153,27 +158,35 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         telemetry.update();
         //sleep(10000);
 
+        DriveRobotTurn(.2,90);
+        sleep(1000);
+        DriveRobotTurn(.2,-90);
+
+        robot.jewelArm.setTargetPosition(200);
+
+        sleep(1000);
+
         if (color_sensor.red()>color_sensor.blue()) {
-            robot.leftDrive.setPower(.3);
-            robot.rightDrive.setPower(-.3);
-            sleep(250);
-            robot.leftDrive.setPower(-.3);
-            robot.rightDrive.setPower(.3);
-            sleep(250);
-            robot.leftDrive.setPower(0);
-            robot.rightDrive.setPower(0);
+            DriveRobotTurn(.1,10);
+            sleep(5000);
+            DriveRobotTurn(.1,-10);
+            sleep(5000);
         }
         else {
-            robot.leftDrive.setPower(-.3);
-            robot.rightDrive.setPower(.3);
-            sleep(250);
-            robot.leftDrive.setPower(.3);
-            robot.rightDrive.setPower(-.3);
-            sleep(250);
-            robot.leftDrive.setPower(0);
-            robot.rightDrive.setPower(0);
+            DriveRobotTurn(.1,-10);
+            sleep(5000);
+            DriveRobotTurn(.1,10);
+            sleep(5000);
         }
+
+        //sleep(250);
+
+        robot.jewelArm.setTargetPosition(0);
+
+        sleep(2000);
     }
+
+
 
     /**
      * FUNCTIONS -----------------------------------------------------------------------------------
@@ -236,6 +249,8 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
             dashboard.displayPrintf(4,"Right encoder: %d", robot.rightDrive.getCurrentPosition());
         }
 
+        sleep(100);
+
         DrivePowerAll(0);
 
     }
@@ -243,7 +258,7 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
     // FIXME: position equation
     void DriveRobotTurn (double power, int degree)
     {
-        double position = degree*19;
+        double position = degree*10;
 
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -261,6 +276,8 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
             dashboard.displayPrintf(3,"Left encoder: %d", robot.leftDrive.getCurrentPosition());
             dashboard.displayPrintf(4,"Right encoder: %d", robot.rightDrive.getCurrentPosition());
         }
+
+        sleep(100);
 
         DrivePowerAll(0);
     }

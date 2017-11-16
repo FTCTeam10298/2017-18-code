@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 //import org.firstinspires.ftc.teamcode.OurM0Bot_Hardware;
@@ -134,13 +135,18 @@ public class OurM0Bot_TeleOp extends OpMode {
 
         // Use gamepad buttons to move the claw up (DPAD_UP) and down (DPAD_DOWN)
         if (gamepad1.dpad_up) {
+            robot.backArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.backArm.setPower(OurM0Bot_Hardware.ARM_UP_POWER);
         }
         else if (gamepad1.dpad_down) {
+            robot.backArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.backArm.setPower(OurM0Bot_Hardware.ARM_DOWN_POWER);
         }
         else {
-            robot.backArm.setPower(0.0);
+            robot.backArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.backArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.backArm.setTargetPosition(0);
+            robot.backArm.setPower(0.1);
         }
 
         if (gamepad1.right_trigger > 0.5) {
