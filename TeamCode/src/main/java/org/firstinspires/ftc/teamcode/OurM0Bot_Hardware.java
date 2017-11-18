@@ -63,7 +63,7 @@ public class OurM0Bot_Hardware
     public Servo    rightBackClaw = null;
 
     public static final double MID_SERVO       =  0.5 ;
-    public static final double ARM_UP_POWER    =  0.3 ;
+    public static final double ARM_UP_POWER    =  0.35 ;
     public static final double ARM_DOWN_POWER  = -0.2 ;
 
     /* local OpMode members. */
@@ -86,12 +86,12 @@ public class OurM0Bot_Hardware
         rightArm   = hwMap.get(DcMotor.class, "right_arm");
         backArm    = hwMap.get(DcMotor.class, "back_arm");
         frontClaw  = hwMap.get(DcMotor.class, "front_claw");
-        jewelArm  = hwMap.get(DcMotor.class, "jewel_arm");
+        jewelArm   = hwMap.get(DcMotor.class, "jewel_arm");
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
         leftArm.setDirection(DcMotor.Direction.FORWARD);
         rightArm.setDirection(DcMotor.Direction.REVERSE);
-        backArm.setDirection(DcMotor.Direction.FORWARD);
+        backArm.setDirection(DcMotor.Direction.REVERSE);
         frontClaw.setDirection(DcMotor.Direction.FORWARD);
         jewelArm.setDirection(DcMotor.Direction.REVERSE);
 
@@ -110,7 +110,7 @@ public class OurM0Bot_Hardware
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontClaw.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         jewelArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         jewelArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);

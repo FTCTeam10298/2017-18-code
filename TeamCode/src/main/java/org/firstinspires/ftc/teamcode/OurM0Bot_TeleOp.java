@@ -31,7 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
+//import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 //import org.firstinspires.ftc.teamcode.OurM0Bot_Hardware;
@@ -50,6 +50,8 @@ public class OurM0Bot_TeleOp extends OpMode {
 
     boolean togglePressed = false;
     boolean frontAndBackSwitched = false;
+
+    double inertia = 0.2;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -96,22 +98,30 @@ public class OurM0Bot_TeleOp extends OpMode {
         }
 
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        if (!frontAndBackSwitched) {
-            left  = -gamepad1.left_stick_y;
-            right = -gamepad1.right_stick_y;
+        if (gamepad1.left_stick_y > 0.2 || gamepad1.left_stick_y < -0.2
+                || gamepad1.right_stick_y > 0.2 || gamepad1.right_stick_y < -0.2) {
+            inertia += 0.01;
+            inertia = Range.clip(inertia, -1.0, 1.0);
+            if (!frontAndBackSwitched) {
+                left = -gamepad1.left_stick_y * inertia;
+                right = -gamepad1.right_stick_y * inertia;
+            } else { // Drive as if the back is the front
+                left = gamepad1.right_stick_y * inertia;
+                right = gamepad1.left_stick_y * inertia;
+            }
         }
-        else { // Drive as if the back is the front
-            left  =  gamepad1.right_stick_y;
-            right =  gamepad1.left_stick_y;
+        else {
+            left = 0; right = 0;
+            inertia = 0.15;
         }
 
         robot.leftDrive.setPower(left);
         robot.rightDrive.setPower(right);
 
         // Use gamepad left & right Bumpers to open and close the claw
-        if (gamepad1.right_bumper)
+        if (gamepad1.right_bumper || gamepad2.right_bumper)
             CLAW_OFFSET += CLAW_SPEED;
-        else if (gamepad1.left_bumper)
+        else if (gamepad1.left_bumper || gamepad2.left_bumper)
             CLAW_OFFSET -= CLAW_SPEED;
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
@@ -120,13 +130,13 @@ public class OurM0Bot_TeleOp extends OpMode {
         robot.rightBackClaw.setPosition(OurM0Bot_Hardware.MID_SERVO - CLAW_OFFSET);
 
         // Use gamepad buttons to move the arm up (Y) and down (A)
-        if (gamepad1.y) {
-            robot.leftArm.setPower(OurM0Bot_Hardware.ARM_UP_POWER);
-            robot.rightArm.setPower(OurM0Bot_Hardware.ARM_UP_POWER);
+        if (gamepad1.y || gamepad2.y) {
+            robot.leftArm.setPower(0.4);
+            robot.rightArm.setPower(0.4);
         }
-        else if (gamepad1.a) {
-            robot.leftArm.setPower(OurM0Bot_Hardware.ARM_DOWN_POWER);
-            robot.rightArm.setPower(OurM0Bot_Hardware.ARM_DOWN_POWER);
+        else if (gamepad1.a || gamepad2.a) {
+            robot.leftArm.setPower(-0.3);
+            robot.rightArm.setPower(-0.3);
         }
         else {
             robot.leftArm.setPower(0.0);
@@ -134,32 +144,31 @@ public class OurM0Bot_TeleOp extends OpMode {
         }
 
         // Use gamepad buttons to move the claw up (DPAD_UP) and down (DPAD_DOWN)
-        if (gamepad1.dpad_up) {
-            robot.backArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (gamepad1.dpad_up || gamepad2.dpad_up) {
             robot.backArm.setPower(OurM0Bot_Hardware.ARM_UP_POWER);
         }
-        else if (gamepad1.dpad_down) {
-            robot.backArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        else if (gamepad1.dpad_down || gamepad2.dpad_down) {
             robot.backArm.setPower(OurM0Bot_Hardware.ARM_DOWN_POWER);
         }
         else {
-            robot.backArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.backArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.backArm.setTargetPosition(0);
-            robot.backArm.setPower(0.1);
+            robot.backArm.setPower(0);
         }
 
-        if (gamepad1.right_trigger > 0.5) {
-            robot.frontClaw.setPower(0.4);
+        if (gamepad1.right_trigger > 0.25 || gamepad2.right_trigger > 0.25) {
+            robot.frontClaw.setPower(0.3);
         }
-        else if (gamepad1.left_trigger > 0.5) {
-            robot.frontClaw.setPower(-0.4);
+        else if (gamepad1.left_trigger > 0.25 || gamepad2.left_trigger > 0.25) {
+            robot.frontClaw.setPower(-0.3);
+        }
+        else {
+            robot.frontClaw.setPower(0);
         }
 
         // Send telemetry message to signify robot running;
         telemetry.addData("claw",  "Offset = %.2f", CLAW_OFFSET);
         telemetry.addData("left",  "%.2f", left);
         telemetry.addData("right", "%.2f", right);
+        telemetry.addData("inertia", "%.2f", inertia);
     }
 
     /*
