@@ -199,13 +199,18 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
 
         sleep(2000);
 
-        DriveRobotPosition(0.1, 29);
-        sleep (2000);
-        DriveRobotTurn(0.15, 90);
-        sleep(2000);
+        if (alliance == Alliance.ALLIANCE_RED) {
+            DriveRobotPosition(0.1, 29);
+        }
+        else {
+            DriveRobotPosition(0.1, -29);
+        }
+        sleep (3000);
+        DriveRobotTurn(0.25, 90);
+        sleep(3000);
         DriveRobotPosition(0.25, 6);
         robot.frontClaw.setPower(-0.1);
-        sleep(2000);
+        sleep(3000);
         DriveRobotPosition(0.25, -5);
 
         DriveRobotPosition(0.15, 5);
@@ -271,22 +276,13 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
     {
         double position = -inches*COUNTS_PER_INCH;
 
-//        if (robot.leftDrive.getMode() != DcMotor.RunMode.RUN_TO_POSITION ||
-//                robot.rightDrive.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
-//            robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//            robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//
-//            robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//            robot.leftDrive.setTargetPosition(0);
-//            robot.rightDrive.setTargetPosition(0);
-//        }
-
         DrivePowerAll(power);
 
-        robot.leftDrive.setTargetPosition(robot.leftDrive.getTargetPosition() + (int)position);
-        robot.rightDrive.setTargetPosition(robot.rightDrive.getTargetPosition() + (int)position);
+        int finalPositionLeft = robot.leftDrive.getTargetPosition() + (int)position;
+        int finalPositionRight = robot.leftDrive.getTargetPosition() + (int)position;
+
+        robot.leftDrive.setTargetPosition(finalPositionLeft);
+        robot.rightDrive.setTargetPosition(finalPositionRight);
 
         while (robot.leftDrive.isBusy() && robot.rightDrive.isBusy()) {
             dashboard.displayPrintf(3,"Left encoder: %d", robot.leftDrive.getCurrentPosition());
@@ -303,23 +299,13 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
     {
         double position = degree*8.45;
 
-//        if (robot.leftDrive.getMode() != DcMotor.RunMode.RUN_TO_POSITION ||
-//                robot.rightDrive.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
-//            robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//            robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//
-//            robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//            robot.leftDrive.setTargetPosition(0);
-//            robot.rightDrive.setTargetPosition(0);
-//        }
+        DrivePowerAll(power);
 
-        robot.leftDrive.setPower(power);
-        robot.rightDrive.setPower(power);
+        int finalPositionLeft = robot.leftDrive.getTargetPosition() + (int)position;
+        int finalPositionRight = robot.leftDrive.getTargetPosition() - (int)position;
 
-        robot.leftDrive.setTargetPosition(robot.leftDrive.getTargetPosition() + (int)position);
-        robot.rightDrive.setTargetPosition(robot.rightDrive.getTargetPosition() - (int)position);
+        robot.leftDrive.setTargetPosition(finalPositionLeft);
+        robot.rightDrive.setTargetPosition(finalPositionRight);
 
         while (robot.leftDrive.isBusy() && robot.rightDrive.isBusy()) {
             dashboard.displayPrintf(3,"Left encoder: %d", robot.leftDrive.getCurrentPosition());
@@ -367,7 +353,6 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         FtcChoiceMenu allianceMenu = new FtcChoiceMenu("Alliance:", modeMenu, this);
         FtcChoiceMenu delayMenu = new FtcChoiceMenu("Delay:", allianceMenu, this);
         FtcChoiceMenu startpositionMenu = new FtcChoiceMenu("Start Position:", delayMenu, this);
-        FtcChoiceMenu endpositionMenu = new FtcChoiceMenu("End Position:", startpositionMenu, this);
 
         modeMenu.addChoice("Auto", RunMode.RUNMODE_AUTO, true, allianceMenu);
         modeMenu.addChoice("Debug", RunMode.RUNMODE_DEBUG, false, allianceMenu);
@@ -391,7 +376,7 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
 
         dashboard.displayPrintf(9, "Mode: %s (%s)", modeMenu.getCurrentChoiceText(), runmode.toString());
         dashboard.displayPrintf(10, "Alliance: %s (%s)", allianceMenu.getCurrentChoiceText(), alliance.toString());
-        dashboard.displayPrintf(11, "Delay = %d msec", delay);
+        dashboard.displayPrintf(11, "Delay = %d milliseconds", delay);
         dashboard.displayPrintf(12, "Start position: %s (%s)", startpositionMenu.getCurrentChoiceText(), startposition.toString());
     }
     // END MENU ------------------------------------------------------------------------------------
