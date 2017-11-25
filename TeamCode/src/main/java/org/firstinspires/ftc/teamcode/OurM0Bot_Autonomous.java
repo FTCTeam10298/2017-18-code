@@ -155,6 +155,17 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         // Pause the program for the selected delay period
         sleep(delay);
 
+        robot.leftDrive.setPower(1);
+        robot.rightDrive.setPower(1);
+        robot.leftDrive.setTargetPosition(1000);
+        sleep(1000);
+        robot.rightDrive.setTargetPosition(1000);
+        sleep(1000);
+        robot.leftDrive.setTargetPosition(-1000);
+        sleep(1000);
+        robot.rightDrive.setTargetPosition(-1000);
+        sleep(1000);
+
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 
         telemetry.addData("VuMark", "%s visible", vuMark);
