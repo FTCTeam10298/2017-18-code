@@ -53,6 +53,10 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         STARTPOSITION1,
         STARTPOSITION2
     }
+    public enum EndPosition {
+        ENDBOARD,
+        ENDNONE
+    }
     public enum RunMode {
         RUNMODE_AUTO,
         RUNMODE_DEBUG
@@ -63,6 +67,7 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
     Alliance       alliance      = Alliance.ALLIANCE_RED;
     int            delay         = 0;
     StartPosition  startposition = StartPosition.STARTPOSITION1;
+    EndPosition    endposition   = EndPosition.ENDBOARD;
 
     /* Declare OpMode members. */
     private HalDashboard dashboard;
@@ -129,6 +134,9 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
 
         relicTrackables.activate();
 
+        //Initialize Jacob's Claw
+        robot.rightBackClaw.setPosition(.35);
+
         doMenus();
         dashboard.displayPrintf(0, "Status: Ready to start");
 
@@ -136,15 +144,6 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         robot.jewelArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.jewelArm.setTargetPosition(0);
         robot.jewelArm.setPower(0.3);
-
-        robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        robot.leftDrive.setTargetPosition(0);
-        robot.rightDrive.setTargetPosition(0);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -160,10 +159,17 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
 
         telemetry.addData("VuMark", "%s visible", vuMark);
         telemetry.update();
+        //sleep(10000);
 
-        //DriveRobotTurn(.2,90);
-        //sleep(1000);
-        //DriveRobotTurn(.2,-90);
+//        //test
+//        DriveRobotTurn(.2,90);
+//        sleep(1000);
+//        DriveRobotTurn(.2,-90);
+
+        //init
+        robot.backArm.setPower(-.2);
+        sleep(1700);
+        robot.backArm.setPower(0);
 
         robot.jewelArm.setTargetPosition(110);
         robot.frontClaw.setPower(0.3);
@@ -174,7 +180,9 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         robot.rightArm.setPower(0);
         robot.leftArm.setPower(0);
 
+
         sleep(2500);
+
 
         if ((color_sensor.red()>color_sensor.blue() && alliance == Alliance.ALLIANCE_RED)
                 || (color_sensor.blue()>color_sensor.red() && alliance == Alliance.ALLIANCE_BLUE)) {
@@ -194,39 +202,50 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         }
         else {
             robot.jewelArm.setTargetPosition(0);
-            sleep(2000);
+            sleep(1000);
         }
 
-        sleep(2000);
+        //drive
+        if (startposition == StartPosition.STARTPOSITION1) {
+            if (alliance == Alliance.ALLIANCE_RED) {
+                DriveRobotPosition(0.1, 29);
+            } else {
+                DriveRobotPosition(0.1, -29);
+            }
+            sleep(1500);
+            DriveRobotTurn(0.25, 90);
+            sleep(3000);
+            DriveRobotPosition(0.25, 6);
 
-        if (alliance == Alliance.ALLIANCE_RED) {
-            DriveRobotPosition(0.1, 29);
         }
-        else {
-            DriveRobotPosition(0.1, -29);
+        else{
+            if (alliance == Alliance.ALLIANCE_RED){
+                DriveRobotPosition(.1, 24);
+                sleep(500);
+                DriveRobotTurn(.25, -45);
+                sleep(500);
+                DriveRobotPosition(.1, 8);
+                sleep(500);
+
+            }
+            else {
+                DriveRobotPosition(.1, -24);
+                sleep(500);
+                DriveRobotTurn(.25, -135);
+                sleep(500);
+                DriveRobotPosition(.1, 8);
+                sleep(500);
+            }
         }
-        sleep (3000);
-        DriveRobotTurn(0.25, 90);
-        sleep(3000);
-        DriveRobotPosition(0.25, 6);
         robot.frontClaw.setPower(-0.1);
         sleep(3000);
         DriveRobotPosition(0.25, -5);
 
-        DriveRobotPosition(0.15, 5);
-        DriveRobotPosition(0.25, -5);
 
-        DriveRobotPosition(0.15, 5);
-        DriveRobotPosition(0.25, -5);
-
-        DriveRobotPosition(0.15, 5);
-        DriveRobotPosition(0.25, -5);
-
-        DriveRobotPosition(0.15, 5);
-        DriveRobotPosition(0.25, -5);
-
-        DriveRobotPosition(0.15, 5);
-        DriveRobotPosition(0.25, -5);
+        for (int i = 0; i < 2; i++) {
+            DriveRobotPosition(0.15, 7);
+            DriveRobotPosition(0.25, -7);
+        }
     }
 
 
@@ -276,22 +295,26 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
     {
         double position = -inches*COUNTS_PER_INCH;
 
+        robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         DrivePowerAll(power);
 
-        int finalPositionLeft = robot.leftDrive.getTargetPosition() + (int)position;
-        int finalPositionRight = robot.leftDrive.getTargetPosition() + (int)position;
-
-        robot.leftDrive.setTargetPosition(finalPositionLeft);
-        robot.rightDrive.setTargetPosition(finalPositionRight);
+        robot.leftDrive.setTargetPosition((int)position);
+        robot.rightDrive.setTargetPosition((int)position);
 
         while (robot.leftDrive.isBusy() && robot.rightDrive.isBusy()) {
             dashboard.displayPrintf(3,"Left encoder: %d", robot.leftDrive.getCurrentPosition());
             dashboard.displayPrintf(4,"Right encoder: %d", robot.rightDrive.getCurrentPosition());
         }
 
-        //sleep(100);
+        sleep(100);
 
-        //DrivePowerAll(0);
+        DrivePowerAll(0);
+
     }
 
     // FIXME: position equation
@@ -299,22 +322,26 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
     {
         double position = degree*8.45;
 
-        DrivePowerAll(power);
+        robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        int finalPositionLeft = robot.leftDrive.getTargetPosition() + (int)position;
-        int finalPositionRight = robot.leftDrive.getTargetPosition() - (int)position;
+        robot.leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        robot.leftDrive.setTargetPosition(finalPositionLeft);
-        robot.rightDrive.setTargetPosition(finalPositionRight);
+        robot.leftDrive.setPower(power);
+        robot.rightDrive.setPower(-power);
+
+        robot.leftDrive.setTargetPosition((int)position);
+        robot.rightDrive.setTargetPosition(-(int)position);
 
         while (robot.leftDrive.isBusy() && robot.rightDrive.isBusy()) {
             dashboard.displayPrintf(3,"Left encoder: %d", robot.leftDrive.getCurrentPosition());
             dashboard.displayPrintf(4,"Right encoder: %d", robot.rightDrive.getCurrentPosition());
         }
 
-        //sleep(100);
+        sleep(100);
 
-        //DrivePowerAll(0);
+        DrivePowerAll(0);
     }
 
     /**
@@ -353,6 +380,7 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         FtcChoiceMenu allianceMenu = new FtcChoiceMenu("Alliance:", modeMenu, this);
         FtcChoiceMenu delayMenu = new FtcChoiceMenu("Delay:", allianceMenu, this);
         FtcChoiceMenu startpositionMenu = new FtcChoiceMenu("Start Position:", delayMenu, this);
+        FtcChoiceMenu endpositionMenu = new FtcChoiceMenu("End Position:", startpositionMenu, this);
 
         modeMenu.addChoice("Auto", RunMode.RUNMODE_AUTO, true, allianceMenu);
         modeMenu.addChoice("Debug", RunMode.RUNMODE_DEBUG, false, allianceMenu);
@@ -365,19 +393,25 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         delayMenu.addChoice("10 seconds", 10000, false, startpositionMenu);
         delayMenu.addChoice("15 seconds", 15000, false, startpositionMenu);
 
-        startpositionMenu.addChoice("1", StartPosition.STARTPOSITION1, true, null);
-        startpositionMenu.addChoice("2", StartPosition.STARTPOSITION2, false, null);
+        startpositionMenu.addChoice("1", StartPosition.STARTPOSITION1, true, endpositionMenu);
+        startpositionMenu.addChoice("2", StartPosition.STARTPOSITION2, false, endpositionMenu);
+
+        endpositionMenu.addChoice("Balancing Stone", EndPosition.ENDBOARD, false, null);
+        endpositionMenu.addChoice("None", EndPosition.ENDNONE, true, null);
+
 
         FtcMenu.walkMenuTree(modeMenu, this);
         runmode = (RunMode) modeMenu.getCurrentChoiceObject();
         alliance = (Alliance) allianceMenu.getCurrentChoiceObject();
         delay = (int) delayMenu.getCurrentChoiceObject();
         startposition = (StartPosition) startpositionMenu.getCurrentChoiceObject();
+        endposition = (EndPosition) endpositionMenu.getCurrentChoiceObject();
 
         dashboard.displayPrintf(9, "Mode: %s (%s)", modeMenu.getCurrentChoiceText(), runmode.toString());
         dashboard.displayPrintf(10, "Alliance: %s (%s)", allianceMenu.getCurrentChoiceText(), alliance.toString());
-        dashboard.displayPrintf(11, "Delay = %d milliseconds", delay);
+        dashboard.displayPrintf(11, "Delay = %d msec", delay);
         dashboard.displayPrintf(12, "Start position: %s (%s)", startpositionMenu.getCurrentChoiceText(), startposition.toString());
+        dashboard.displayPrintf(13, "End Position = %s (%s)", endpositionMenu.getCurrentChoiceText(), endposition.toString());
     }
     // END MENU ------------------------------------------------------------------------------------
 }

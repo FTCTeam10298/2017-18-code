@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 //import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
+import java.lang.Math;
 
 //import org.firstinspires.ftc.teamcode.OurM0Bot_Hardware;
 
@@ -100,14 +101,18 @@ public class OurM0Bot_TeleOp extends OpMode {
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
         if (gamepad1.left_stick_y > 0.2 || gamepad1.left_stick_y < -0.2
                 || gamepad1.right_stick_y > 0.2 || gamepad1.right_stick_y < -0.2) {
-            inertia += 0.01;
-            inertia = Range.clip(inertia, -1.0, 1.0);
+            //inertia += 0.01;
+            //inertia = Range.clip(inertia, -1.0, 1.0);
             if (!frontAndBackSwitched) {
-                left = -gamepad1.left_stick_y * inertia;
-                right = -gamepad1.right_stick_y * inertia;
+//                left = -gamepad1.left_stick_y * inertia;
+//                right = -gamepad1.right_stick_y * inertia;
+                left = -(gamepad1.left_stick_y*Math.abs(gamepad1.left_stick_y));
+                right = -(gamepad1.right_stick_y*Math.abs(gamepad1.right_stick_y));
             } else { // Drive as if the back is the front
-                left = gamepad1.right_stick_y * inertia;
-                right = gamepad1.left_stick_y * inertia;
+//                left = gamepad1.right_stick_y * inertia;
+//                right = gamepad1.left_stick_y * inertia;
+                left = gamepad1.right_stick_y*Math.abs(gamepad1.right_stick_y);
+                right = gamepad1.left_stick_y*Math.abs(gamepad1.left_stick_y);
             }
         }
         else {
