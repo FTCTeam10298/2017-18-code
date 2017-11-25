@@ -75,7 +75,7 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
     ColorSensor       color_sensor;
 
     static final double     COUNTS_PER_MOTOR_REV      = 1120;    // Rev HD Hex v2 Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION      = 0.8;     // This is < 1.0 if geared UP
+    static final double     DRIVE_GEAR_REDUCTION      = 1.25;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES     = 4.0;     // For figuring circumference
     static final double     COUNTS_PER_INCH           = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1416);
@@ -320,7 +320,7 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
     // FIXME: position equation
     void DriveRobotTurn (double power, int degree)
     {
-        double position = degree*8.45;
+        double position = degree*DRIVE_GEAR_REDUCTION*10.5625;
 
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
