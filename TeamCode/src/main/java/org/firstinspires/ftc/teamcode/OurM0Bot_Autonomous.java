@@ -53,13 +53,14 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         STARTPOSITION1,
         STARTPOSITION2
     }
-    public enum EndPosition {
-        ENDBOARD,
-        ENDNONE
-    }
     public enum RunMode {
         RUNMODE_AUTO,
         RUNMODE_DEBUG
+    }
+    public enum Column {
+        COLUMN_LEFT,
+        COLUMN_CENTER,
+        COLUMN_RIGHT
     }
 
     // Menu option variables
@@ -67,7 +68,6 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
     Alliance       alliance      = Alliance.ALLIANCE_RED;
     int            delay         = 0;
     StartPosition  startposition = StartPosition.STARTPOSITION1;
-    EndPosition    endposition   = EndPosition.ENDBOARD;
 
     /* Declare OpMode members. */
     private HalDashboard dashboard;
@@ -79,6 +79,8 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
     static final double     WHEEL_DIAMETER_INCHES     = 4.0;     // For figuring circumference
     static final double     COUNTS_PER_INCH           = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1416);
+
+    Column column = Column.COLUMN_RIGHT;
 
     /**
      * Define the variable we will use to store our instance of the Vuforia
@@ -135,7 +137,7 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         relicTrackables.activate();
 
         //Initialize Jacob's Claw
-        robot.rightBackClaw.setPosition(.35);
+        //robot.rightBackClaw.setPosition(.35);
 
         doMenus();
         dashboard.displayPrintf(0, "Status: Ready to start");
@@ -156,6 +158,15 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         sleep(delay);
 
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        if (vuMark == RelicRecoveryVuMark.LEFT) {
+            column = Column.COLUMN_LEFT;
+        }
+        else if (vuMark == RelicRecoveryVuMark.CENTER) {
+            column = Column.COLUMN_CENTER;
+        }
+        else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+            column = Column.COLUMN_RIGHT;
+        }
 
         telemetry.addData("VuMark", "%s visible", vuMark);
         telemetry.update();
@@ -166,22 +177,38 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
 //        sleep(1000);
 //        DriveRobotTurn(.2,-90);
 
-        //init
-        robot.backArm.setPower(-.2);
-        sleep(1700);
-        robot.backArm.setPower(0);
+//        // init
+//        robot.backArm.setPower(0.4);
+//        sleep(800);
+//        robot.backArm.setPower(0);
+//
+//        robot.jewelArm.setTargetPosition(110);
+//        robot.frontClaw.setPower(0.3);
+//        sleep(500);
+//        robot.rightArm.setPower(1);
+//        robot.leftArm.setPower(1);
+//        sleep(500);
+//        robot.rightArm.setPower(0);
+//        robot.leftArm.setPower(0);
+
+        // init - optimized
+        robot.backArm.setPower(0.4);
+        //sleep(800);
+        //robot.backArm.setPower(0);
 
         robot.jewelArm.setTargetPosition(110);
         robot.frontClaw.setPower(0.3);
         sleep(500);
         robot.rightArm.setPower(1);
         robot.leftArm.setPower(1);
-        sleep(500);
+        sleep(300);
+        robot.backArm.setPower(0);
+        sleep(200);
         robot.rightArm.setPower(0);
         robot.leftArm.setPower(0);
 
 
-        sleep(2500);
+        sleep(1500);
 
 
         if ((color_sensor.red()>color_sensor.blue() && alliance == Alliance.ALLIANCE_RED)
@@ -205,20 +232,36 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
             sleep(1000);
         }
 
-        //drive
+        // drive
         if (startposition == StartPosition.STARTPOSITION1) {
             if (alliance == Alliance.ALLIANCE_RED) {
-                DriveRobotPosition(0.1, 29);
+                if (column == Column.COLUMN_RIGHT) {
+                    DriveRobotPosition(0.1, 31.25);
+                }
+                else if (column == Column.COLUMN_CENTER) {
+                    DriveRobotPosition(0.1, 38.25);
+                }
+                else {
+                    DriveRobotPosition(0.1, 45.25);
+                }
             } else {
-                DriveRobotPosition(0.1, -29);
+                if (column == Column.COLUMN_LEFT) {
+                    DriveRobotPosition(0.1, -22);
+                }
+                else if (column == Column.COLUMN_CENTER) {
+                    DriveRobotPosition(0.1, -29);
+                }
+                else {
+                    DriveRobotPosition(0.1, -36);
+                }
             }
-            sleep(1500);
+            sleep(1000);
             DriveRobotTurn(0.25, 90);
-            sleep(3000);
+            sleep(1000);
             DriveRobotPosition(0.25, 6);
 
         }
-        else{
+        else {
             if (alliance == Alliance.ALLIANCE_RED){
                 DriveRobotPosition(.1, 24);
                 sleep(500);
@@ -238,13 +281,13 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
             }
         }
         robot.frontClaw.setPower(-0.1);
-        sleep(3000);
+        sleep(1000);
         DriveRobotPosition(0.25, -5);
 
 
         for (int i = 0; i < 2; i++) {
-            DriveRobotPosition(0.15, 7);
-            DriveRobotPosition(0.25, -7);
+            DriveRobotPosition(0.2, 7);
+            DriveRobotPosition(0.35, -7);
         }
     }
 
@@ -291,7 +334,7 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
      * @param inches How far to drive, can be negative
      * @param power Power level to set motors to
      */
-    void DriveRobotPosition(double power, int inches)
+    void DriveRobotPosition(double power, double inches)
     {
         double position = -inches*COUNTS_PER_INCH;
 
@@ -320,7 +363,7 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
     // FIXME: position equation
     void DriveRobotTurn (double power, int degree)
     {
-        double position = degree*DRIVE_GEAR_REDUCTION*10.5625;
+        double position = degree*DRIVE_GEAR_REDUCTION*11.25;
 
         robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -393,25 +436,19 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         delayMenu.addChoice("10 seconds", 10000, false, startpositionMenu);
         delayMenu.addChoice("15 seconds", 15000, false, startpositionMenu);
 
-        startpositionMenu.addChoice("1", StartPosition.STARTPOSITION1, true, endpositionMenu);
-        startpositionMenu.addChoice("2", StartPosition.STARTPOSITION2, false, endpositionMenu);
-
-        endpositionMenu.addChoice("Balancing Stone", EndPosition.ENDBOARD, false, null);
-        endpositionMenu.addChoice("None", EndPosition.ENDNONE, true, null);
-
+        startpositionMenu.addChoice("1", StartPosition.STARTPOSITION1, true, null);
+        startpositionMenu.addChoice("2", StartPosition.STARTPOSITION2, false, null);
 
         FtcMenu.walkMenuTree(modeMenu, this);
         runmode = (RunMode) modeMenu.getCurrentChoiceObject();
         alliance = (Alliance) allianceMenu.getCurrentChoiceObject();
         delay = (int) delayMenu.getCurrentChoiceObject();
         startposition = (StartPosition) startpositionMenu.getCurrentChoiceObject();
-        endposition = (EndPosition) endpositionMenu.getCurrentChoiceObject();
 
         dashboard.displayPrintf(9, "Mode: %s (%s)", modeMenu.getCurrentChoiceText(), runmode.toString());
         dashboard.displayPrintf(10, "Alliance: %s (%s)", allianceMenu.getCurrentChoiceText(), alliance.toString());
         dashboard.displayPrintf(11, "Delay = %d msec", delay);
         dashboard.displayPrintf(12, "Start position: %s (%s)", startpositionMenu.getCurrentChoiceText(), startposition.toString());
-        dashboard.displayPrintf(13, "End Position = %s (%s)", endpositionMenu.getCurrentChoiceText(), endposition.toString());
     }
     // END MENU ------------------------------------------------------------------------------------
 }

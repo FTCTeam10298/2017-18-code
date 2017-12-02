@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -63,8 +62,8 @@ public class OurM0Bot_Hardware
     public Servo    rightBackClaw = null;
 
     public static final double MID_SERVO       =  0.5 ;
-    public static final double ARM_UP_POWER    =  0.35 ;
-    public static final double ARM_DOWN_POWER  = -0.2 ;
+    public static final double ARM_UP_POWER    =  0.5 ;
+    public static final double ARM_DOWN_POWER  = -0.5 ;
 
     /* local OpMode members. */
     HardwareMap hwMap           = null;
@@ -122,7 +121,7 @@ public class OurM0Bot_Hardware
         // Define and initialize ALL installed servos.
         leftBackClaw = hwMap.get(Servo.class, "left_back_claw");
         rightBackClaw = hwMap.get(Servo.class, "right_back_claw");
-        leftBackClaw.setPosition(MID_SERVO);
-        rightBackClaw.setPosition(MID_SERVO);
+        leftBackClaw.setPosition(0.25);
+        rightBackClaw.setPosition(0.8);
     }
 }

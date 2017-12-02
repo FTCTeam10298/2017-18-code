@@ -130,18 +130,18 @@ public class OurM0Bot_TeleOp extends OpMode {
             CLAW_OFFSET -= CLAW_SPEED;
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
-        CLAW_OFFSET = Range.clip(CLAW_OFFSET, -0.25, 0.25);
+        CLAW_OFFSET = Range.clip(CLAW_OFFSET, -0.15, 0.15);
         robot.leftBackClaw.setPosition(OurM0Bot_Hardware.MID_SERVO + CLAW_OFFSET);
         robot.rightBackClaw.setPosition(OurM0Bot_Hardware.MID_SERVO - CLAW_OFFSET);
 
         // Use gamepad buttons to move the arm up (Y) and down (A)
         if (gamepad1.y || gamepad2.y) {
-            robot.leftArm.setPower(0.4);
-            robot.rightArm.setPower(0.4);
+            robot.leftArm.setPower(0.6);
+            robot.rightArm.setPower(0.6);
         }
         else if (gamepad1.a || gamepad2.a) {
-            robot.leftArm.setPower(-0.3);
-            robot.rightArm.setPower(-0.3);
+            robot.leftArm.setPower(-0.5);
+            robot.rightArm.setPower(-0.5);
         }
         else {
             robot.leftArm.setPower(0.0);
