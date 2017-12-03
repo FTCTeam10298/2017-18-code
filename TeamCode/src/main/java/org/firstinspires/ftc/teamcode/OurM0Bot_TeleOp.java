@@ -49,6 +49,7 @@ public class OurM0Bot_TeleOp extends OpMode {
     double          CLAW_OFFSET = 0.0 ;                    // Servo mid position
     final double    CLAW_SPEED  = 0.005 ;                   // sets rate to move servo
 
+    double jewelPosition = 37;
     boolean togglePressed = false;
     boolean frontAndBackSwitched = false;
 
@@ -74,6 +75,8 @@ public class OurM0Bot_TeleOp extends OpMode {
     @Override
     public void init_loop() {
     }
+
+
 
     /*
      * Code to run ONCE when the driver hits PLAY
@@ -130,7 +133,7 @@ public class OurM0Bot_TeleOp extends OpMode {
             CLAW_OFFSET -= CLAW_SPEED;
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
-        CLAW_OFFSET = Range.clip(CLAW_OFFSET, -0.15, 0.15);
+        CLAW_OFFSET = Range.clip(CLAW_OFFSET, -0.15, 0.30);
         robot.leftBackClaw.setPosition(OurM0Bot_Hardware.MID_SERVO + CLAW_OFFSET);
         robot.rightBackClaw.setPosition(OurM0Bot_Hardware.MID_SERVO - CLAW_OFFSET);
 
@@ -150,10 +153,10 @@ public class OurM0Bot_TeleOp extends OpMode {
 
         // Use gamepad buttons to move the claw up (DPAD_UP) and down (DPAD_DOWN)
         if (gamepad1.dpad_up || gamepad2.dpad_up) {
-            robot.backArm.setPower(OurM0Bot_Hardware.ARM_UP_POWER);
+            robot.backArm.setPower(0.5);
         }
         else if (gamepad1.dpad_down || gamepad2.dpad_down) {
-            robot.backArm.setPower(OurM0Bot_Hardware.ARM_DOWN_POWER);
+            robot.backArm.setPower(-.5);
         }
         else {
             robot.backArm.setPower(0);
@@ -168,6 +171,15 @@ public class OurM0Bot_TeleOp extends OpMode {
         else {
             robot.frontClaw.setPower(0);
         }
+
+        // Move the jewel arm so it doesn't get in the way
+        if (gamepad1.b || gamepad2.b)
+            jewelPosition++;
+        else if (gamepad1.x || gamepad2.x)
+            jewelPosition--;
+
+        robot.jewelArm.setPower(.5);
+        robot.jewelArm.setTargetPosition((int)jewelPosition);
 
         // Send telemetry message to signify robot running;
         telemetry.addData("claw",  "Offset = %.2f", CLAW_OFFSET);

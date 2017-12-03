@@ -160,16 +160,22 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         if (vuMark == RelicRecoveryVuMark.LEFT) {
             column = Column.COLUMN_LEFT;
+            dashboard.displayPrintf(6, "VuMark: LEFT visible");
         }
         else if (vuMark == RelicRecoveryVuMark.CENTER) {
             column = Column.COLUMN_CENTER;
+            dashboard.displayPrintf(6, "VuMark: CENTER visible");
         }
         else if (vuMark == RelicRecoveryVuMark.RIGHT) {
             column = Column.COLUMN_RIGHT;
+            dashboard.displayPrintf(6, "VuMark: RIGHT visible");
+        }
+        else {
+            column = Column.COLUMN_CENTER;
+            dashboard.displayPrintf(6, "VuMark: UNKNOWN visible");
         }
 
-        telemetry.addData("VuMark", "%s visible", vuMark);
-        telemetry.update();
+        //dashboard.displayPrintF(6, "VuMark: %s visible", (string)vuMark);
         //sleep(10000);
 
 //        //test
@@ -192,18 +198,20 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
 //        robot.leftArm.setPower(0);
 
         // init - optimized
-        robot.backArm.setPower(0.4);
+        robot.backArm.setPower(0.5);
         //sleep(800);
         //robot.backArm.setPower(0);
 
         robot.jewelArm.setTargetPosition(110);
+        //robot.frontClaw.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //robot.frontClaw.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.frontClaw.setPower(0.3);
+        //robot.frontClaw.setTargetPosition(30);
         sleep(500);
         robot.rightArm.setPower(1);
         robot.leftArm.setPower(1);
-        sleep(300);
+        sleep(500);
         robot.backArm.setPower(0);
-        sleep(200);
         robot.rightArm.setPower(0);
         robot.leftArm.setPower(0);
 
@@ -236,23 +244,23 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         if (startposition == StartPosition.STARTPOSITION1) {
             if (alliance == Alliance.ALLIANCE_RED) {
                 if (column == Column.COLUMN_RIGHT) {
-                    DriveRobotPosition(0.1, 31.25);
+                    DriveRobotPosition(0.1, 32.25);
                 }
                 else if (column == Column.COLUMN_CENTER) {
-                    DriveRobotPosition(0.1, 38.25);
+                    DriveRobotPosition(0.1, 39.25);
                 }
                 else {
-                    DriveRobotPosition(0.1, 45.25);
+                    DriveRobotPosition(0.1, 47.25);
                 }
             } else {
                 if (column == Column.COLUMN_LEFT) {
-                    DriveRobotPosition(0.1, -22);
+                    DriveRobotPosition(0.1, -30);
                 }
                 else if (column == Column.COLUMN_CENTER) {
-                    DriveRobotPosition(0.1, -29);
+                    DriveRobotPosition(0.1, -39);
                 }
                 else {
-                    DriveRobotPosition(0.1, -36);
+                    DriveRobotPosition(0.1, -46);
                 }
             }
             sleep(1000);
@@ -263,7 +271,7 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         }
         else {
             if (alliance == Alliance.ALLIANCE_RED){
-                DriveRobotPosition(.1, 24);
+                DriveRobotPosition(.1, 30);
                 sleep(500);
                 DriveRobotTurn(.25, -45);
                 sleep(500);
@@ -272,9 +280,9 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
 
             }
             else {
-                DriveRobotPosition(.1, -24);
+                DriveRobotPosition(.1, -30);
                 sleep(500);
-                DriveRobotTurn(.25, -135);
+                DriveRobotTurn(.25, -145);
                 sleep(500);
                 DriveRobotPosition(.1, 8);
                 sleep(500);
