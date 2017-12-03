@@ -257,7 +257,7 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
                     DriveRobotPosition(0.1, -30);
                 }
                 else if (column == Column.COLUMN_CENTER) {
-                    DriveRobotPosition(0.1, -39);
+                    DriveRobotPosition(0.1, -38.5);
                 }
                 else {
                     DriveRobotPosition(0.1, -46);
