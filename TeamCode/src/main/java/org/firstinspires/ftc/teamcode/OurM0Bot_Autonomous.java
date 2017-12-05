@@ -427,11 +427,10 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
     }
 
     private void doMenus() {
-        FtcChoiceMenu modeMenu = new FtcChoiceMenu("Run Mode", null, this);
-        FtcChoiceMenu allianceMenu = new FtcChoiceMenu("Alliance:", modeMenu, this);
-        FtcChoiceMenu delayMenu = new FtcChoiceMenu("Delay:", allianceMenu, this);
-        FtcChoiceMenu startpositionMenu = new FtcChoiceMenu("Start Position:", delayMenu, this);
-        FtcChoiceMenu endpositionMenu = new FtcChoiceMenu("End Position:", startpositionMenu, this);
+        FtcChoiceMenu<RunMode> modeMenu = new FtcChoiceMenu<>("Run Mode", null, this);
+        FtcChoiceMenu<Alliance> allianceMenu = new FtcChoiceMenu<>("Alliance:", modeMenu, this);
+        FtcValueMenu delayMenu = new FtcValueMenu("Delay:", allianceMenu, this, 0, 20000, 1000, 0, "%.0f msec");
+        FtcChoiceMenu<StartPosition> startPositionMenu = new FtcChoiceMenu<>("Start Position:", delayMenu, this);
 
         modeMenu.addChoice("Auto", RunMode.RUNMODE_AUTO, true, allianceMenu);
         modeMenu.addChoice("Debug", RunMode.RUNMODE_DEBUG, false, allianceMenu);
@@ -439,24 +438,19 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
         allianceMenu.addChoice("Red", Alliance.ALLIANCE_RED, true, delayMenu);
         allianceMenu.addChoice("Blue", Alliance.ALLIANCE_BLUE, false, delayMenu);
 
-        delayMenu.addChoice("0 seconds", 0, true, startpositionMenu);
-        delayMenu.addChoice("5 seconds", 5000, false, startpositionMenu);
-        delayMenu.addChoice("10 seconds", 10000, false, startpositionMenu);
-        delayMenu.addChoice("15 seconds", 15000, false, startpositionMenu);
-
-        startpositionMenu.addChoice("1", StartPosition.STARTPOSITION1, true, null);
-        startpositionMenu.addChoice("2", StartPosition.STARTPOSITION2, false, null);
+        startPositionMenu.addChoice("1", StartPosition.STARTPOSITION1, true, null);
+        startPositionMenu.addChoice("2", StartPosition.STARTPOSITION2, false, null);
 
         FtcMenu.walkMenuTree(modeMenu, this);
-        runmode = (RunMode) modeMenu.getCurrentChoiceObject();
-        alliance = (Alliance) allianceMenu.getCurrentChoiceObject();
-        delay = (int) delayMenu.getCurrentChoiceObject();
-        startposition = (StartPosition) startpositionMenu.getCurrentChoiceObject();
+        runmode = modeMenu.getCurrentChoiceObject();
+        alliance = allianceMenu.getCurrentChoiceObject();
+        delay = (int) delayMenu.getCurrentValue();
+        startposition = startPositionMenu.getCurrentChoiceObject();
 
         dashboard.displayPrintf(9, "Mode: %s (%s)", modeMenu.getCurrentChoiceText(), runmode.toString());
         dashboard.displayPrintf(10, "Alliance: %s (%s)", allianceMenu.getCurrentChoiceText(), alliance.toString());
         dashboard.displayPrintf(11, "Delay = %d msec", delay);
-        dashboard.displayPrintf(12, "Start position: %s (%s)", startpositionMenu.getCurrentChoiceText(), startposition.toString());
+        dashboard.displayPrintf(12, "Start position: %s (%s)", startPositionMenu.getCurrentChoiceText(), startposition.toString());
     }
     // END MENU ------------------------------------------------------------------------------------
 }
