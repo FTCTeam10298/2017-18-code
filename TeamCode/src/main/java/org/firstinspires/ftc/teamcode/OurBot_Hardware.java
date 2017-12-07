@@ -52,8 +52,6 @@ public class OurBot_Hardware
     public Servo    leftBackClaw  = null;
     public Servo    rightBackClaw = null;
 
-    public static final double MID_SERVO       =  0.5 ;
-
     /* local OpMode members. */
     HardwareMap hwMap           = null;
 

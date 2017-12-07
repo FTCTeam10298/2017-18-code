@@ -31,11 +31,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-//import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 import java.lang.Math;
-
-//import org.firstinspires.ftc.teamcode.OurM0Bot_Hardware;
 
 /*
  * This is our TeleOp.
@@ -45,9 +42,12 @@ import java.lang.Math;
 public class OurBot_TeleOp extends OpMode {
 
     /* Declare OpMode members. */
-    OurBot_Hardware robot       = new OurBot_Hardware();  // use the class created to define OurM0Bot's hardware
-    double          CLAW_OFFSET = 0.0 ;                   // Servo mid position
-    final double    CLAW_SPEED  = 0.005 ;                 // sets rate to move servo
+    OurBot_Hardware robot       = new OurBot_Hardware();  // Use the class created to define OurBot's hardware
+    double          CLAW_OFFSET = 0.0 ;                   // Offset from the servo's mid position
+    final double    CLAW_SPEED  = 0.005 ;                 // Sets rate to move servo
+
+    double left = 0.0;
+    double right = 0.0;
 
     double jewelPosition = 37;
     boolean togglePressed = false;
@@ -88,8 +88,6 @@ public class OurBot_TeleOp extends OpMode {
      */
     @Override
     public void loop() {
-        double left;
-        double right;
 
         if (gamepad1.start) {
             togglePressed = true;
@@ -132,8 +130,8 @@ public class OurBot_TeleOp extends OpMode {
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
         CLAW_OFFSET = Range.clip(CLAW_OFFSET, -0.15, 0.30);
-        robot.leftBackClaw.setPosition(OurBot_Hardware.MID_SERVO + CLAW_OFFSET);
-        robot.rightBackClaw.setPosition(OurBot_Hardware.MID_SERVO - CLAW_OFFSET);
+        robot.leftBackClaw.setPosition(0.5 + CLAW_OFFSET);
+        robot.rightBackClaw.setPosition(0.5 - CLAW_OFFSET);
 
         // Use gamepad buttons to move the arm up (Y) and down (A)
         if (gamepad1.y || gamepad2.y) {
