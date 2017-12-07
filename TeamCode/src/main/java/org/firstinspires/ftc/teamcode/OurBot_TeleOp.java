@@ -53,7 +53,7 @@ public class OurBot_TeleOp extends OpMode {
     boolean togglePressed = false;
     boolean frontAndBackSwitched = false;
 
-    double inertia = 0.2;
+    //double inertia = 0.15;                              // Not currently used
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -100,8 +100,8 @@ public class OurBot_TeleOp extends OpMode {
         }
 
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        if (gamepad1.left_stick_y > 0.2 || gamepad1.left_stick_y < -0.2
-                || gamepad1.right_stick_y > 0.2 || gamepad1.right_stick_y < -0.2) {
+        if (gamepad1.left_stick_y > 0.1 || gamepad1.left_stick_y < -0.1
+                || gamepad1.right_stick_y > 0.1 || gamepad1.right_stick_y < -0.1) {
             //inertia += 0.01;
             //inertia = Range.clip(inertia, -1.0, 1.0);
             if (!frontAndBackSwitched) {
@@ -118,7 +118,7 @@ public class OurBot_TeleOp extends OpMode {
         }
         else {
             left = 0; right = 0;
-            inertia = 0.15;
+            //inertia = 0.15;
         }
 
         robot.leftDrive.setPower(left);
@@ -176,14 +176,14 @@ public class OurBot_TeleOp extends OpMode {
         else if (gamepad1.x || gamepad2.x)
             jewelPosition--;
 
-        robot.jewelArm.setPower(.5);
+        robot.jewelArm.setPower(0.5);
         robot.jewelArm.setTargetPosition((int)jewelPosition);
 
         // Send telemetry message to signify robot running;
         telemetry.addData("claw",  "Offset = %.2f", CLAW_OFFSET);
         telemetry.addData("left",  "%.2f", left);
         telemetry.addData("right", "%.2f", right);
-        telemetry.addData("inertia", "%.2f", inertia);
+        //telemetry.addData("inertia", "%.2f", inertia);
     }
 
     /*
