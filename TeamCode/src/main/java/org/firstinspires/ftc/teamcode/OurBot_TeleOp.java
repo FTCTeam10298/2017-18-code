@@ -38,16 +38,16 @@ import java.lang.Math;
 //import org.firstinspires.ftc.teamcode.OurM0Bot_Hardware;
 
 /*
- * This is our TeleOp for Meet 0.
+ * This is our TeleOp.
  */
 
-@TeleOp(name="OurM0Bot: TeleOp", group="OurM0Bot")
-public class OurM0Bot_TeleOp extends OpMode {
+@TeleOp(name="OurBot: TeleOp", group="OurBot")
+public class OurBot_TeleOp extends OpMode {
 
     /* Declare OpMode members. */
-    OurM0Bot_Hardware robot     = new OurM0Bot_Hardware(); // use the class created to define OurM0Bot's hardware
-    double          CLAW_OFFSET = 0.0 ;                    // Servo mid position
-    final double    CLAW_SPEED  = 0.005 ;                   // sets rate to move servo
+    OurBot_Hardware robot       = new OurBot_Hardware();  // use the class created to define OurM0Bot's hardware
+    double          CLAW_OFFSET = 0.0 ;                   // Servo mid position
+    final double    CLAW_SPEED  = 0.005 ;                 // sets rate to move servo
 
     double jewelPosition = 37;
     boolean togglePressed = false;
@@ -75,8 +75,6 @@ public class OurM0Bot_TeleOp extends OpMode {
     @Override
     public void init_loop() {
     }
-
-
 
     /*
      * Code to run ONCE when the driver hits PLAY
@@ -134,8 +132,8 @@ public class OurM0Bot_TeleOp extends OpMode {
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
         CLAW_OFFSET = Range.clip(CLAW_OFFSET, -0.15, 0.30);
-        robot.leftBackClaw.setPosition(OurM0Bot_Hardware.MID_SERVO + CLAW_OFFSET);
-        robot.rightBackClaw.setPosition(OurM0Bot_Hardware.MID_SERVO - CLAW_OFFSET);
+        robot.leftBackClaw.setPosition(OurBot_Hardware.MID_SERVO + CLAW_OFFSET);
+        robot.rightBackClaw.setPosition(OurBot_Hardware.MID_SERVO - CLAW_OFFSET);
 
         // Use gamepad buttons to move the arm up (Y) and down (A)
         if (gamepad1.y || gamepad2.y) {
@@ -156,7 +154,7 @@ public class OurM0Bot_TeleOp extends OpMode {
             robot.backArm.setPower(0.5);
         }
         else if (gamepad1.dpad_down || gamepad2.dpad_down) {
-            robot.backArm.setPower(-.5);
+            robot.backArm.setPower(-0.5);
         }
         else {
             robot.backArm.setPower(0);

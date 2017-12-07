@@ -43,8 +43,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import ftclib.*;
 import hallib.*;
 
-@Autonomous(name="OurM0Bot: Autonomous", group ="OurM0Bot")
-public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuButtons {
+@Autonomous(name="OurBot: Autonomous", group ="OurBot")
+public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButtons {
     public enum Alliance {
         ALLIANCE_RED,
         ALLIANCE_BLUE
@@ -71,7 +71,7 @@ public class OurM0Bot_Autonomous extends LinearOpMode implements FtcMenu.MenuBut
 
     /* Declare OpMode members. */
     private HalDashboard dashboard;
-    OurM0Bot_Hardware robot         = new OurM0Bot_Hardware();
+    OurBot_Hardware   robot         = new OurBot_Hardware();
     ColorSensor       color_sensor;
 
     static final double     COUNTS_PER_MOTOR_REV      = 1120;    // Rev HD Hex v2 Motor Encoder
