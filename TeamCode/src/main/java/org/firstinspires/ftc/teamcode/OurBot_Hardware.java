@@ -42,18 +42,20 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class OurBot_Hardware
 {
     /* Public OpMode members. */
-    public DcMotor  leftDrive     = null;
-    public DcMotor  rightDrive    = null;
-    public DcMotor  leftArm       = null;
-    public DcMotor  rightArm      = null;
-    public DcMotor  backArm       = null;
-    public DcMotor  frontClaw     = null;
-    public DcMotor  jewelArm      = null;
-    public Servo    leftBackClaw  = null;
-    public Servo    rightBackClaw = null;
+    public DcMotor leftDrive      = null;
+    public DcMotor rightDrive     = null;
+    public DcMotor leftSlide      = null;
+    public DcMotor rightSlide     = null;
+    public DcMotor dunkClawArm = null;
+    public DcMotor slideClaw      = null;
+    public DcMotor jewelArm       = null;
+    public Servo   dunkClawLeft1  = null;
+    public Servo   dunkClawRight1 = null;
+    public Servo   dunkClawLeft2  = null;
+    public Servo   dunkClawRight2 = null;
 
     /* local OpMode members. */
-    HardwareMap hwMap           = null;
+    HardwareMap     hwMap         = null;
 
     /* Constructor */
     public OurBot_Hardware() {
@@ -68,47 +70,51 @@ public class OurBot_Hardware
         // Define and Initialize Motors
         leftDrive  = hwMap.get(DcMotor.class, "left_drive");
         rightDrive = hwMap.get(DcMotor.class, "right_drive");
-        leftArm    = hwMap.get(DcMotor.class, "left_arm");
-        rightArm   = hwMap.get(DcMotor.class, "right_arm");
-        backArm    = hwMap.get(DcMotor.class, "back_arm");
-        frontClaw  = hwMap.get(DcMotor.class, "front_claw");
+        leftSlide  = hwMap.get(DcMotor.class, "left_arm");
+        rightSlide = hwMap.get(DcMotor.class, "right_arm");
+        dunkClawArm = hwMap.get(DcMotor.class, "back_arm");
+        slideClaw  = hwMap.get(DcMotor.class, "front_claw");
         jewelArm   = hwMap.get(DcMotor.class, "jewel_arm");
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftArm.setDirection(DcMotor.Direction.FORWARD);
-        rightArm.setDirection(DcMotor.Direction.REVERSE);
-        backArm.setDirection(DcMotor.Direction.REVERSE);
-        frontClaw.setDirection(DcMotor.Direction.FORWARD);
+        leftSlide.setDirection(DcMotor.Direction.FORWARD);
+        rightSlide.setDirection(DcMotor.Direction.REVERSE);
+        dunkClawArm.setDirection(DcMotor.Direction.REVERSE);
+        slideClaw.setDirection(DcMotor.Direction.FORWARD);
         jewelArm.setDirection(DcMotor.Direction.REVERSE);
 
         // Set all motors to zero power
         leftDrive.setPower(0);
         rightDrive.setPower(0);
-        leftArm.setPower(0);
-        rightArm.setPower(0);
-        backArm.setPower(0);
-        frontClaw.setPower(0);
+        leftSlide.setPower(0);
+        rightSlide.setPower(0);
+        dunkClawArm.setPower(0);
+        slideClaw.setPower(0);
         jewelArm.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontClaw.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        dunkClawArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slideClaw.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         jewelArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         jewelArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        dunkClawArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Define and initialize ALL installed servos.
-        leftBackClaw = hwMap.get(Servo.class, "left_back_claw");
-        rightBackClaw = hwMap.get(Servo.class, "right_back_claw");
-        leftBackClaw.setPosition(0.25);
-        rightBackClaw.setPosition(0.8);
+        dunkClawLeft1  = hwMap.get(Servo.class, "left_back_claw");
+        dunkClawRight1 = hwMap.get(Servo.class, "right_back_claw");
+        dunkClawLeft1.setPosition(0.25);
+        dunkClawRight1.setPosition(0.8);
+        dunkClawLeft2  = hwMap.get(Servo.class, "left_back_claw_2");
+        dunkClawRight2 = hwMap.get(Servo.class, "right_back_claw_2");
+        dunkClawLeft2.setPosition(0.25);
+        dunkClawRight2.setPosition(0.8);
     }
 }

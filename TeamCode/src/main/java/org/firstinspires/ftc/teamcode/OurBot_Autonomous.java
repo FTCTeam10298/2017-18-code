@@ -174,16 +174,16 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
 
         if (DoTask("Init", runmode)) {
             // Init - optimized
-            robot.backArm.setPower(0.5);
+            robot.dunkClawArm.setPower(0.5);
             robot.jewelArm.setTargetPosition(110);
-            robot.frontClaw.setPower(0.3);
+            robot.slideClaw.setPower(0.3);
             sleep(500);
-            robot.rightArm.setPower(1);
-            robot.leftArm.setPower(1);
+            robot.rightSlide.setPower(1);
+            robot.leftSlide.setPower(1);
             sleep(500);
-            robot.backArm.setPower(0);
-            robot.rightArm.setPower(0);
-            robot.leftArm.setPower(0);
+            robot.dunkClawArm.setPower(0);
+            robot.rightSlide.setPower(0);
+            robot.leftSlide.setPower(0);
 
             //sleep(1000);
         }
@@ -258,7 +258,7 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
         }
 
         // Drop glyph
-        robot.frontClaw.setPower(-0.1);
+        robot.slideClaw.setPower(-0.1);
         sleep(1000);
         DriveRobotPosition(0.25, -5);
 
