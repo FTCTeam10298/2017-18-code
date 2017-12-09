@@ -111,13 +111,13 @@ public class OurBot_Hardware
         // Define and initialize ALL installed servos.
         dunkClawLeft1  = hwMap.get(Servo.class, "left_back_claw");
         dunkClawRight1 = hwMap.get(Servo.class, "right_back_claw");
-        dunkClawLeft1.setPosition(0.5);
-        dunkClawRight1.setPosition(0.5);
+        //dunkClawLeft1.setPosition(0.5);
+        //dunkClawRight1.setPosition(0.5);
         dunkClawLeft2  = hwMap.get(Servo.class, "left_back_claw_2");
         dunkClawRight2 = hwMap.get(Servo.class, "right_back_claw_2");
-        dunkClawLeft2.setPosition(0.5);
-        dunkClawRight2.setPosition(0.5);
+        //dunkClawLeft2.setPosition(0.5);
+        //dunkClawRight2.setPosition(0.5);
         spinnyClaw = hwMap.get(Servo.class, "dunk_claw_rotate");
-        spinnyClaw.setPosition(0.5);
+        //spinnyClaw.setPosition(0.5);
     }
 }

@@ -43,7 +43,7 @@ public class OurBot_TeleOp extends OpMode {
 
     /* Declare OpMode members. */
     OurBot_Hardware robot         = new OurBot_Hardware(); // Use the class created to define OurBot's hardware
-    final double    CLAW_SPEED    = 0.005 ;                // Sets rate to move servo
+    final double    CLAW_SPEED    = 0.01 ;                // Sets rate to move servo
     double          CLAW_OFFSET_1 = 0.0 ;                  // Offset from the servo's mid position
     double          CLAW_OFFSET_2 = 0.0 ;                  // Offset from the servo's mid position
 
@@ -154,9 +154,9 @@ public class OurBot_TeleOp extends OpMode {
             else if (gamepad1.left_bumper || gamepad2.left_bumper)
                 CLAW_OFFSET_2 -= CLAW_SPEED;
 
-            if (gamepad2.right_trigger > 0.1)
+            if (gamepad1.right_trigger > 0.1 || gamepad2.right_trigger > 0.1)
                 CLAW_OFFSET_1 += CLAW_SPEED;
-            else if (gamepad2.left_trigger > 0.1)
+            else if (gamepad1.left_trigger > 0.1 || gamepad2.left_trigger > 0.1)
                 CLAW_OFFSET_1 -= CLAW_SPEED;
         }
 
@@ -215,7 +215,7 @@ public class OurBot_TeleOp extends OpMode {
         if (gamepad2.start) {
             jewelPosition++;
         }
-        else if (gamepad2.back) {
+        else if (gamepad2.left_stick_button) {
             jewelPosition--;
         }
 

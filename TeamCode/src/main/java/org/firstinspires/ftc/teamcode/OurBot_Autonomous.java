@@ -174,18 +174,23 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
 
         if (DoTask("Init", runmode)) {
             // Init - optimized
-            robot.dunkClawArm.setPower(0.5);
+            robot.dunkClawArm.setPower(0.2);
             robot.jewelArm.setTargetPosition(110);
             robot.slideClaw.setPower(0.3);
             sleep(500);
             robot.rightSlide.setPower(1);
             robot.leftSlide.setPower(1);
-            sleep(500);
+            sleep(250);
             robot.dunkClawArm.setPower(0);
             robot.rightSlide.setPower(0);
             robot.leftSlide.setPower(0);
+            robot.spinnyClaw.setPosition(1);
+            robot.dunkClawLeft1.setPosition(0.5);
+            robot.dunkClawRight1.setPosition(0.5);
+            robot.dunkClawLeft2.setPosition(0.5);
+            robot.dunkClawRight2.setPosition(0.5);
 
-            //sleep(1000);
+            sleep(1000);
         }
 
         if (DoTask("Knock off jewel", runmode)) {
@@ -263,10 +268,10 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
         DriveRobotPosition(0.25, -5);
 
         for (int i = 0; i < 2; i++) {
-            //DriveRobotPosition(0.2, 7);
-            //DriveRobotPosition(0.35, -7);
-            DriveRobotTime(1000, 1.0);
-            DriveRobotTime(500, -1.0);
+            DriveRobotPosition(0.2, 7);
+            DriveRobotPosition(0.35, -7);
+            //DriveRobotTime(1000, 1.0);
+            //DriveRobotTime(500, -1.0);
         }
     }
 
@@ -404,6 +409,8 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
 
         allianceMenu.addChoice("Red", Alliance.ALLIANCE_RED, true, delayMenu);
         allianceMenu.addChoice("Blue", Alliance.ALLIANCE_BLUE, false, delayMenu);
+
+        delayMenu.setChildMenu(startPositionMenu);
 
         startPositionMenu.addChoice("1", StartPosition.STARTPOSITION1, true, null);
         startPositionMenu.addChoice("2", StartPosition.STARTPOSITION2, false, null);
