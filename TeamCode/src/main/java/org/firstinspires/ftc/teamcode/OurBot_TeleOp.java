@@ -53,6 +53,7 @@ public class OurBot_TeleOp extends OpMode {
     double jewelPosition = 37;
     boolean togglePressed = false;
     boolean frontAndBackSwitched = false;
+    double spinnyPosition = .5;
 
     //double inertia = 0.15;                              // Not currently used
 
@@ -83,7 +84,6 @@ public class OurBot_TeleOp extends OpMode {
     @Override
     public void start() {
         robot.jewelArm.setPower(1.0);
-        robot.jewelArm.setTargetPosition((int)jewelPosition);
     }
 
     /*
@@ -122,61 +122,83 @@ public class OurBot_TeleOp extends OpMode {
 //            inertia = 0.15;
 //        }
         if (!frontAndBackSwitched) {
-            left = -(gamepad1.left_stick_y*Math.abs(gamepad1.left_stick_y));
-            right = -(gamepad1.right_stick_y*Math.abs(gamepad1.right_stick_y));
+            left = -(gamepad1.left_stick_y);
+            left = left*Math.abs(left);
+            right = -(gamepad1.right_stick_y);
+            right = right*Math.abs(right);
         } else { // Drive as if the back is the front
-            left = gamepad1.right_stick_y*Math.abs(gamepad1.right_stick_y);
-            right = gamepad1.left_stick_y*Math.abs(gamepad1.left_stick_y);
+            left = gamepad1.right_stick_y;
+            left = left*Math.abs(left);
+            right = gamepad1.left_stick_y;
+            right = right*Math.abs(right);
         }
 
         robot.leftDrive.setPower(left);
         robot.rightDrive.setPower(right);
 
         // Use gamepad left & right Bumpers to open and close the claw
-        if (gamepad1.right_bumper || gamepad2.right_bumper)
-            CLAW_OFFSET_1 += CLAW_SPEED;
-        else if (gamepad1.left_bumper || gamepad2.left_bumper)
-            CLAW_OFFSET_1 -= CLAW_SPEED;
+        if (spinnyPosition == 1) {
+            if (gamepad1.right_bumper || gamepad2.right_bumper)
+                CLAW_OFFSET_1 += CLAW_SPEED;
+            else if (gamepad1.left_bumper || gamepad2.left_bumper)
+                CLAW_OFFSET_1 -= CLAW_SPEED;
 
-        if (gamepad2.right_trigger > 0.1)
-            CLAW_OFFSET_2 += CLAW_SPEED;
-        else if (gamepad2.left_trigger > 0.1)
-            CLAW_OFFSET_2 -= CLAW_SPEED;
+            if (gamepad2.right_trigger > 0.1)
+                CLAW_OFFSET_2 += CLAW_SPEED;
+            else if (gamepad2.left_trigger > 0.1)
+                CLAW_OFFSET_2 -= CLAW_SPEED;
+        }
+        else {
+            if (gamepad1.right_bumper || gamepad2.right_bumper)
+                CLAW_OFFSET_2 += CLAW_SPEED;
+            else if (gamepad1.left_bumper || gamepad2.left_bumper)
+                CLAW_OFFSET_2 -= CLAW_SPEED;
+
+            if (gamepad2.right_trigger > 0.1)
+                CLAW_OFFSET_1 += CLAW_SPEED;
+            else if (gamepad2.left_trigger > 0.1)
+                CLAW_OFFSET_1 -= CLAW_SPEED;
+        }
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
         CLAW_OFFSET_1 = Range.clip(CLAW_OFFSET_1, -0.15, 0.30);
-        robot.dunkClawLeft1.setPosition(0.5 + CLAW_OFFSET_1);
-        robot.dunkClawRight1.setPosition(0.5 - CLAW_OFFSET_1);
+        robot.dunkClawLeft1.setPosition(0.5 - CLAW_OFFSET_1);
+        robot.dunkClawRight1.setPosition(0.5 + CLAW_OFFSET_1);
         CLAW_OFFSET_2 = Range.clip(CLAW_OFFSET_2, -0.15, 0.30);
-        robot.dunkClawLeft2.setPosition(0.5 + CLAW_OFFSET_1);
-        robot.dunkClawRight2.setPosition(0.5 - CLAW_OFFSET_1);
+        robot.dunkClawLeft2.setPosition(0.5 - CLAW_OFFSET_2);
+        robot.dunkClawRight2.setPosition(0.5 + CLAW_OFFSET_2);
 
-//        // Use gamepad buttons to move the slides up (Y) and down (A)
-//        if (gamepad1.y || gamepad2.y) {
-//            robot.leftSlide.setPower(0.6);
-//            robot.rightSlide.setPower(0.6);
-//        }
-//        else if (gamepad1.a || gamepad2.a) {
-//            robot.leftSlide.setPower(-0.5);
-//            robot.rightSlide.setPower(-0.5);
-//        }
-//        else {
-//            robot.leftSlide.setPower(0.0);
-//            robot.rightSlide.setPower(0.0);
-//        }
-        robot.leftSlide.setPower(-gamepad2.right_stick_y);
-        robot.rightSlide.setPower(-gamepad2.right_stick_y);
+        // spinny claw
+        if (gamepad1.dpad_left || gamepad2.dpad_left)
+            spinnyPosition = 1;
+        else if (gamepad1.dpad_right || gamepad2.dpad_right)
+            spinnyPosition = 0;
 
-//        if (gamepad1.right_trigger > 0.25 || gamepad2.right_trigger > 0.25) {
-//            robot.slideClaw.setPower(0.3);
-//        }
-//        else if (gamepad1.left_trigger > 0.25 || gamepad2.left_trigger > 0.25) {
-//            robot.slideClaw.setPower(-0.3);
-//        }
-//        else {
-//            robot.slideClaw.setPower(0);
-//        }
-        robot.slideClaw.setPower(-gamepad2.right_stick_x);
+        robot.spinnyClaw.setPosition(spinnyPosition);
+
+        // Use gamepad buttons to move the slides up (Y) and down (A)
+        if (gamepad1.y || gamepad2.y) {
+            robot.leftSlide.setPower(0.6);
+            robot.rightSlide.setPower(0.6);
+        }
+        else if (gamepad1.a || gamepad2.a) {
+            robot.leftSlide.setPower(-0.5);
+            robot.rightSlide.setPower(-0.5);
+        }
+        else {
+            robot.leftSlide.setPower(0.0);
+            robot.rightSlide.setPower(0.0);
+        }
+
+        if (gamepad1.b || gamepad2.b) {
+            robot.slideClaw.setPower(0.3);
+        }
+        else if (gamepad1.x || gamepad2.x) {
+            robot.slideClaw.setPower(-0.3);
+        }
+        else {
+            robot.slideClaw.setPower(0);
+        }
 
         // Use gamepad buttons to move the dunk claw up (DPAD_UP) and down (DPAD_DOWN)
         if (gamepad1.dpad_up || gamepad2.dpad_up) {
@@ -186,14 +208,16 @@ public class OurBot_TeleOp extends OpMode {
             robot.dunkClawArm.setPower(-0.5);
         }
         else {
-            robot.dunkClawArm.setPower(0);
+            robot.dunkClawArm.setPower(0.001);
         }
 
         // Move the jewel arm so it doesn't get in the way
-        if (gamepad1.b || gamepad2.b)
+        if (gamepad2.start) {
             jewelPosition++;
-        else if (gamepad1.x || gamepad2.x)
+        }
+        else if (gamepad2.back) {
             jewelPosition--;
+        }
 
         robot.jewelArm.setTargetPosition((int)jewelPosition);
 
