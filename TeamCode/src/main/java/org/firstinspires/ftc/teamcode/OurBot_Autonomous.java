@@ -174,7 +174,7 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
 
         if (DoTask("Init", runmode)) {
             // Init - optimized
-            robot.dunkClawArm.setPower(0.2);
+            robot.dunkClawArm.setPower(0.5);
             robot.jewelArm.setTargetPosition(110);
             robot.slideClaw.setPower(0.3);
             sleep(500);
@@ -190,7 +190,7 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
             robot.dunkClawLeft2.setPosition(0.5);
             robot.dunkClawRight2.setPosition(0.5);
 
-            sleep(1000);
+            sleep(1500);
         }
 
         if (DoTask("Knock off jewel", runmode)) {
