@@ -244,12 +244,31 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
 
             } else {
                 if (alliance == Alliance.ALLIANCE_RED) {
-                    DriveRobotPosition(.1, 30);
-                    sleep(500);
-                    DriveRobotTurn(.25, -45);
-                    sleep(500);
-                    DriveRobotPosition(.1, 8);
-                    sleep(500);
+                    if (column == Column.COLUMN_CENTER) {
+                        DriveRobotPosition(.1, 29);
+                        sleep(500);
+                        DriveRobotTurn(.25, -45);
+                        sleep(500);
+                        DriveRobotPosition(.1, 8);
+                        sleep(500);
+                    }
+                    else if (column == Column.COLUMN_LEFT){
+                        DriveRobotPosition(.1, 29);
+                        sleep(500);
+                        DriveRobotTurn(.25, -64);
+                        sleep(500);
+                        DriveRobotPosition(.1, 14);
+                        sleep(500);
+                        DriveRobotTurn(.25,8);
+                    }
+                    else {
+                        DriveRobotPosition(.1, 29);
+                        sleep(500);
+                        DriveRobotTurn(.25, -25);
+                        sleep(500);
+                        DriveRobotPosition(.1, 7);
+                        sleep(500);
+                    }
 
                 } else {
                     DriveRobotPosition(.1, -30);
@@ -263,7 +282,7 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
         }
 
         // Drop glyph
-        robot.slideClaw.setPower(-0.1);
+        robot.slideClaw.setPower(-0.2);
         sleep(1000);
         DriveRobotPosition(0.25, -5);
 
@@ -341,7 +360,7 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
     }
 
     // FIXME: position equation
-    void DriveRobotTurn (double power, int degree)
+    void DriveRobotTurn (double power, double degree)
     {
         double position = degree*DRIVE_GEAR_REDUCTION*11.25;
 
