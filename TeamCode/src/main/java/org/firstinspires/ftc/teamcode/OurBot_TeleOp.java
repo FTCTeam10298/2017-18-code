@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 import java.lang.Math;
 
@@ -49,12 +50,13 @@ public class OurBot_TeleOp extends OpMode {
 
     double          left          = 0.0;
     double          right         = 0.0;
+    double          arm           = 0.0;
 
     double   jewelPosition        = 37;
     boolean  togglePressed        = false;
     boolean  toggle2Pressed       = false;
     boolean  frontAndBackSwitched = false;
-    double   spinnyPosition       = 0;
+    double   spinnyPosition       = 1;
 
     //double inertia = 0.15;                              // Not currently used
 
@@ -67,6 +69,9 @@ public class OurBot_TeleOp extends OpMode {
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
+
+        robot.jewelArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.jewelArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Robot", "Initialized");
@@ -84,7 +89,7 @@ public class OurBot_TeleOp extends OpMode {
      */
     @Override
     public void start() {
-        robot.jewelArm.setPower(1.0);
+//        robot.jewelArm.setPower(1.0);
     }
 
     /*
@@ -123,15 +128,51 @@ public class OurBot_TeleOp extends OpMode {
 //            inertia = 0.15;
 //        }
         if (!frontAndBackSwitched) {
-            left = -(gamepad1.left_stick_y);
-            left = left*Math.abs(left);
-            right = -(gamepad1.right_stick_y);
-            right = right*Math.abs(right);
+            if (gamepad1.dpad_up) {
+                left = 1;
+                right = 1;
+            }
+            else if (gamepad1.dpad_down) {
+                left = -1;
+                right = -1;
+            }
+            else if (gamepad1.dpad_left || gamepad1.left_trigger > .1) {
+                left = -1;
+                right = 1;
+            }
+            else if (gamepad1.dpad_right || gamepad1.right_trigger > .1) {
+                left = 1;
+                right = -1;
+            }
+            else {
+                left = -(gamepad1.left_stick_y);
+                left = left * Math.abs(left);
+                right = -(gamepad1.right_stick_y);
+                right = right * Math.abs(right);
+            }
         } else { // Drive as if the back is the front
-            left = gamepad1.right_stick_y;
-            left = left*Math.abs(left);
-            right = gamepad1.left_stick_y;
-            right = right*Math.abs(right);
+            if (gamepad1.dpad_up) {
+                left = -1;
+                right = -1;
+            }
+            else if (gamepad1.dpad_down) {
+                left = 1;
+                right = 1;
+            }
+            else if (gamepad1.dpad_left) {
+                left = -1;
+                right = 1;
+            }
+            else if (gamepad1.dpad_right) {
+                left = 1;
+                right = -1;
+            }
+            else {
+                left = gamepad1.right_stick_y;
+                left = left * Math.abs(left);
+                right = gamepad1.left_stick_y;
+                right = right * Math.abs(right);
+            }
         }
 
         robot.leftDrive.setPower(left);
@@ -170,7 +211,8 @@ public class OurBot_TeleOp extends OpMode {
         robot.dunkClawRight2.setPosition(0.5 + CLAW_OFFSET_2);
 
         // spinny claw
-        if (gamepad1.dpad_left || gamepad2.dpad_left || gamepad1.dpad_right || gamepad2.dpad_right) {
+//        if (gamepad1.dpad_left || gamepad2.dpad_left || gamepad1.dpad_right || gamepad2.dpad_right) {
+        if (gamepad2.dpad_left || gamepad2.dpad_right) {
             toggle2Pressed = true;
         }
         else if (toggle2Pressed) {
@@ -208,11 +250,18 @@ public class OurBot_TeleOp extends OpMode {
         }
 
         // Use gamepad buttons to move the dunk claw up (DPAD_UP) and down (DPAD_DOWN)
-        if (gamepad1.dpad_up || gamepad2.dpad_up) {
+        arm = gamepad2.right_stick_y;
+        arm = (arm*Math.abs(arm))/2;
+//        if (gamepad1.dpad_up || gamepad2.dpad_up) {
+        if (gamepad2.dpad_up) {
             robot.dunkClawArm.setPower(0.5);
         }
-        else if (gamepad1.dpad_down || gamepad2.dpad_down) {
+//        else if (gamepad1.dpad_down || gamepad2.dpad_down) {
+        else if (gamepad2.dpad_down) {
             robot.dunkClawArm.setPower(-0.5);
+        }
+        else if (arm > 0.1 || arm < -0.1) {
+            robot.dunkClawArm.setPower(arm);
         }
         else {
             robot.dunkClawArm.setPower(0.001);
@@ -220,10 +269,15 @@ public class OurBot_TeleOp extends OpMode {
 
         // Move the jewel arm so it doesn't get in the way
         if (gamepad2.start) {
-            jewelPosition++;
+//            jewelPosition++;
+            robot.jewelArm.setPower(0.3);
         }
         else if (gamepad2.left_stick_button) {
-            jewelPosition--;
+//            jewelPosition--;
+            robot.jewelArm.setPower(-0.3);
+        }
+        else {
+            robot.jewelArm.setPower(0);
         }
 
         robot.jewelArm.setTargetPosition((int)jewelPosition);

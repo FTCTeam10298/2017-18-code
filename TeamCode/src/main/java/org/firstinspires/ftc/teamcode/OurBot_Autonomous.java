@@ -260,24 +260,28 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
                     }
 
                 } else {
-                    DriveRobotPosition(.1, -30);
-                    sleep(500);
+                    DriveRobotPosition(.1, -26);
                     if (column == Column.COLUMN_CENTER) {
-                        DriveRobotTurn(.25, -150);
+                        DriveRobotPosition(.1,-4);
+                        sleep(500);
+                        DriveRobotTurn(.25, -147);
                         sleep(500);
                         DriveRobotPosition(.1, 8);
                         sleep(500);
                     }
                     else if (column == Column.COLUMN_LEFT){
-                        DriveRobotTurn(.25, -163);
+                        DriveRobotPosition(.1,-4);
+                        sleep (500);
+                        DriveRobotTurn(.25, -165);
                         sleep(500);
                         DriveRobotPosition(.1, 7);
                         sleep(500);
                     }
                     else {
-                        DriveRobotTurn(.25, -130);
                         sleep(500);
-                        DriveRobotPosition(.1, 9);
+                        DriveRobotTurn(.25, -137);
+                        sleep(500);
+                        DriveRobotPosition(.1, 14);
                         sleep(500);
                     }
                 }
