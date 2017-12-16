@@ -47,13 +47,14 @@ public class OurBot_TeleOp extends OpMode {
     double          CLAW_OFFSET_1 = 0.0 ;                  // Offset from the servo's mid position
     double          CLAW_OFFSET_2 = 0.0 ;                  // Offset from the servo's mid position
 
-    double left = 0.0;
-    double right = 0.0;
+    double          left          = 0.0;
+    double          right         = 0.0;
 
-    double jewelPosition = 37;
-    boolean togglePressed = false;
-    boolean frontAndBackSwitched = false;
-    double spinnyPosition = .5;
+    double   jewelPosition        = 37;
+    boolean  togglePressed        = false;
+    boolean  toggle2Pressed       = false;
+    boolean  frontAndBackSwitched = false;
+    double   spinnyPosition       = 0;
 
     //double inertia = 0.15;                              // Not currently used
 
@@ -169,10 +170,16 @@ public class OurBot_TeleOp extends OpMode {
         robot.dunkClawRight2.setPosition(0.5 + CLAW_OFFSET_2);
 
         // spinny claw
-        if (gamepad1.dpad_left || gamepad2.dpad_left)
-            spinnyPosition = 1;
-        else if (gamepad1.dpad_right || gamepad2.dpad_right)
-            spinnyPosition = 0;
+        if (gamepad1.dpad_left || gamepad2.dpad_left || gamepad1.dpad_right || gamepad2.dpad_right) {
+            toggle2Pressed = true;
+        }
+        else if (toggle2Pressed) {
+            if (spinnyPosition == 0)
+                spinnyPosition = 1;
+            else
+                spinnyPosition = 0;
+            toggle2Pressed = false;
+        }
 
         robot.spinnyClaw.setPosition(spinnyPosition);
 

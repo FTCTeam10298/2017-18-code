@@ -174,21 +174,14 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
 
         if (DoTask("Init", runmode)) {
             // Init - optimized
-            robot.dunkClawArm.setPower(0.5);
             robot.jewelArm.setTargetPosition(110);
             robot.slideClaw.setPower(0.3);
             sleep(500);
             robot.rightSlide.setPower(1);
             robot.leftSlide.setPower(1);
             sleep(250);
-            robot.dunkClawArm.setPower(0);
             robot.rightSlide.setPower(0);
             robot.leftSlide.setPower(0);
-            robot.spinnyClaw.setPosition(1);
-            robot.dunkClawLeft1.setPosition(0.5);
-            robot.dunkClawRight1.setPosition(0.5);
-            robot.dunkClawLeft2.setPosition(0.5);
-            robot.dunkClawRight2.setPosition(0.5);
 
             sleep(1500);
         }
@@ -244,17 +237,15 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
 
             } else {
                 if (alliance == Alliance.ALLIANCE_RED) {
+                    DriveRobotPosition(.1, 29);
+                    sleep(500);
                     if (column == Column.COLUMN_CENTER) {
-                        DriveRobotPosition(.1, 29);
-                        sleep(500);
                         DriveRobotTurn(.25, -45);
                         sleep(500);
                         DriveRobotPosition(.1, 8);
                         sleep(500);
                     }
                     else if (column == Column.COLUMN_LEFT){
-                        DriveRobotPosition(.1, 29);
-                        sleep(500);
                         DriveRobotTurn(.25, -64);
                         sleep(500);
                         DriveRobotPosition(.1, 14);
@@ -262,8 +253,6 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
                         DriveRobotTurn(.25,8);
                     }
                     else {
-                        DriveRobotPosition(.1, 29);
-                        sleep(500);
                         DriveRobotTurn(.25, -25);
                         sleep(500);
                         DriveRobotPosition(.1, 7);
@@ -273,10 +262,24 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
                 } else {
                     DriveRobotPosition(.1, -30);
                     sleep(500);
-                    DriveRobotTurn(.25, -145);
-                    sleep(500);
-                    DriveRobotPosition(.1, 8);
-                    sleep(500);
+                    if (column == Column.COLUMN_CENTER) {
+                        DriveRobotTurn(.25, -150);
+                        sleep(500);
+                        DriveRobotPosition(.1, 8);
+                        sleep(500);
+                    }
+                    else if (column == Column.COLUMN_LEFT){
+                        DriveRobotTurn(.25, -163);
+                        sleep(500);
+                        DriveRobotPosition(.1, 7);
+                        sleep(500);
+                    }
+                    else {
+                        DriveRobotTurn(.25, -130);
+                        sleep(500);
+                        DriveRobotPosition(.1, 9);
+                        sleep(500);
+                    }
                 }
             }
         }
@@ -292,6 +295,16 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
             //DriveRobotTime(1000, 1.0);
             //DriveRobotTime(500, -1.0);
         }
+        sleep(250);
+        robot.dunkClawArm.setPower(0.5);
+        sleep(750);
+        robot.dunkClawArm.setPower(0);
+        robot.spinnyClaw.setPosition(1);
+        robot.dunkClawLeft1.setPosition(0.5);
+        robot.dunkClawRight1.setPosition(0.5);
+        robot.dunkClawLeft2.setPosition(0.5);
+        robot.dunkClawRight2.setPosition(0.5);
+        sleep(1000);
     }
 
 
