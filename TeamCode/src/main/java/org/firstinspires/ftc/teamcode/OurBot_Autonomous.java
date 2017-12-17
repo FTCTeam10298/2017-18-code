@@ -240,7 +240,7 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
                     DriveRobotPosition(.1, 29);
                     sleep(500);
                     if (column == Column.COLUMN_CENTER) {
-                        DriveRobotTurn(.25, -45);
+                        DriveRobotTurn(.25, -50);
                         sleep(500);
                         DriveRobotPosition(.1, 8);
                         sleep(500);
