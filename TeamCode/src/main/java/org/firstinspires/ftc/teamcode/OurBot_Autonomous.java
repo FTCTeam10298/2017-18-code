@@ -187,6 +187,8 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
         }
 
         if (DoTask("Knock off jewel", runmode)) {
+            dashboard.displayPrintf(14, "" + color_sensor.red());
+            dashboard.displayPrintf(15, "" + color_sensor.blue());
             if ((color_sensor.red() > color_sensor.blue() && alliance == Alliance.ALLIANCE_RED)
                     || (color_sensor.blue() > color_sensor.red() && alliance == Alliance.ALLIANCE_BLUE)) {
                 DriveRobotTurn(.1, -20);
@@ -217,7 +219,7 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
                     if (column == Column.COLUMN_RIGHT) {
                         DriveRobotPosition(0.1, 32.25);
                     } else if (column == Column.COLUMN_CENTER) {
-                        DriveRobotPosition(0.1, 39.25);
+                        DriveRobotPosition(0.1, 39.4);
                     } else {
                         DriveRobotPosition(0.1, 47.25);
                     }
@@ -231,7 +233,7 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
                     }
                 }
                 sleep(1000);
-                DriveRobotTurn(0.25, 90);
+                DriveRobotTurn(0.25, 93);
                 sleep(1000);
                 DriveRobotPosition(0.25, 6);
 
