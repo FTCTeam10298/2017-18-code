@@ -73,6 +73,8 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
     private HalDashboard dashboard;
     OurBot_Hardware   robot         = new OurBot_Hardware();
     ColorSensor       color_sensor;
+    ColorSensor       color_left;
+    ColorSensor       color_right;
 
     static final double     COUNTS_PER_MOTOR_REV      = 1120;    // Rev HD Hex v2 Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION      = 1.25;     // This is < 1.0 if geared UP
@@ -96,6 +98,8 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
         // Initialize the hardware -----------------------------------------------------------------
         robot.init(hardwareMap);
         color_sensor = hardwareMap.colorSensor.get("jewel");
+        color_left = hardwareMap.colorSensor.get("left_square");
+        color_right = hardwareMap.colorSensor.get("right_square");
 
         // Initialize dashboard --------------------------------------------------------------------
         dashboard = HalDashboard.createInstance(telemetry);
@@ -376,6 +380,65 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
 
         DrivePowerAll(0);
 
+    }
+
+    void DriveRobotSquare (double power)
+    {
+        dashboard.displayPrintf(3, "Color right red: " + color_right.red());
+        dashboard.displayPrintf(4, "Color right blue: " + color_right.blue());
+        dashboard.displayPrintf(5, "Color left red: " + color_left.red());
+        dashboard.displayPrintf(6, "Color left blue: " + color_left.blue());
+        boolean red;
+        boolean done = false;
+        if (alliance == Alliance.ALLIANCE_RED)
+            red = true;
+        else
+            red = false;
+        if (red) {
+
+            while (!done)
+            {
+                dashboard.displayPrintf(3, "Color right red: " + color_right.red());
+                dashboard.displayPrintf(4, "Color right blue: " + color_right.blue());
+                dashboard.displayPrintf(5, "Color left red: " + color_left.red());
+                dashboard.displayPrintf(6, "Color left blue: " + color_left.blue());
+                if (color_left.red()<15)
+                    robot.leftDrive.setPower(power);
+                else
+                    robot.leftDrive.setPower(0);
+                if (color_right.red()<15)
+                    robot.rightDrive.setPower(power);
+                else
+                    robot.rightDrive.setPower(0);
+                if ((color_left.red()>15)&&(color_right.red()>15))
+                    done = true;
+            }
+        }
+        else {
+            while (!done)
+            {
+                dashboard.displayPrintf(3, "Color right red: " + color_right.red());
+                dashboard.displayPrintf(4, "Color right blue: " + color_right.blue());
+                dashboard.displayPrintf(5, "Color left red: " + color_left.red());
+                dashboard.displayPrintf(6, "Color left blue: " + color_left.blue());
+                if (color_left.blue()<120)
+                    robot.leftDrive.setPower(power);
+                else
+                    robot.leftDrive.setPower(-power/5);
+                if (color_right.blue()<120)
+                    robot.rightDrive.setPower(power);
+                else
+                    robot.rightDrive.setPower(-power/5);
+                if ((color_left.blue()>120)&&(color_right.blue()>120))
+                    done = true;
+            }
+        }
+        DrivePowerAll(0);
+        dashboard.displayPrintf(3, "Color right red: " + color_right.red());
+        dashboard.displayPrintf(4, "Color right blue: " + color_right.blue());
+        dashboard.displayPrintf(5, "Color left red: " + color_left.red());
+        dashboard.displayPrintf(6, "Color left blue: " + color_left.blue());
+        sleep(500);
     }
 
     // FIXME: position equation
