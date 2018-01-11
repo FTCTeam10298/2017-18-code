@@ -263,9 +263,9 @@ public class OurBot_TeleOp extends OpMode {
         else if (arm > 0.1 || arm < -0.1) {
             robot.dunkClawArm.setPower(arm);
         }
-        else {
-            robot.dunkClawArm.setPower(0.001);
-        }
+        //else {
+        //    robot.dunkClawArm.setPower(0.001);
+        //}
 
         // Move the jewel arm so it doesn't get in the way
         if (gamepad2.start) {

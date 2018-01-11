@@ -80,7 +80,7 @@ public class OurBot_Hardware
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
         leftSlide.setDirection(DcMotor.Direction.FORWARD);
         rightSlide.setDirection(DcMotor.Direction.REVERSE);
-        dunkClawArm.setDirection(DcMotor.Direction.REVERSE);
+        dunkClawArm.setDirection(DcMotor.Direction.FORWARD);
         slideClaw.setDirection(DcMotor.Direction.FORWARD);
         jewelArm.setDirection(DcMotor.Direction.REVERSE);
 
