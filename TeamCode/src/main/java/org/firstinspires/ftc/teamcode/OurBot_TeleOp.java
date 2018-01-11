@@ -251,20 +251,20 @@ public class OurBot_TeleOp extends OpMode {
 
         // Use gamepad buttons to move the dunk claw up (DPAD_UP) and down (DPAD_DOWN)
         arm = gamepad2.right_stick_y;
-        arm = (arm*Math.abs(arm))/2;
+        arm = arm*Math.abs(arm);
 //        if (gamepad1.dpad_up || gamepad2.dpad_up) {
         if (gamepad2.dpad_up) {
-            robot.dunkClawArm.setPower(0.5);
+            robot.dunkClawArm.setPower(1.0);
         }
 //        else if (gamepad1.dpad_down || gamepad2.dpad_down) {
         else if (gamepad2.dpad_down) {
-            robot.dunkClawArm.setPower(-0.5);
+            robot.dunkClawArm.setPower(-1.0);
         }
         else if (arm > 0.1 || arm < -0.1) {
             robot.dunkClawArm.setPower(arm);
         }
         else {
-            robot.dunkClawArm.setPower(0.001);
+            robot.dunkClawArm.setPower(0.0);
         }
 
         // Move the jewel arm so it doesn't get in the way
