@@ -187,7 +187,7 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
             robot.rightSlide.setPower(0);
             robot.leftSlide.setPower(0);
 
-            sleep(1500);
+            sleep(1000);
         }
 
         if (DoTask("Knock off jewel", runmode)) {
@@ -199,7 +199,7 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
                 robot.jewelArm.setTargetPosition(0);
                 sleep(500); // was 2000
                 DriveRobotTurn(.1, 20);
-                sleep(500); // was 1000
+                sleep(500); // was 1000s
             } else if ((color_sensor.red() > color_sensor.blue() && alliance == Alliance.ALLIANCE_BLUE)
                     || (color_sensor.blue() > color_sensor.red() && alliance == Alliance.ALLIANCE_RED)) {
                 DriveRobotTurn(.1, 20);
@@ -209,11 +209,11 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
                 sleep(500); // was 1000
             } else {
                 robot.jewelArm.setTargetPosition(0);
-                sleep(1000); // was 2000
+                sleep(900); // was 2000
             }
         } else {
             robot.jewelArm.setTargetPosition(0);
-            sleep(1000);
+            sleep(900);
         }
 
         // drive
@@ -221,24 +221,24 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
             if (startposition == StartPosition.STARTPOSITION1) {
                 if (alliance == Alliance.ALLIANCE_RED) {
                     if (column == Column.COLUMN_RIGHT) {
-                        DriveRobotPosition(0.15, 32.25);
+                        DriveRobotPosition(0.2, 32.25);
                     } else if (column == Column.COLUMN_CENTER) {
-                        DriveRobotPosition(0.15, 39.4);
+                        DriveRobotPosition(0.2, 39.4);
                     } else {
-                        DriveRobotPosition(0.15, 47.25);
+                        DriveRobotPosition(0.2, 47.25);
                     }
                 } else {
                     if (column == Column.COLUMN_LEFT) {
-                        DriveRobotPosition(0.15, -30);
+                        DriveRobotPosition(0.2, -30);
                     } else if (column == Column.COLUMN_CENTER) {
-                        DriveRobotPosition(0.15, -38);
+                        DriveRobotPosition(0.2, -38);
                     } else {
-                        DriveRobotPosition(0.15, -46);
+                        DriveRobotPosition(0.2, -46);
                     }
                 }
-                sleep(1000);
+                sleep(500);
                 DriveRobotTurn(0.25, 93);
-                sleep(1000);
+                sleep(500);
                 DriveRobotPosition(0.25, 6);
 
             } else {
@@ -296,16 +296,14 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
 
         // Drop glyph
         robot.slideClaw.setPower(-0.2);
-        sleep(1000);
+        sleep(900);
         DriveRobotPosition(0.25, -5);
 
-        for (int i = 0; i < 1; i++) {
-            DriveRobotPosition(0.2, 7);
-            DriveRobotPosition(0.35, -7);
-        }
+        DrivePushGlyph(1);
+
         sleep(250);
-        robot.dunkClawArm.setPower(0.5);
-        sleep(400);
+        robot.dunkClawArm.setPower(0.75);
+        sleep(300);
         robot.dunkClawArm.setPower(0);
         robot.spinnyClaw.setPosition(1);
         robot.dunkClawLeft1.setPosition(0.375);
@@ -333,10 +331,7 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
         sleep(1000);
         DriveRobotPosition(0.25, -5);
 
-        for (int i = 0; i < 2; i++) {
-            DriveRobotPosition(0.2, 7);
-            DriveRobotPosition(0.35, -7);
-        }
+        DrivePushGlyph(2);
     }
 
 
@@ -505,6 +500,13 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
     {
         robot.leftDrive.setPower(-power);
         robot.rightDrive.setPower(-power);
+    }
+    void DrivePushGlyph (int glyphs)
+    {
+        for (int i = 0; i < glyphs; i++) {
+            DriveRobotPosition(0.2, 7);
+            DriveRobotPosition(0.35, -7);
+        }
     }
 
     // MENU ----------------------------------------------------------------------------------------
