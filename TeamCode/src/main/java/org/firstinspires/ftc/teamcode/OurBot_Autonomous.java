@@ -62,12 +62,19 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
         COLUMN_CENTER,
         COLUMN_RIGHT
     }
+    public enum ExtraGlyph {
+        NEVER,
+        IF_NEAR,
+        IF_NEAR_OR_CENTER,
+        ALWAYS
+    }
 
     // Menu option variables
     RunMode        runmode       = RunMode.RUNMODE_AUTO;
     Alliance       alliance      = Alliance.ALLIANCE_RED;
     int            delay         = 0;
     StartPosition  startposition = StartPosition.STARTPOSITION1;
+    ExtraGlyph     extraglyph    = ExtraGlyph.NEVER;
 
     /* Declare OpMode members. */
     private HalDashboard dashboard;
@@ -241,9 +248,9 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
                 sleep(500);
                 DriveRobotPosition(0.25, 6);
 
-            } else {
+            } else { // StartPosition.STARTPOSITION2
                 if (alliance == Alliance.ALLIANCE_RED) {
-                    DriveRobotPosition(.1, 29);
+                    DriveRobotPosition(.1, 28);
                     sleep(500);
                     if (column == Column.COLUMN_CENTER) {
                         DriveRobotTurn(.25, -50);
@@ -252,11 +259,11 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
                         sleep(500);
                     }
                     else if (column == Column.COLUMN_LEFT){
-                        DriveRobotTurn(.25, -64);
+                        DriveRobotTurn(.25, -67);
                         sleep(500);
                         DriveRobotPosition(.1, 14);
                         sleep(500);
-                        DriveRobotTurn(.25,8);
+                        DriveRobotTurn(.25,25);
                     }
                     else {
                         DriveRobotTurn(.25, -25);
@@ -299,37 +306,55 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
         sleep(900);
         DriveRobotPosition(0.25, -5);
 
-        DrivePushGlyph(1);
+        if (startposition == StartPosition.STARTPOSITION1 &&
+                (extraglyph == ExtraGlyph.ALWAYS ||
+                (extraglyph == ExtraGlyph.IF_NEAR_OR_CENTER && column == Column.COLUMN_CENTER) ||
+                (
+                    (extraglyph == ExtraGlyph.IF_NEAR_OR_CENTER || extraglyph == ExtraGlyph.IF_NEAR) &&
+                    (
+                        (alliance == Alliance.ALLIANCE_RED && column == Column.COLUMN_RIGHT) ||
+                        (alliance == Alliance.ALLIANCE_BLUE && column == Column.COLUMN_LEFT)
+                    )
+                )
+            )
+        ) {
+            DrivePushGlyph(1);
 
-        sleep(250);
-        robot.dunkClawArm.setPower(0.75);
-        sleep(300);
-        robot.dunkClawArm.setPower(0);
-        robot.spinnyClaw.setPosition(1);
-        robot.dunkClawLeft1.setPosition(0.375);
-        robot.dunkClawRight1.setPosition(0.625);
-        robot.dunkClawLeft2.setPosition(0.375);
-        robot.dunkClawRight2.setPosition(0.625);
-        sleep(1000);
-        robot.dunkClawArm.setPower(-.1);
-        sleep(500);
-        robot.dunkClawArm.setPower(0);
-        DriveRobotPosition(.65, -42);
-        robot.dunkClawLeft1.setPosition(0.2);
-        robot.dunkClawRight1.setPosition(0.8);
-        robot.dunkClawLeft2.setPosition(0.2);
-        robot.dunkClawRight2.setPosition(0.8);
-        sleep(1000);
-        DriveRobotPosition(.2, 19);
-        robot.dunkClawArm.setPower(.3);
-        sleep(1200);
-        DriveRobotPosition(.2, 20);
-        robot.dunkClawLeft1.setPosition(0.7);
-        robot.dunkClawRight1.setPosition(0.3);
-        robot.dunkClawLeft2.setPosition(0.7);
-        robot.dunkClawRight2.setPosition(0.3);
-        sleep(1000);
-        DriveRobotPosition(0.25, -5);
+            //sleep(250);
+
+            robot.dunkClawArm.setPower(0.75);
+            sleep(300);
+            robot.dunkClawArm.setPower(0);
+
+            robot.spinnyClaw.setPosition(1);
+            robot.dunkClawLeft1.setPosition(0.375);
+            robot.dunkClawRight1.setPosition(0.625);
+            robot.dunkClawLeft2.setPosition(0.375);
+            robot.dunkClawRight2.setPosition(0.625);
+
+            sleep(500);
+
+            robot.dunkClawArm.setPower(-.1);
+            sleep(500);
+            robot.dunkClawArm.setPower(0);
+
+            DriveRobotPosition(.65, -42);
+            robot.dunkClawLeft1.setPosition(0.2);
+            robot.dunkClawRight1.setPosition(0.8);
+            robot.dunkClawLeft2.setPosition(0.2);
+            robot.dunkClawRight2.setPosition(0.8);
+            sleep(1000);
+            DriveRobotPosition(.5, 10);
+            robot.dunkClawArm.setPower(.3);
+            sleep(500);
+            DriveRobotPosition(.5, 29);
+            robot.dunkClawLeft1.setPosition(0.7);
+            robot.dunkClawRight1.setPosition(0.3);
+            robot.dunkClawLeft2.setPosition(0.7);
+            robot.dunkClawRight2.setPosition(0.3);
+            sleep(500);
+            DriveRobotPosition(0.25, -5);
+        }
 
         DrivePushGlyph(2);
     }
@@ -388,9 +413,12 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
         robot.leftDrive.setTargetPosition((int)position);
         robot.rightDrive.setTargetPosition((int)position);
 
-        while (robot.leftDrive.isBusy() && robot.rightDrive.isBusy()) {
-            dashboard.displayPrintf(3,"Left encoder: %d", robot.leftDrive.getCurrentPosition());
-            dashboard.displayPrintf(4,"Right encoder: %d", robot.rightDrive.getCurrentPosition());
+        for (int i=0; i < 5; i++) {
+            while (robot.leftDrive.isBusy() && robot.rightDrive.isBusy()) {
+                dashboard.displayPrintf(3, "Left encoder: %d", robot.leftDrive.getCurrentPosition());
+                dashboard.displayPrintf(4, "Right encoder: %d", robot.rightDrive.getCurrentPosition());
+            }
+            sleep(10);
         }
 
         sleep(100);
@@ -412,13 +440,9 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
         dashboard.displayPrintf(4, "Color right blue: " + color_right.blue());
         dashboard.displayPrintf(5, "Color left red: " + color_left.red());
         dashboard.displayPrintf(6, "Color left blue: " + color_left.blue());
-        boolean red;
         boolean done = false;
-        if (alliance == Alliance.ALLIANCE_RED)
-            red = true;
-        else
-            red = false;
-        if (red) {
+
+        if (alliance == Alliance.ALLIANCE_RED) {
 
             while (!done)
             {
@@ -501,9 +525,9 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
         robot.leftDrive.setPower(-power);
         robot.rightDrive.setPower(-power);
     }
-    void DrivePushGlyph (int glyphs)
+    void DrivePushGlyph (int pushes)
     {
-        for (int i = 0; i < glyphs; i++) {
+        for (int i = 0; i < pushes; i++) {
             DriveRobotPosition(0.2, 7);
             DriveRobotPosition(0.35, -7);
         }
@@ -535,6 +559,7 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
         FtcChoiceMenu<Alliance> allianceMenu = new FtcChoiceMenu<>("Alliance:", modeMenu, this);
         FtcValueMenu delayMenu = new FtcValueMenu("Delay:", allianceMenu, this, 0, 20000, 1000, 0, "%.0f msec");
         FtcChoiceMenu<StartPosition> startPositionMenu = new FtcChoiceMenu<>("Start Position:", delayMenu, this);
+        FtcChoiceMenu<ExtraGlyph> extraGlyphMenu = new FtcChoiceMenu<>("Get extra glyph:", startPositionMenu, this);
 
         modeMenu.addChoice("Auto", RunMode.RUNMODE_AUTO, true, allianceMenu);
         modeMenu.addChoice("Debug", RunMode.RUNMODE_DEBUG, false, allianceMenu);
@@ -544,19 +569,26 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
 
         delayMenu.setChildMenu(startPositionMenu);
 
-        startPositionMenu.addChoice("1", StartPosition.STARTPOSITION1, true, null);
-        startPositionMenu.addChoice("2", StartPosition.STARTPOSITION2, false, null);
+        startPositionMenu.addChoice("1", StartPosition.STARTPOSITION1, true, extraGlyphMenu);
+        startPositionMenu.addChoice("2", StartPosition.STARTPOSITION2, false, extraGlyphMenu);
+
+        extraGlyphMenu.addChoice("Never", ExtraGlyph.NEVER, true, null);
+        extraGlyphMenu.addChoice("If near", ExtraGlyph.IF_NEAR, true, null);
+        extraGlyphMenu.addChoice("If near or center", ExtraGlyph.IF_NEAR_OR_CENTER, true, null);
+        extraGlyphMenu.addChoice("Always", ExtraGlyph.ALWAYS, true, null);
 
         FtcMenu.walkMenuTree(modeMenu, this);
         runmode = modeMenu.getCurrentChoiceObject();
         alliance = allianceMenu.getCurrentChoiceObject();
         delay = (int) delayMenu.getCurrentValue();
         startposition = startPositionMenu.getCurrentChoiceObject();
+        extraglyph = extraGlyphMenu.getCurrentChoiceObject();
 
         dashboard.displayPrintf(9, "Mode: %s (%s)", modeMenu.getCurrentChoiceText(), runmode.toString());
         dashboard.displayPrintf(10, "Alliance: %s (%s)", allianceMenu.getCurrentChoiceText(), alliance.toString());
         dashboard.displayPrintf(11, "Delay = %d msec", delay);
         dashboard.displayPrintf(12, "Start position: %s (%s)", startPositionMenu.getCurrentChoiceText(), startposition.toString());
+        dashboard.displayPrintf(13, "Get extra glyph: %s (%s)", extraGlyphMenu.getCurrentChoiceText(), extraglyph.toString());
     }
     // END MENU ------------------------------------------------------------------------------------
 }
