@@ -345,7 +345,7 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
             robot.dunkClawRight2.setPosition(0.8);
             sleep(1000);
             DriveRobotPosition(.5, 10);
-            robot.dunkClawArm.setPower(.3);
+            robot.dunkClawArm.setPower(1);
             sleep(500);
             DriveRobotPosition(.5, 29);
             robot.dunkClawLeft1.setPosition(0.7);
