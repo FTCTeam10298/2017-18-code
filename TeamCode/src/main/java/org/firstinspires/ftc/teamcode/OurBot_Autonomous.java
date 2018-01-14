@@ -318,7 +318,7 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
                 )
             )
         ) {
-            DrivePushGlyph(1);
+            DrivePushGlyph(1, 0.35);
 
             //sleep(250);
 
@@ -338,25 +338,27 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
             sleep(500);
             robot.dunkClawArm.setPower(0);
 
-            DriveRobotPosition(.65, -42);
+            DriveRobotPosition(1, -42);
             robot.dunkClawLeft1.setPosition(0.2);
             robot.dunkClawRight1.setPosition(0.8);
             robot.dunkClawLeft2.setPosition(0.2);
             robot.dunkClawRight2.setPosition(0.8);
             sleep(1000);
-            DriveRobotPosition(.5, 10);
+            DriveRobotPosition(1, 10);
             robot.dunkClawArm.setPower(1);
             sleep(500);
-            DriveRobotPosition(.5, 29);
+            DriveRobotPosition(1, 29);
             robot.dunkClawLeft1.setPosition(0.7);
             robot.dunkClawRight1.setPosition(0.3);
             robot.dunkClawLeft2.setPosition(0.7);
             robot.dunkClawRight2.setPosition(0.3);
             sleep(500);
             DriveRobotPosition(0.25, -5);
+            DrivePushGlyph(1, 1.0);
+        } else {
+            DrivePushGlyph(2, 0.35);
         }
 
-        DrivePushGlyph(2);
     }
 
 
@@ -525,11 +527,11 @@ public class OurBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButto
         robot.leftDrive.setPower(-power);
         robot.rightDrive.setPower(-power);
     }
-    void DrivePushGlyph (int pushes)
+    void DrivePushGlyph (int pushes, double power)
     {
         for (int i = 0; i < pushes; i++) {
-            DriveRobotPosition(0.2, 7);
-            DriveRobotPosition(0.35, -7);
+            DriveRobotPosition(power, 7);
+            DriveRobotPosition(power, -7);
         }
     }
 
