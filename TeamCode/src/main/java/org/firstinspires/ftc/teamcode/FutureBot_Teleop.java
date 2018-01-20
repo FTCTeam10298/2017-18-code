@@ -56,11 +56,22 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class FutureBot_Teleop extends OpMode {
 
     /* Declare OpMode members. */
-    FutureBot_Hardware  robot       = new FutureBot_Hardware(); // use the class created to define Ourbot's hardware
+    FutureBot_Hardware robot = new FutureBot_Hardware(); // use the class created to define Ourbot's hardware
 
-    double              x           = 0;
-    double              y           = 0;
-    double              z           = 0;
+    double   x = 0;
+    double   y = 0;
+    double   z = 0;
+
+    double   CLAW_SPEED    = 0.01 ;                 // Sets rate to move servo
+    double   CLAW_OFFSET_1 = 0.0 ;                  // Offset from the servo's mid position
+    double   CLAW_OFFSET_2 = 0.0 ;                  // Offset from the servo's mid position
+
+    double   arm           = 0.0;
+
+    boolean  togglePressed        = false;
+    boolean  toggle2Pressed       = false;
+    boolean  frontAndBackSwitched = false;
+    double   spinnyPosition       = 1;
 
     // Code to run once when the driver hits INIT
     @Override
@@ -73,6 +84,21 @@ public class FutureBot_Teleop extends OpMode {
 
         // Send telemetry message to signify robot waiting
         telemetry.addData("Say", "Robot ready");
+//        robot.backLeftMotor.setPower(1);
+//        sleep(1000);
+//        robot.backRightMotor.setPower(1);
+//        sleep(1000);
+//        robot.frontLeftMotor.setPower(1);
+//        sleep(1000);
+//        robot.frontRightMotor.setPower(1);
+//        sleep(1000);
+//        robot.backLeftMotor.setPower(0);
+//        sleep(1000);
+//        robot.backRightMotor.setPower(0);
+//        sleep(1000);
+//        robot.frontLeftMotor.setPower(0);
+//        sleep(1000);
+//        robot.frontRightMotor.setPower(0);
     }
 
     /*
@@ -90,9 +116,7 @@ public class FutureBot_Teleop extends OpMode {
         double TurnRight;
 
         // Send telemetry message to signify robot running
-        if (gamepad1.x) {
-            telemetry.addData("Say", "Running");
-        }
+        telemetry.addData("Say", "Running");
 
         // Gamepad 2 override
         if (gamepad2.left_stick_y < -0.1) {
@@ -124,7 +148,7 @@ public class FutureBot_Teleop extends OpMode {
         }
         // END OF SIDE DRIVE
         */
-
+/*
         // START OF DPAD DRIVE
         else if (gamepad1.dpad_right) {
             robot.frontLeftMotor.setPower(1);
@@ -168,33 +192,35 @@ public class FutureBot_Teleop extends OpMode {
             }
         }
         // END OF DPAD DRIVE
-
-        else if (gamepad1.right_bumper) {
-                robot.frontLeftMotor.setPower (1);
-                robot.backLeftMotor.setPower (1);
-                robot.frontRightMotor.setPower (-1);
-                robot.backRightMotor.setPower (-1);
+*//*
+        else if (gamepad1.right_trigger > 0.1) {
+            TurnRight = gamepad1.right_trigger;
+            robot.frontLeftMotor.setPower(TurnRight);
+            robot.backLeftMotor.setPower(TurnRight);
+            robot.frontRightMotor.setPower(-TurnRight);
+            robot.backRightMotor.setPower(-TurnRight);
         }
-        else if (gamepad1.left_bumper) {
-                robot.frontLeftMotor.setPower (-1);
-                robot.backLeftMotor.setPower (-1);
-                robot.frontRightMotor.setPower (1);
-                robot.backRightMotor.setPower (1);
+        else if (gamepad1.left_trigger > 0.1) {
+            TurnLeft = gamepad1.left_trigger;
+            robot.frontLeftMotor.setPower(-TurnLeft);
+            robot.backLeftMotor.setPower(-TurnLeft);
+            robot.frontRightMotor.setPower(TurnLeft);
+            robot.backRightMotor.setPower(TurnLeft);
         }
-/*
+*//*
         // Enhanced tank drive
         else {
-            leftFrontPower = Range.clip(gamepad1.left_stick_y + (-1 * gamepad1.left_stick_x), -1.0, 1.0);
-            leftBackPower = Range.clip(gamepad1.left_stick_y + (1 * gamepad1.left_stick_x), -1.0, 1.0);
-            rightFrontPower = Range.clip(gamepad1.right_stick_y + (1 * gamepad1.right_stick_x), -1.0, 1.0);
-            rightBackPower = Range.clip(gamepad1.right_stick_y + (-1 * gamepad1.right_stick_x), -1.0, 1.0);
+            leftFrontPower = Range.clip(-gamepad1.left_stick_y + (1 * gamepad1.left_stick_x), -1.0, 1.0);
+            leftBackPower = Range.clip(-gamepad1.left_stick_y + (-1 * gamepad1.left_stick_x), -1.0, 1.0);
+            rightFrontPower = Range.clip(-gamepad1.right_stick_y + (-1 * gamepad1.right_stick_x), -1.0, 1.0);
+            rightBackPower = Range.clip(-gamepad1.right_stick_y + (1 * gamepad1.right_stick_x), -1.0, 1.0);
 
             robot.frontLeftMotor.setPower(leftFrontPower);
             robot.backLeftMotor.setPower(leftBackPower);
             robot.frontRightMotor.setPower(rightFrontPower);
             robot.backRightMotor.setPower(rightBackPower);
         } // End enhanced tank drive
-*//*
+*/
         // Drone drive
         else {
             if (gamepad1.left_stick_y > .2 || gamepad1.left_stick_y < -.2) {
@@ -237,14 +263,106 @@ public class FutureBot_Teleop extends OpMode {
             robot.backLeftMotor.setPower(-1 * Range.clip(((y + x + z) / maxvalue), -1.0, 1.0));
             robot.backRightMotor.setPower(-1 * Range.clip(((y - x - z) / maxvalue), -1.0, 1.0));
         } // End drone drive
-*/
+/*
         // Standard tank drive
         else {
             robot.frontRightMotor.setPower(-gamepad1.right_stick_y);
             robot.frontLeftMotor.setPower(-gamepad1.left_stick_y);
             robot.backLeftMotor.setPower(-gamepad1.left_stick_y);
             robot.backRightMotor.setPower(-gamepad1.right_stick_y);
+        }*/
+
+
+        // Use gamepad left & right Bumpers to open and close the claw
+        if (spinnyPosition == 1) {
+            if (gamepad1.right_bumper || gamepad2.right_bumper)
+                CLAW_OFFSET_1 += CLAW_SPEED;
+            else if (gamepad1.left_bumper || gamepad2.left_bumper)
+                CLAW_OFFSET_1 -= CLAW_SPEED;
+
+            if (gamepad2.right_trigger > 0.1)
+                CLAW_OFFSET_2 += CLAW_SPEED;
+            else if (gamepad2.left_trigger > 0.1)
+                CLAW_OFFSET_2 -= CLAW_SPEED;
         }
+        else {
+            if (gamepad1.right_bumper || gamepad2.right_bumper)
+                CLAW_OFFSET_2 += CLAW_SPEED;
+            else if (gamepad1.left_bumper || gamepad2.left_bumper)
+                CLAW_OFFSET_2 -= CLAW_SPEED;
+
+            if (gamepad1.right_trigger > 0.1 || gamepad2.right_trigger > 0.1)
+                CLAW_OFFSET_1 += CLAW_SPEED;
+            else if (gamepad1.left_trigger > 0.1 || gamepad2.left_trigger > 0.1)
+                CLAW_OFFSET_1 -= CLAW_SPEED;
+        }
+
+        // Move both servos to new position.  Assume servos are mirror image of each other.
+        CLAW_OFFSET_1 = Range.clip(CLAW_OFFSET_1, -0.15, 0.30);
+        robot.dunkClawLeft1.setPosition(0.5 - CLAW_OFFSET_1);
+        robot.dunkClawRight1.setPosition(0.5 + CLAW_OFFSET_1);
+        CLAW_OFFSET_2 = Range.clip(CLAW_OFFSET_2, -0.15, 0.30);
+        robot.dunkClawLeft2.setPosition(0.5 - CLAW_OFFSET_2);
+        robot.dunkClawRight2.setPosition(0.5 + CLAW_OFFSET_2);
+
+        // spinny claw
+//        if (gamepad1.dpad_left || gamepad2.dpad_left || gamepad1.dpad_right || gamepad2.dpad_right) {
+        if (gamepad2.dpad_left || gamepad2.dpad_right) {
+            toggle2Pressed = true;
+        }
+        else if (toggle2Pressed) {
+            if (spinnyPosition == 0)
+                spinnyPosition = 1;
+            else
+                spinnyPosition = 0;
+            toggle2Pressed = false;
+        }
+
+        robot.spinnyClaw.setPosition(spinnyPosition);
+
+        // Use gamepad buttons to move the slides up (Y) and down (A)
+        if (gamepad1.y || gamepad2.y) {
+            robot.wallSlide.setPower(0.6);
+        }
+        else if (gamepad1.a || gamepad2.a) {
+            robot.wallSlide.setPower(-0.5);
+        }
+        else {
+            robot.wallSlide.setPower(0.0);
+        }
+
+        // Use gamepad buttons to move the dunk claw up (DPAD_UP) and down (DPAD_DOWN)
+        arm = gamepad2.right_stick_y;
+        arm = arm*Math.abs(arm);
+//        if (gamepad1.dpad_up || gamepad2.dpad_up) {
+        if (gamepad2.dpad_up) {
+            robot.dunkClawArm.setPower(1.0);
+        }
+//        else if (gamepad1.dpad_down || gamepad2.dpad_down) {
+        else if (gamepad2.dpad_down) {
+            robot.dunkClawArm.setPower(-1.0);
+        }
+        else if (arm > 0.1 || arm < -0.1) {
+            robot.dunkClawArm.setPower(arm);
+        }
+        else {
+            robot.dunkClawArm.setPower(0.0);
+        }
+
+        // Move the jewel arm so it doesn't get in the way
+        if (gamepad2.start) {
+            robot.jewelArm.setPower(0.3);
+        }
+        else if (gamepad2.left_stick_button) {
+            robot.jewelArm.setPower(-0.3);
+        }
+        else {
+            robot.jewelArm.setPower(0);
+        }
+
+        // Send telemetry message to signify robot running;
+        telemetry.addData("claw",  "Offset = %.2f", CLAW_OFFSET_1);
+        //telemetry.addData("inertia", "%.2f", inertia);
     }
 
     @Override

@@ -46,7 +46,7 @@ public class OurBot_Hardware
     public DcMotor rightDrive     = null;
     public DcMotor leftSlide      = null;
     public DcMotor rightSlide     = null;
-    public DcMotor dunkClawArm = null;
+    public DcMotor dunkClawArm    = null;
     public DcMotor slideClaw      = null;
     public DcMotor jewelArm       = null;
     public Servo   dunkClawLeft1  = null;
