@@ -23,12 +23,16 @@ public class FutureBot_Hardware
 
     public DcMotor wallSlide      = null;
     public DcMotor dunkClawArm    = null;
+    public DcMotor relicOut       = null;
     public CRServo jewelArm       = null;
+    public CRServo relicLift      = null;
     public Servo   dunkClawLeft1  = null;
     public Servo   dunkClawRight1 = null;
     public Servo   dunkClawLeft2  = null;
     public Servo   dunkClawRight2 = null;
     public Servo   spinnyClaw     = null;
+    public Servo   relicElbow     = null;
+    public Servo   relicClaw      = null;
 
     /* local OpMode members. */
     HardwareMap hwMap               = null;
@@ -50,8 +54,9 @@ public class FutureBot_Hardware
         frontRightMotor = hwMap.dcMotor.get("front_right_drive");
         backRightMotor = hwMap.dcMotor.get("back_right_drive");
 
-        wallSlide  = hwMap.get(DcMotor.class, "wall_slide");
+        wallSlide   = hwMap.get(DcMotor.class, "wall_slide");
         dunkClawArm = hwMap.get(DcMotor.class, "back_arm");
+        relicOut    = hwMap.get(DcMotor.class, "relicOut");
 
         // Set direction for all motors
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -60,7 +65,8 @@ public class FutureBot_Hardware
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
         wallSlide.setDirection(DcMotor.Direction.FORWARD);
-        dunkClawArm.setDirection(DcMotor.Direction.FORWARD);
+        dunkClawArm.setDirection(DcMotor.Direction.REVERSE);
+        relicOut.setDirection(DcMotor.Direction.REVERSE);
 
         // Set all motors to zero power
         frontLeftMotor.setPower(0);
@@ -70,6 +76,7 @@ public class FutureBot_Hardware
 
         wallSlide.setPower(0);
         dunkClawArm.setPower(0);
+        relicOut.setPower(0);
 
         // Set (almost) all motors to run with encoders
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -79,8 +86,9 @@ public class FutureBot_Hardware
 
         dunkClawArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // This motor does not use an encoder
+        // These motors do not use encoders
         wallSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        relicOut.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Define and initialize all installed servos
         dunkClawLeft1  = hwMap.get(Servo.class, "left_back_claw");
@@ -93,10 +101,18 @@ public class FutureBot_Hardware
         //dunkClawRight2.setPosition(0.5);
         spinnyClaw = hwMap.get(Servo.class, "dunk_claw_rotate");
         //spinnyClaw.setPosition(0.5);
+        relicElbow = hwMap.get(Servo.class, "relicElbow");
+        relicElbow.setPosition(0);
+        relicClaw = hwMap.get(Servo.class, "relicClaw");
+        relicClaw.setPosition(0);
 
         jewelArm = hwMap.get(CRServo.class, "jewel_arm");
         jewelArm.setPower(0);
         jewelArm.setDirection(CRServo.Direction.FORWARD);
+
+        relicLift = hwMap.get(CRServo.class, "relicLift");
+        relicLift.setPower(0);
+        relicLift.setDirection(CRServo.Direction.FORWARD);
     }
 }
 

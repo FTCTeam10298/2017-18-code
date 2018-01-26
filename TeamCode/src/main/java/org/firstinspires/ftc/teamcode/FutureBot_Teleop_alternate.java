@@ -36,12 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
-import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_TO_POSITION;
-import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
-import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENCODER;
 import static java.lang.Math.abs;
-
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * This file provides Teleop driving for our robot.
@@ -51,9 +46,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * All device access is managed through the FutureBot_Hardware class.
  */
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="FutureBot Teleop", group="FutureBot")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="FutureBot Alternate TeleOp", group="FutureBot")
 //@Disabled
-public class FutureBot_Teleop extends OpMode {
+public class FutureBot_Teleop_alternate extends OpMode {
 
     /* Declare OpMode members. */
     FutureBot_Hardware robot = new FutureBot_Hardware(); // use the class created to define Ourbot's hardware
@@ -228,18 +223,27 @@ public class FutureBot_Teleop extends OpMode {
 //        else {
             if (gamepad1.left_stick_y > .2 || gamepad1.left_stick_y < -.2) {
                 y = gamepad1.left_stick_y;
+            }
+            else if (gamepad2.left_stick_y > .2 || gamepad2.left_stick_y < -.2) {
+                    y = gamepad2.left_stick_y;
             } else {
                 y = 0;
             }
 
             if (gamepad1.left_stick_x > .2 || gamepad1.left_stick_x < -.2) {
                 x = gamepad1.left_stick_x;
+            }
+            else if (gamepad2.left_stick_x > .2 || gamepad2.left_stick_x < -.2) {
+                x = gamepad2.left_stick_x;
             } else {
                 x = 0;
             }
 
             if (gamepad1.right_stick_x > .2 || gamepad1.right_stick_x < -.2) {
                 z = -gamepad1.right_stick_x;
+            }
+            else if (gamepad2.right_stick_x > .2 || gamepad2.right_stick_x < -.2) {
+                z = -gamepad2.right_stick_x;
             } else {
                 z = 0;
             }
@@ -365,8 +369,18 @@ public class FutureBot_Teleop extends OpMode {
 
         // Start Relic control
 
-        robot.relicLift.setPower(-gamepad2.left_stick_y);
-        robot.relicOut.setPower(-gamepad2.right_stick_y);
+        if (gamepad2.left_trigger > 0.1) {
+            robot.relicOut.setPower(-gamepad2.left_trigger);
+        } else {
+            robot.relicOut.setPower(gamepad2.right_trigger);
+        }
+        if (gamepad2.left_bumper) {
+            robot.relicLift.setPower(1);
+        } else if (gamepad2.right_bumper) {
+            robot.relicLift.setPower(-1);
+        } else {
+            robot.relicLift.setPower(0);
+        }
 
         // Use gamepad buttons to move the elbow up (Y) and down (X)
         if (gamepad1.y || gamepad2.y)
