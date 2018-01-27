@@ -102,7 +102,7 @@ public class FutureBot_Hardware
         spinnyClaw = hwMap.get(Servo.class, "dunk_claw_rotate");
         //spinnyClaw.setPosition(0.5);
         relicElbow = hwMap.get(Servo.class, "relicElbow");
-        relicElbow.setPosition(0);
+        relicElbow.setPosition(-1.0);
         relicClaw = hwMap.get(Servo.class, "relicClaw");
         relicClaw.setPosition(0);
 

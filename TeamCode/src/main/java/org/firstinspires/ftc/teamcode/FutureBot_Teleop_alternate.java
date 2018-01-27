@@ -233,17 +233,17 @@ public class FutureBot_Teleop_alternate extends OpMode {
             if (gamepad1.left_stick_x > .2 || gamepad1.left_stick_x < -.2) {
                 x = gamepad1.left_stick_x;
             }
-            else if (gamepad2.left_stick_x > .2 || gamepad2.left_stick_x < -.2) {
+            else if (gamepad2.left_stick_x > .1 || gamepad2.left_stick_x < -.1) {
                 x = gamepad2.left_stick_x;
             } else {
                 x = 0;
             }
 
-            if (gamepad1.right_stick_x > .2 || gamepad1.right_stick_x < -.2) {
+            if (gamepad1.right_stick_x > .1 || gamepad1.right_stick_x < -.1) {
                 z = -gamepad1.right_stick_x;
             }
-            else if (gamepad2.right_stick_x > .2 || gamepad2.right_stick_x < -.2) {
-                z = -gamepad2.right_stick_x;
+            else if (gamepad2.right_stick_x > .1 || gamepad2.right_stick_x < -.1) {
+                z = -gamepad2.right_stick_x/2;
             } else {
                 z = 0;
             }
@@ -384,20 +384,20 @@ public class FutureBot_Teleop_alternate extends OpMode {
 
         // Use gamepad buttons to move the elbow up (Y) and down (X)
         if (gamepad1.y || gamepad2.y)
-            RELIC_ELBOW_POSITION += CLAW_SPEED;
+            RELIC_ELBOW_POSITION += CLAW_SPEED/2;
         else if (gamepad1.x || gamepad2.x)
-            RELIC_ELBOW_POSITION -= CLAW_SPEED;
+            RELIC_ELBOW_POSITION -= CLAW_SPEED/2;
 
         // Use gamepad buttons to open (B) and close (A) the claw
         if (gamepad1.b || gamepad2.b)
-            RELIC_CLAW_POSITION += CLAW_SPEED;
+            RELIC_CLAW_POSITION += CLAW_SPEED/2;
         else if (gamepad1.a || gamepad2.a)
-            RELIC_CLAW_POSITION -= CLAW_SPEED;
+            RELIC_CLAW_POSITION -= CLAW_SPEED/2;
 
         // Move both servos to new position.
         RELIC_ELBOW_POSITION = Range.clip(RELIC_ELBOW_POSITION, -1.0, 1.0);
         robot.relicElbow.setPosition(RELIC_ELBOW_POSITION);
-        RELIC_CLAW_POSITION = Range.clip(RELIC_CLAW_POSITION, -1.0, 1.0);
+        RELIC_CLAW_POSITION = Range.clip(RELIC_CLAW_POSITION, -0.5, 0.5);
         robot.relicClaw.setPosition(RELIC_CLAW_POSITION);
 
         // Send telemetry message to signify robot running;
