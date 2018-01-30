@@ -275,6 +275,7 @@ public class FutureBot_Teleop extends OpMode {
             robot.backRightMotor.setPower(-gamepad1.right_stick_y);
         }*/
 
+        // Start glyph control ---------------------------------------------------------------------
 
         // Use gamepad left & right Bumpers to open and close the claw
         if (spinnyPosition == 1) {
@@ -363,9 +364,9 @@ public class FutureBot_Teleop extends OpMode {
             robot.jewelArm.setPower(0);
         }
 
-        // Start Relic control
+        // Start Relic control ---------------------------------------------------------------------
 
-        robot.relicLift.setPower(-gamepad2.left_stick_y);
+        robot.relicLift.setPower(Range.clip(-gamepad2.left_stick_y+0.001,0,1));
         robot.relicOut.setPower(-gamepad2.right_stick_y);
 
         // Use gamepad buttons to move the elbow up (Y) and down (X)

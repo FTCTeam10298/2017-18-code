@@ -221,16 +221,16 @@ public class FutureBot_Teleop_alternate extends OpMode {
 */
         // Drone drive
 //        else {
-            if (gamepad1.left_stick_y > .2 || gamepad1.left_stick_y < -.2) {
+            if (gamepad1.left_stick_y > .1 || gamepad1.left_stick_y < -.1) {
                 y = gamepad1.left_stick_y;
             }
-            else if (gamepad2.left_stick_y > .2 || gamepad2.left_stick_y < -.2) {
+            else if (gamepad2.left_stick_y > .1 || gamepad2.left_stick_y < -.1) {
                     y = gamepad2.left_stick_y;
             } else {
                 y = 0;
             }
 
-            if (gamepad1.left_stick_x > .2 || gamepad1.left_stick_x < -.2) {
+            if (gamepad1.left_stick_x > .1 || gamepad1.left_stick_x < -.1) {
                 x = gamepad1.left_stick_x;
             }
             else if (gamepad2.left_stick_x > .1 || gamepad2.left_stick_x < -.1) {
@@ -240,7 +240,7 @@ public class FutureBot_Teleop_alternate extends OpMode {
             }
 
             if (gamepad1.right_stick_x > .1 || gamepad1.right_stick_x < -.1) {
-                z = -gamepad1.right_stick_x;
+                z = -gamepad1.right_stick_x/2;
             }
             else if (gamepad2.right_stick_x > .1 || gamepad2.right_stick_x < -.1) {
                 z = -gamepad2.right_stick_x/2;
@@ -261,7 +261,7 @@ public class FutureBot_Teleop_alternate extends OpMode {
             if (abs(y - x - z) > maxvalue) {
                 maxvalue = abs(y - x - z);
             }
-            if (maxvalue == 0) {
+            if (maxvalue < 1.0) {
                 maxvalue = 1;
             }
 
@@ -279,6 +279,7 @@ public class FutureBot_Teleop_alternate extends OpMode {
             robot.backRightMotor.setPower(-gamepad1.right_stick_y);
         }*/
 
+        // Start glyph control ---------------------------------------------------------------------
 
         // Use gamepad left & right Bumpers to open and close the claw
         if (spinnyPosition == 1) {
@@ -357,7 +358,7 @@ public class FutureBot_Teleop_alternate extends OpMode {
         }
 
         // Move the jewel arm so it doesn't get in the way
-        if (gamepad2.start) {
+        if (gamepad2.right_stick_button) {
             robot.jewelArm.setPower(0.3);
         }
         else if (gamepad2.left_stick_button) {
@@ -367,19 +368,19 @@ public class FutureBot_Teleop_alternate extends OpMode {
             robot.jewelArm.setPower(0);
         }
 
-        // Start Relic control
+        // Start Relic control ---------------------------------------------------------------------
 
         if (gamepad2.left_trigger > 0.1) {
             robot.relicOut.setPower(-gamepad2.left_trigger);
         } else {
             robot.relicOut.setPower(gamepad2.right_trigger);
         }
-        if (gamepad2.left_bumper) {
+        if (gamepad1.a || gamepad2.a) {
             robot.relicLift.setPower(1);
-        } else if (gamepad2.right_bumper) {
+        } else if (gamepad1.b || gamepad2.b) {
             robot.relicLift.setPower(-1);
         } else {
-            robot.relicLift.setPower(0);
+            robot.relicLift.setPower(0.001);
         }
 
         // Use gamepad buttons to move the elbow up (Y) and down (X)
@@ -388,10 +389,10 @@ public class FutureBot_Teleop_alternate extends OpMode {
         else if (gamepad1.x || gamepad2.x)
             RELIC_ELBOW_POSITION -= CLAW_SPEED/2;
 
-        // Use gamepad buttons to open (B) and close (A) the claw
-        if (gamepad1.b || gamepad2.b)
+        // Use gamepad bumpers to open (left) and close (right) the claw
+        if (gamepad2.right_bumper)
             RELIC_CLAW_POSITION += CLAW_SPEED/2;
-        else if (gamepad1.a || gamepad2.a)
+        else if (gamepad2.left_bumper)
             RELIC_CLAW_POSITION -= CLAW_SPEED/2;
 
         // Move both servos to new position.
