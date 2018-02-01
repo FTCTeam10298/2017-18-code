@@ -138,9 +138,9 @@ public class PresentBot_TeleOp extends OpMode {
         } else if (armDown < 0.1){
             robot.pivotArm.setPower(armDown/2);
         }
-//        else if ((armDown < 0.1 && armUp > 0.1) || (armDown > 0.1 && armUp < 0.1)){
-  //          robot.pivotArm.setPower(0.005);
-    //    }
+        else if ((armDown < 0.1 && armUp > 0.1) || (armDown > 0.1 && armUp < 0.1)){
+            robot.pivotArm.setPower(0.005);
+        }
 
 
         // Send telemetry message to signify robot running;
