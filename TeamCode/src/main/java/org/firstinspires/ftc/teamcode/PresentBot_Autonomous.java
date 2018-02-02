@@ -44,7 +44,7 @@ import ftclib.FtcMenu;
 import ftclib.FtcValueMenu;
 import hallib.HalDashboard;
 
-@Autonomous(name="OurBot: Autonomous", group ="OurBot")
+@Autonomous(name="PresentBot: Autonomous", group ="PresentBot")
 public class PresentBot_Autonomous extends LinearOpMode implements FtcMenu.MenuButtons {
     public enum Alliance {
         ALLIANCE_RED,

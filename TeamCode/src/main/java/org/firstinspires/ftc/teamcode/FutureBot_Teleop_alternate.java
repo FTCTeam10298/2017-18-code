@@ -64,13 +64,16 @@ public class FutureBot_Teleop_alternate extends OpMode {
     double   RELIC_ELBOW_POSITION = 0.0 ;           // Offset from the servo's mid position
     double   RELIC_CLAW_POSITION  = 0.0 ;           // Offset from the servo's mid position
 
-    double   arm           = 0.0;
-
-    boolean  togglePressed        = false;
     boolean  toggle2Pressed       = false;
-    boolean  frontAndBackSwitched = false;
     double   spinnyPosition       = 1;
 
+    int      state                = 0;
+    int      count                = 0;
+
+    boolean  logitech1            = false;
+    boolean  logitech2            = true;
+    int      divide1;
+    int      divide2;
     // Code to run once when the driver hits INIT
     @Override
     public void init() {
@@ -82,21 +85,6 @@ public class FutureBot_Teleop_alternate extends OpMode {
 
         // Send telemetry message to signify robot waiting
         telemetry.addData("Say", "Robot ready");
-//        robot.backLeftMotor.setPower(1);
-//        sleep(1000);
-//        robot.backRightMotor.setPower(1);
-//        sleep(1000);
-//        robot.frontLeftMotor.setPower(1);
-//        sleep(1000);
-//        robot.frontRightMotor.setPower(1);
-//        sleep(1000);
-//        robot.backLeftMotor.setPower(0);
-//        sleep(1000);
-//        robot.backRightMotor.setPower(0);
-//        sleep(1000);
-//        robot.frontLeftMotor.setPower(0);
-//        sleep(1000);
-//        robot.frontRightMotor.setPower(0);
     }
 
     /*
@@ -105,145 +93,60 @@ public class FutureBot_Teleop_alternate extends OpMode {
     @Override
     public void loop() {
 
-        double leftFrontPower;
-        double leftBackPower;
-        double rightBackPower;
-        double rightFrontPower;
-
-        double TurnLeft;
-        double TurnRight;
 
         // Send telemetry message to signify robot running
         telemetry.addData("Say", "Running");
-/*
-        // Gamepad 2 override
-        if (gamepad2.left_stick_y < -0.1) {
-            DrivePowerAll(0.25);
-        }
-        else if (gamepad2.left_stick_y > 0.1) {
-            DrivePowerAll(-0.25);
-        }
-        else if (gamepad2.left_stick_x > 0.1) {
-            DriveSideways(0.25);
-        }
-        else if (gamepad2.left_stick_x < -0.1) {
-            DriveSideways(-0.25);
-        } // End gamepad 2 override
-*/
-        /* // START OF SIDE DRIVE
-        double SideDriveL = gamepad1.left_trigger;
-        double SideDriveR = gamepad1.right_trigger;
-        if (SideDriveL > 0.1) {
-            robot.frontLeftMotor.setPower(SideDriveL);
-            robot.backLeftMotor.setPower(-SideDriveL);
-            robot.frontRightMotor.setPower(-SideDriveL);
-            robot.backRightMotor.setPower(SideDriveL);
-        } else if (SideDriveR > 0.1) {
-            robot.frontLeftMotor.setPower(-SideDriveR);
-            robot.backLeftMotor.setPower(SideDriveR);
-            robot.frontRightMotor.setPower(SideDriveR);
-            robot.backRightMotor.setPower(-SideDriveR);
-        }
-        // END OF SIDE DRIVE
-        */
-/*
-        // START OF DPAD DRIVE
-        else if (gamepad1.dpad_right) {
-            robot.frontLeftMotor.setPower(1);
-            robot.backLeftMotor.setPower(-1);
-            robot.frontRightMotor.setPower(-1);
-            robot.backRightMotor.setPower(1);
-        }
-        else if (gamepad1.dpad_left) {
-            robot.frontLeftMotor.setPower(-1);
-            robot.backLeftMotor.setPower(1);
-            robot.frontRightMotor.setPower(1);
-            robot.backRightMotor.setPower(-1);
-        }
-        else if (gamepad1.dpad_down) {
-            robot.frontLeftMotor.setPower(-1);
-            robot.backLeftMotor.setPower(-1);
-            robot.frontRightMotor.setPower(-1);
-            robot.backRightMotor.setPower(-1);
-        }
-        else if (gamepad1.dpad_up) {
-            TurnRight = gamepad1.right_trigger;
-            TurnLeft = gamepad1.left_trigger;
 
-            if (TurnRight > 0.1) {
-                robot.frontLeftMotor.setPower(1);
-                robot.backLeftMotor.setPower(1);
-                robot.frontRightMotor.setPower(1 - TurnRight);
-                robot.backRightMotor.setPower(1 - TurnRight);
+        // Logitech
+/*
+            if (gamepad1.guide) {
+                if (logitech1)
+                    logitech1 = false;
+                else
+                    logitech1 = true;
             }
-            else if (TurnLeft > 0.1) {
-                robot.frontLeftMotor.setPower(1 - TurnLeft);
-                robot.backLeftMotor.setPower(1 - TurnLeft);
-                robot.frontRightMotor.setPower(1);
-                robot.backRightMotor.setPower(1);
+            if (gamepad2.guide) {
+                if (logitech2)
+                    logitech2 = false;
+                else
+                    logitech2 = true;
             }
-            else {
-                robot.frontLeftMotor.setPower(1);
-                robot.backLeftMotor.setPower(1);
-                robot.frontRightMotor.setPower(1);
-                robot.backRightMotor.setPower(1);
-            }
-        }
-        // END OF DPAD DRIVE
-*//*
-        else if (gamepad1.right_trigger > 0.1) {
-            TurnRight = gamepad1.right_trigger;
-            robot.frontLeftMotor.setPower(TurnRight);
-            robot.backLeftMotor.setPower(TurnRight);
-            robot.frontRightMotor.setPower(-TurnRight);
-            robot.backRightMotor.setPower(-TurnRight);
-        }
-        else if (gamepad1.left_trigger > 0.1) {
-            TurnLeft = gamepad1.left_trigger;
-            robot.frontLeftMotor.setPower(-TurnLeft);
-            robot.backLeftMotor.setPower(-TurnLeft);
-            robot.frontRightMotor.setPower(TurnLeft);
-            robot.backRightMotor.setPower(TurnLeft);
-        }
-*//*
-        // Enhanced tank drive
-        else {
-            leftFrontPower = Range.clip(-gamepad1.left_stick_y + (1 * gamepad1.left_stick_x), -1.0, 1.0);
-            leftBackPower = Range.clip(-gamepad1.left_stick_y + (-1 * gamepad1.left_stick_x), -1.0, 1.0);
-            rightFrontPower = Range.clip(-gamepad1.right_stick_y + (-1 * gamepad1.right_stick_x), -1.0, 1.0);
-            rightBackPower = Range.clip(-gamepad1.right_stick_y + (1 * gamepad1.right_stick_x), -1.0, 1.0);
 
-            robot.frontLeftMotor.setPower(leftFrontPower);
-            robot.backLeftMotor.setPower(leftBackPower);
-            robot.frontRightMotor.setPower(rightFrontPower);
-            robot.backRightMotor.setPower(rightBackPower);
-        } // End enhanced tank drive
+            if (divide1 == 1 && logitech1)
+                divide1 = 2;
+            else if (divide1 == 2 && !logitech1)
+                divide1 = 1;
+
+            if (divide2 == 1 && logitech2)
+                divide2 = 2;
+            else if (divide2 == 2 && !logitech2)
+                divide2 = 1;
 */
         // Drone drive
-//        else {
+
             if (gamepad1.left_stick_y > .1 || gamepad1.left_stick_y < -.1) {
-                y = gamepad1.left_stick_y;
+                y = gamepad1.left_stick_y; // divide1;
             }
             else if (gamepad2.left_stick_y > .1 || gamepad2.left_stick_y < -.1) {
-                    y = gamepad2.left_stick_y;
+                    y = gamepad2.left_stick_y; // divide2;
             } else {
                 y = 0;
             }
 
             if (gamepad1.left_stick_x > .1 || gamepad1.left_stick_x < -.1) {
-                x = gamepad1.left_stick_x;
+                x = gamepad1.left_stick_x; // divide1;
             }
             else if (gamepad2.left_stick_x > .1 || gamepad2.left_stick_x < -.1) {
-                x = gamepad2.left_stick_x;
+                x = gamepad2.left_stick_x; // divide2;
             } else {
                 x = 0;
             }
 
             if (gamepad1.right_stick_x > .1 || gamepad1.right_stick_x < -.1) {
-                z = -gamepad1.right_stick_x/2;
+                z = -gamepad1.right_stick_x / 2;// * divide1;
             }
             else if (gamepad2.right_stick_x > .1 || gamepad2.right_stick_x < -.1) {
-                z = -gamepad2.right_stick_x/2;
+                z = -gamepad2.right_stick_x / 2;// * divide2;
             } else {
                 z = 0;
             }
@@ -269,53 +172,46 @@ public class FutureBot_Teleop_alternate extends OpMode {
             robot.frontLeftMotor.setPower(-1 * Range.clip(((y - x + z) / maxvalue), -1.0, 1.0));
             robot.backLeftMotor.setPower(-1 * Range.clip(((y + x + z) / maxvalue), -1.0, 1.0));
             robot.backRightMotor.setPower(-1 * Range.clip(((y - x - z) / maxvalue), -1.0, 1.0));
-//        } // End drone drive
-/*
-        // Standard tank drive
-        else {
-            robot.frontRightMotor.setPower(-gamepad1.right_stick_y);
-            robot.frontLeftMotor.setPower(-gamepad1.left_stick_y);
-            robot.backLeftMotor.setPower(-gamepad1.left_stick_y);
-            robot.backRightMotor.setPower(-gamepad1.right_stick_y);
-        }*/
+            // End drone drive
+
+
 
         // Start glyph control ---------------------------------------------------------------------
 
         // Use gamepad left & right Bumpers to open and close the claw
         if (spinnyPosition == 1) {
-            if (gamepad1.right_bumper || gamepad2.right_bumper)
+            if (gamepad1.right_bumper)
                 CLAW_OFFSET_1 += CLAW_SPEED;
-            else if (gamepad1.left_bumper || gamepad2.left_bumper)
+            else if (gamepad1.left_bumper)
                 CLAW_OFFSET_1 -= CLAW_SPEED;
 
-            if (gamepad1.right_trigger > 0.1 || gamepad2.right_trigger > 0.1)
+            if (gamepad1.right_trigger > 0.1)
                 CLAW_OFFSET_2 += CLAW_SPEED;
-            else if (gamepad1.left_trigger > 0.1 || gamepad2.left_trigger > 0.1)
+            else if (gamepad1.left_trigger > 0.1)
                 CLAW_OFFSET_2 -= CLAW_SPEED;
         }
         else {
-            if (gamepad1.right_bumper || gamepad2.right_bumper)
+            if (gamepad1.right_bumper)
                 CLAW_OFFSET_2 += CLAW_SPEED;
-            else if (gamepad1.left_bumper || gamepad2.left_bumper)
+            else if (gamepad1.left_bumper)
                 CLAW_OFFSET_2 -= CLAW_SPEED;
 
-            if (gamepad1.right_trigger > 0.1 || gamepad2.right_trigger > 0.1)
+            if (gamepad1.right_trigger > 0.1)
                 CLAW_OFFSET_1 += CLAW_SPEED;
-            else if (gamepad1.left_trigger > 0.1 || gamepad2.left_trigger > 0.1)
+            else if (gamepad1.left_trigger > 0.1)
                 CLAW_OFFSET_1 -= CLAW_SPEED;
         }
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
-        CLAW_OFFSET_1 = Range.clip(CLAW_OFFSET_1, -0.15, 0.30);
+        CLAW_OFFSET_1 = Range.clip(CLAW_OFFSET_1, -0.35, 0.5);
         robot.dunkClawLeft1.setPosition(0.5 - CLAW_OFFSET_1);
         robot.dunkClawRight1.setPosition(0.5 + CLAW_OFFSET_1);
-        CLAW_OFFSET_2 = Range.clip(CLAW_OFFSET_2, -0.15, 0.30);
+        CLAW_OFFSET_2 = Range.clip(CLAW_OFFSET_2, -0.35, 0.5);
         robot.dunkClawLeft2.setPosition(0.5 - CLAW_OFFSET_2);
         robot.dunkClawRight2.setPosition(0.5 + CLAW_OFFSET_2);
 
         // spinny claw
-        if (gamepad1.dpad_left || gamepad2.dpad_left || gamepad1.dpad_right || gamepad2.dpad_right) {
-//        if (gamepad2.dpad_left || gamepad2.dpad_right) {
+        if (gamepad1.dpad_left || gamepad1.dpad_right) {
             toggle2Pressed = true;
         }
         else if (toggle2Pressed) {
@@ -327,34 +223,34 @@ public class FutureBot_Teleop_alternate extends OpMode {
         }
 
         robot.spinnyClaw.setPosition(spinnyPosition);
-/*
-        // Use gamepad buttons to move the slides up (Y) and down (A)
-        if (gamepad1.y || gamepad2.y) {
-            robot.wallSlide.setPower(0.6);
-        }
-        else if (gamepad1.a || gamepad2.a) {
-            robot.wallSlide.setPower(-0.5);
-        }
-        else {
-            robot.wallSlide.setPower(0.0);
-        }
-*/
+
         // Use gamepad buttons to move the dunk claw up (DPAD_UP) and down (DPAD_DOWN)
-//        arm = gamepad2.right_stick_y;
-//        arm = arm*Math.abs(arm);
-        if (gamepad1.dpad_up || gamepad2.dpad_up) {
-//        if (gamepad2.dpad_up) {
+        if (gamepad1.dpad_up) {
             robot.dunkClawArm.setPower(1.0);
         }
-        else if (gamepad1.dpad_down || gamepad2.dpad_down) {
-//        else if (gamepad2.dpad_down) {
+        else if (gamepad1.dpad_down) {
             robot.dunkClawArm.setPower(-1.0);
         }
-//        else if (arm > 0.1 || arm < -0.1) {
-//            robot.dunkClawArm.setPower(arm);
-//        }
         else {
             robot.dunkClawArm.setPower(0.0);
+        }
+
+        // Lift, Spin, Drop
+        if (gamepad1.x && state == 0) {
+            state = 1;
+            robot.dunkClawArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.dunkClawArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.dunkClawArm.setPower(0);
+        }
+        else if (state > 0 && (gamepad1.dpad_up || gamepad1.dpad_down || gamepad1.dpad_left
+                || gamepad1.dpad_right || gamepad1.left_bumper || gamepad1.right_bumper
+                || (gamepad1.right_trigger > .1) || (gamepad1.left_trigger > .1))) {
+            state = 0;
+            LiftSpinDrop();
+            robot.dunkClawArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.dunkClawArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        } else {
+            LiftSpinDrop();
         }
 
         // Move the jewel arm so it doesn't get in the way
@@ -370,24 +266,25 @@ public class FutureBot_Teleop_alternate extends OpMode {
 
         // Start Relic control ---------------------------------------------------------------------
 
-        if (gamepad2.left_trigger > 0.1) {
-            robot.relicOut.setPower(-gamepad2.left_trigger);
-        } else {
-            robot.relicOut.setPower(gamepad2.right_trigger);
+        // Use gamepad stick y to extend relic arm
+        if (gamepad2.right_stick_y > 0.1 || gamepad2.right_stick_y < .1) {
+            robot.relicOut.setPower(-gamepad2.right_stick_y);
         }
-        if (gamepad1.a || gamepad2.a) {
+
+        // Use gamepad dpad up and down to raise and lower relic arm
+        if (gamepad2.dpad_up) {
             robot.relicLift.setPower(1);
-        } else if (gamepad1.b || gamepad2.b) {
+        } else if (gamepad2.dpad_down) {
             robot.relicLift.setPower(-1);
         } else {
             robot.relicLift.setPower(0.001);
         }
 
-        // Use gamepad buttons to move the elbow up (Y) and down (X)
-        if (gamepad1.y || gamepad2.y)
-            RELIC_ELBOW_POSITION += CLAW_SPEED/2;
-        else if (gamepad1.x || gamepad2.x)
-            RELIC_ELBOW_POSITION -= CLAW_SPEED/2;
+        // Use gamepad dpad to move the elbow up (right) and down (left)
+        if (gamepad2.dpad_right)
+            RELIC_ELBOW_POSITION += CLAW_SPEED/1.5;
+        else if (gamepad2.dpad_left)
+            RELIC_ELBOW_POSITION -= CLAW_SPEED/1.5;
 
         // Use gamepad bumpers to open (left) and close (right) the claw
         if (gamepad2.right_bumper)
@@ -403,7 +300,10 @@ public class FutureBot_Teleop_alternate extends OpMode {
 
         // Send telemetry message to signify robot running;
         telemetry.addData("claw",  "Offset = %.2f", CLAW_OFFSET_1);
-        //telemetry.addData("inertia", "%.2f", inertia);
+        telemetry.addData("count", count);
+        telemetry.addData("state", state);
+
+
     }
 
     @Override
@@ -443,6 +343,45 @@ public class FutureBot_Teleop_alternate extends OpMode {
             robot.backRightMotor.setPower(-power);
             robot.backLeftMotor.setPower(power);
             robot.frontLeftMotor.setPower(-power);
+        }
+    }
+
+    void LiftSpinDrop ()
+    {
+        if (state == 0) {
+            count = 0;
+        }
+        else if (state == 1){
+            robot.dunkClawArm.setPower(1);
+            robot.dunkClawArm.setTargetPosition(1700);
+            if (!robot.dunkClawArm.isBusy()) {
+                robot.dunkClawArm.setPower(0);
+                state = 2;
+            }
+        }
+        else if (state == 2) {
+            if (spinnyPosition == 0)
+                spinnyPosition = 1;
+            else
+                spinnyPosition = 0;
+            state = 3;
+        }
+        else if (state == 3) {
+            count ++;
+            if (count == 150) {
+                count = 0;
+                state = 4;
+            }
+        }
+        else if (state == 4){
+            robot.dunkClawArm.setPower(1);
+            robot.dunkClawArm.setTargetPosition(0);
+            if (!robot.dunkClawArm.isBusy()) {
+                robot.dunkClawArm.setPower(0);
+                robot.dunkClawArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                robot.dunkClawArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                state = 0;
+            }
         }
     }
 }
