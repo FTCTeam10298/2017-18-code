@@ -70,6 +70,8 @@ public class FutureBot_Teleop_alternate extends OpMode {
     int      state                = 0;
     int      count                = 0;
 
+    int      intake               = 0;
+
     boolean  logitech1            = false;
     boolean  logitech2            = true;
     int      divide1;
@@ -204,10 +206,8 @@ public class FutureBot_Teleop_alternate extends OpMode {
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
         CLAW_OFFSET_1 = Range.clip(CLAW_OFFSET_1, -0.35, 0.5);
-        robot.dunkClawLeft1.setPosition(0.5 - CLAW_OFFSET_1);
         robot.dunkClawRight1.setPosition(0.5 + CLAW_OFFSET_1);
         CLAW_OFFSET_2 = Range.clip(CLAW_OFFSET_2, -0.35, 0.5);
-        robot.dunkClawLeft2.setPosition(0.5 - CLAW_OFFSET_2);
         robot.dunkClawRight2.setPosition(0.5 + CLAW_OFFSET_2);
 
         // spinny claw
@@ -223,6 +223,31 @@ public class FutureBot_Teleop_alternate extends OpMode {
         }
 
         robot.spinnyClaw.setPosition(spinnyPosition);
+
+        // Use a (in) and b (out) to move intake
+        if (gamepad1.a && intake != 1){
+            intake = 1;
+        }
+        else if (gamepad1.b && intake != 2){
+            intake = 2;
+        }
+        else if ((gamepad1.a && intake == 1) || (gamepad1.b && intake == 2)){
+            intake = 0;
+        }
+
+        if (intake == 0) {
+            robot.leftIntake.setPower(0);
+            robot.rightIntake.setPower(0);
+        }
+        else if (intake == 1){
+            robot.leftIntake.setPower(1);
+            robot.rightIntake.setPower(1);
+        }
+        else if (intake == 2){
+            robot.leftIntake.setPower(-1);
+            robot.rightIntake.setPower(-1);
+        }
+
 
         // Use gamepad buttons to move the dunk claw up (DPAD_UP) and down (DPAD_DOWN)
         if (gamepad1.dpad_up) {
@@ -254,21 +279,18 @@ public class FutureBot_Teleop_alternate extends OpMode {
         }
 
         // Move the jewel arm so it doesn't get in the way
-        if (gamepad2.right_stick_button) {
-            robot.jewelArm.setPower(0.3);
-        }
-        else if (gamepad2.left_stick_button) {
-            robot.jewelArm.setPower(-0.3);
-        }
-        else {
-            robot.jewelArm.setPower(0);
-        }
+//        if (gamepad2.right_stick_button) {
+//            robot.jewelArm.setPower(0.3);
+//        }
+//        else if (gamepad2.left_stick_button) {
+//            robot.jewelArm.setPower(-0.3);
+//        }
 
         // Start Relic control ---------------------------------------------------------------------
 
         // Use gamepad stick y to extend relic arm
         if (gamepad2.right_stick_y > 0.1 || gamepad2.right_stick_y < .1) {
-            robot.relicOut.setPower(-gamepad2.right_stick_y);
+            robot.relicOut.setPower(gamepad2.right_stick_y);
         }
 
         // Use gamepad dpad up and down to raise and lower relic arm
@@ -277,7 +299,7 @@ public class FutureBot_Teleop_alternate extends OpMode {
         } else if (gamepad2.dpad_down) {
             robot.relicLift.setPower(-1);
         } else {
-            robot.relicLift.setPower(0.001);
+            robot.relicLift.setPower(0.01);
         }
 
         // Use gamepad dpad to move the elbow up (right) and down (left)
