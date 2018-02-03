@@ -53,7 +53,6 @@ public class PresentBot_TeleOp extends OpMode {
 
     double jewelPosition = 37;
 
-
     //double inertia = 0.15;                              // Not currently used
 
     /*
@@ -90,7 +89,6 @@ public class PresentBot_TeleOp extends OpMode {
     @Override
     public void loop() {
 
-
         if (gamepad1.dpad_up) {
             left = 1;
             right = 1;
@@ -110,25 +108,21 @@ public class PresentBot_TeleOp extends OpMode {
             right = right * Math.abs(right);
         }
 
-
         robot.leftDrive.setPower(left);
         robot.rightDrive.setPower(right);
 
         // Use gamepad left & right Bumpers to open and close the claw
-
-
-            if (gamepad1.right_bumper)
-                CLAW_OFFSET += CLAW_SPEED;
-            else if (gamepad1.left_bumper)
-                CLAW_OFFSET -= CLAW_SPEED;
-
+        if (gamepad1.right_bumper)
+            CLAW_OFFSET += CLAW_SPEED;
+        else if (gamepad1.left_bumper)
+            CLAW_OFFSET -= CLAW_SPEED;
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
-        CLAW_OFFSET = Range.clip(CLAW_OFFSET, -1, 1);
-        robot.pivotClaw.setPosition(CLAW_OFFSET);
+        CLAW_OFFSET = Range.clip(CLAW_OFFSET, -0.15, 0.30);
+        robot.pivotClaw1.setPosition(0.5 - CLAW_OFFSET);
+        robot.pivotClaw2.setPosition(0.5 + CLAW_OFFSET);
 
-
-        // Use gamepad buttons to move the dunk claw up (DPAD_UP) and down (DPAD_DOWN)
+        // Use gamepad buttons to move the dunk claw up (left_trigger) and down (right_trigger)
         armUp = gamepad1.left_trigger;
         armDown = -gamepad1.right_trigger;
         armUp *= Math.abs(armUp);
@@ -141,7 +135,6 @@ public class PresentBot_TeleOp extends OpMode {
         else if ((armDown < 0.1 && armUp > 0.1) || (armDown > 0.1 && armUp < 0.1)){
             robot.pivotArm.setPower(0.005);
         }
-
 
         // Send telemetry message to signify robot running;
         telemetry.addData("claw", "Offset = %.2f", CLAW_OFFSET);

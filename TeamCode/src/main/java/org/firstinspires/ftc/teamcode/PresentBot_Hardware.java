@@ -45,7 +45,8 @@ public class PresentBot_Hardware
     public DcMotor leftDrive      = null;
     public DcMotor rightDrive     = null;
     public DcMotor pivotArm       = null;
-    public Servo   pivotClaw = null;
+    public Servo   pivotClaw1     = null;
+    public Servo   pivotClaw2     = null;
 
     /* local OpMode members. */
     HardwareMap     hwMap         = null;
@@ -84,6 +85,7 @@ public class PresentBot_Hardware
         pivotArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Define and initialize ALL installed servos.
-        pivotClaw  = hwMap.get(Servo.class, "claw");
+        pivotClaw1 = hwMap.get(Servo.class, "claw1");
+        pivotClaw2 = hwMap.get(Servo.class, "claw2");
     }
 }
