@@ -85,9 +85,10 @@ public class FutureBot_Autonomous extends LinearOpMode implements FtcMenu.MenuBu
     ColorSensor       color_right;
 
     static final double     COUNTS_PER_MOTOR_REV      = 1120;    // Rev HD Hex v2 Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION      = 1.25;     // This is < 1.0 if geared UP
+    static final double     DRIVE_GEAR_REDUCTION      = 1;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES     = 4.0;     // For figuring circumference
-    static final double     COUNTS_PER_INCH           = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+    static final double     CONSTANT                  = .825; //Constant for error
+    static final double     COUNTS_PER_INCH           = (CONSTANT * COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1416);
 
     Column column = Column.COLUMN_CENTER;
@@ -181,42 +182,35 @@ public class FutureBot_Autonomous extends LinearOpMode implements FtcMenu.MenuBu
 
         if (DoTask("Init", runmode)) {
             // Init - optimized
-//            robot.jewelArm.setTargetPosition(110);
-//            robot.slideClaw.setPower(0.3);
-//            sleep(500);
-//            robot.rightSlide.setPower(1);
-//            robot.leftSlide.setPower(1);
-//            sleep(200);
-//            robot.rightSlide.setPower(0);
-//            robot.leftSlide.setPower(0);
 
-            sleep(1000);
+            robot.jewelHitter.setPosition(0);
+            sleep(100);
+            robot.jewelArm.setPosition(0);
+            sleep(750);
         }
 
         if (DoTask("Knock off jewel", runmode)) {
-//            dashboard.displayPrintf(14, "" + color_sensor.red());
-//            dashboard.displayPrintf(15, "" + color_sensor.blue());
-//            if ((color_sensor.red() > color_sensor.blue() && alliance == Alliance.ALLIANCE_RED)
-//                    || (color_sensor.blue() > color_sensor.red() && alliance == Alliance.ALLIANCE_BLUE)) {
-//                DriveRobotTurn(.1, -20);
-//                robot.jewelArm.setTargetPosition(0);
-//                sleep(500); // was 2000
-//                DriveRobotTurn(.1, 20);
-//                sleep(500); // was 1000s
-//            } else if ((color_sensor.red() > color_sensor.blue() && alliance == Alliance.ALLIANCE_BLUE)
-//                    || (color_sensor.blue() > color_sensor.red() && alliance == Alliance.ALLIANCE_RED)) {
-//                DriveRobotTurn(.1, 20);
-//                robot.jewelArm.setTargetPosition(0);
-//                sleep(500);  // was 2000
-//                DriveRobotTurn(.1, -20);
-//                sleep(500); // was 1000
-//            } else {
-//                robot.jewelArm.setTargetPosition(0);
-//                sleep(900); // was 2000
-//            }
-//        } else {
-//            robot.jewelArm.setTargetPosition(0);
-//            sleep(900);
+            dashboard.displayPrintf(14, "" + color_sensor.red());
+            dashboard.displayPrintf(15, "" + color_sensor.blue());
+            if ((color_sensor.red() > color_sensor.blue() && alliance == Alliance.ALLIANCE_RED)
+                    || (color_sensor.blue() > color_sensor.red() && alliance == Alliance.ALLIANCE_BLUE)) {
+                robot.jewelHitter.setPosition(1);
+                sleep(500);
+                robot.jewelArm.setPosition(1);
+                sleep(500);
+            } else if ((color_sensor.red() > color_sensor.blue() && alliance == Alliance.ALLIANCE_BLUE)
+                    || (color_sensor.blue() > color_sensor.red() && alliance == Alliance.ALLIANCE_RED)) {
+                robot.jewelHitter.setPosition(-1);
+                sleep(500);
+                robot.jewelArm.setPosition(1);
+                sleep(500);
+            } else {
+                robot.jewelArm.setPosition(1);
+                sleep(900);
+            }
+        } else {
+            robot.jewelArm.setPosition(1);
+            sleep(900);
         }
 
         // drive
@@ -224,29 +218,34 @@ public class FutureBot_Autonomous extends LinearOpMode implements FtcMenu.MenuBu
             if (startposition == StartPosition.STARTPOSITION1) {
                 if (alliance == Alliance.ALLIANCE_RED) {
                     if (column == Column.COLUMN_RIGHT) {
-                        DriveRobotPosition(0.2, 32.25);
+                        DriveRobotPosition(0.2, -29);
                     } else if (column == Column.COLUMN_CENTER) {
-                        DriveRobotPosition(0.2, 39.4);
+                        DriveRobotPosition(0.2, -36);
                     } else {
-                        DriveRobotPosition(0.2, 47.25);
+                        DriveRobotPosition(0.2, -43);
                     }
                 } else {
                     if (column == Column.COLUMN_LEFT) {
-                        DriveRobotPosition(0.2, -30);
+                        DriveRobotPosition(0.2, 29);
                     } else if (column == Column.COLUMN_CENTER) {
-                        DriveRobotPosition(0.2, -38);
+                        DriveRobotPosition(0.2, 36);
                     } else {
-                        DriveRobotPosition(0.2, -46);
+                        DriveRobotPosition(0.2, 43);
                     }
                 }
                 sleep(500);
-                DriveRobotTurn(0.25, 93);
+                DriveRobotTurn(0.25, -90);
                 sleep(500);
+                robot.leftIntake.setPower(.6);
+                robot.rightIntake.setPower(.4);
+                sleep(1000);
+                robot.leftIntake.setPower(.5);
+                robot.rightIntake.setPower(.5);
                 DriveRobotPosition(0.25, 6);
 
             } else { // StartPosition.STARTPOSITION2
                 if (alliance == Alliance.ALLIANCE_RED) {
-                    DriveRobotPosition(.1, 28);
+                    DriveRobotPosition(.2, 28);
                     sleep(500);
                     if (column == Column.COLUMN_CENTER) {
                         DriveRobotTurn(.25, -50);
@@ -294,11 +293,17 @@ public class FutureBot_Autonomous extends LinearOpMode implements FtcMenu.MenuBu
                         sleep(500);
                     }
                 }
+                robot.leftIntake.setPower(.6);
+                robot.rightIntake.setPower(.4);
+                sleep(500);
+                robot.leftIntake.setPower(.5);
+                robot.rightIntake.setPower(.5);
             }
         }
 
         // Drop glyph
         DriveRobotPosition(0.25, -5);
+
 
         if (startposition == StartPosition.STARTPOSITION1 &&
                 (extraglyph == ExtraGlyph.ALWAYS ||
@@ -345,7 +350,15 @@ public class FutureBot_Autonomous extends LinearOpMode implements FtcMenu.MenuBu
             DriveRobotPosition(0.5, -5);
             DrivePushGlyph(1, 1.0);
         } else {
-            DrivePushGlyph(2, 0.35);
+            DrivePushGlyph(1, 0.35);
+            if (startposition==StartPosition.STARTPOSITION2){
+                if (alliance==Alliance.ALLIANCE_RED)
+                    DriveRobotTurn(.3, -90);
+                else
+                    DriveRobotTurn(.3, 90);
+            }
+            else
+                DriveRobotTurn(.2, 180);
         }
 
     }
@@ -391,7 +404,7 @@ public class FutureBot_Autonomous extends LinearOpMode implements FtcMenu.MenuBu
      */
     void DriveRobotPosition(double power, double inches)
     {
-        double position = -inches*COUNTS_PER_INCH;
+        double position = inches*COUNTS_PER_INCH;
 
         robot.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -492,23 +505,33 @@ public class FutureBot_Autonomous extends LinearOpMode implements FtcMenu.MenuBu
     // FIXME: position equation
     void DriveRobotTurn (double power, double degree)
     {
-        double position = degree*DRIVE_GEAR_REDUCTION*11.25;
+        double position = degree*DRIVE_GEAR_REDUCTION*15.2;
 
         robot.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.backLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.backRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         robot.frontLeftMotor.setPower(power);
         robot.frontRightMotor.setPower(-power);
+        robot.backLeftMotor.setPower(power);
+        robot.backRightMotor.setPower(-power);
 
         robot.frontLeftMotor.setTargetPosition((int)position);
         robot.frontRightMotor.setTargetPosition(-(int)position);
+        robot.backLeftMotor.setTargetPosition((int)position);
+        robot.backRightMotor.setTargetPosition(-(int)position);
 
-        while (robot.frontLeftMotor.isBusy() && robot.frontRightMotor.isBusy()) {
-            dashboard.displayPrintf(3,"Left encoder: %d", robot.frontLeftMotor.getCurrentPosition());
-            dashboard.displayPrintf(4,"Right encoder: %d", robot.frontRightMotor.getCurrentPosition());
+        while (robot.frontLeftMotor.isBusy() && robot.frontRightMotor.isBusy() && robot.backLeftMotor.isBusy() && robot.backRightMotor.isBusy()) {
+            dashboard.displayPrintf(3,"Left front encoder: %d", robot.frontLeftMotor.getCurrentPosition());
+            dashboard.displayPrintf(4,"Right front encoder: %d", robot.frontRightMotor.getCurrentPosition());
+            dashboard.displayPrintf(5,"Left back encoder: %d", robot.backLeftMotor.getCurrentPosition());
+            dashboard.displayPrintf(6,"Right back encoder: %d", robot.backRightMotor.getCurrentPosition());
         }
 
         sleep(100);

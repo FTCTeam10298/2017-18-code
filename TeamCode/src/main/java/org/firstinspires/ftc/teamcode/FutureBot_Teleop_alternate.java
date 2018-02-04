@@ -148,8 +148,8 @@ public class FutureBot_Teleop_alternate extends OpMode {
             if (gamepad1.right_stick_x > .1 || gamepad1.right_stick_x < -.1) {
                 z = -gamepad1.right_stick_x / 2;// * divide1;
             }
-            else if (gamepad2.right_stick_x > .1 || gamepad2.right_stick_x < -.1) {
-                z = -gamepad2.right_stick_x / 2;// * divide2;
+            else if (gamepad2.right_stick_x > .2 || gamepad2.right_stick_x < -.2) {
+                z = -gamepad2.right_stick_x / 4;// * divide2;
             } else {
                 z = 0;
             }
@@ -244,12 +244,12 @@ public class FutureBot_Teleop_alternate extends OpMode {
             robot.rightIntake.setPower(0);
         }
         else if (intake == 1){
-            robot.leftIntake.setPower(1);
-            robot.rightIntake.setPower(1);
-        }
-        else if (intake == 2){
             robot.leftIntake.setPower(-1);
             robot.rightIntake.setPower(-1);
+        }
+        else if (intake == 2){
+            robot.leftIntake.setPower(1);
+            robot.rightIntake.setPower(1);
         }
 
         count2++;

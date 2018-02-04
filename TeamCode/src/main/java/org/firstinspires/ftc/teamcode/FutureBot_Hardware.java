@@ -31,6 +31,7 @@ public class FutureBot_Hardware
     public Servo   relicElbow         = null;
     public Servo   relicClaw          = null;
     public Servo   jewelArm           = null;
+    public Servo   jewelHitter        = null;
     public Servo   intakeRotateRight  = null;
     public Servo   intakeRotateLeft   = null;
 
@@ -102,8 +103,15 @@ public class FutureBot_Hardware
 
         spinnyClaw = hwMap.get(Servo.class, "dunk_claw_rotate");
 
+        jewelArm = hwMap.get(Servo.class, "jewel_arm");
+        jewelArm.setPosition(1);
+
+        jewelHitter = hwMap.get(Servo.class,"jewelHitter");
+        jewelHitter.setPosition(0);
+
         relicElbow = hwMap.get(Servo.class, "relicElbow");
         relicElbow.setPosition(-1.0);
+
         relicClaw = hwMap.get(Servo.class, "relicClaw");
         relicClaw.setPosition(0);
 
