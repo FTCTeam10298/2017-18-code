@@ -71,6 +71,7 @@ public class FutureBot_Teleop_alternate extends OpMode {
     int      count                = 0;
 
     int      intake               = 0;
+    int      count2               = 0;
 
     boolean  logitech1            = false;
     boolean  logitech2            = true;
@@ -225,14 +226,17 @@ public class FutureBot_Teleop_alternate extends OpMode {
         robot.spinnyClaw.setPosition(spinnyPosition);
 
         // Use a (in) and b (out) to move intake
-        if (gamepad1.a && intake != 1){
+        if (gamepad1.a && intake != 1 && count2 > 10){
             intake = 1;
+            count2 = 0;
         }
-        else if (gamepad1.b && intake != 2){
+        else if (gamepad1.b && intake != 2 && count2 > 10){
             intake = 2;
+            count2 = 0;
         }
-        else if ((gamepad1.a && intake == 1) || (gamepad1.b && intake == 2)){
+        else if (((gamepad1.a && intake == 1) || (gamepad1.b && intake == 2)) && count2 > 10){
             intake = 0;
+            count2 = 0;
         }
 
         if (intake == 0) {
@@ -248,6 +252,7 @@ public class FutureBot_Teleop_alternate extends OpMode {
             robot.rightIntake.setPower(-1);
         }
 
+        count2++;
 
         // Use gamepad buttons to move the dunk claw up (DPAD_UP) and down (DPAD_DOWN)
         if (gamepad1.dpad_up) {
@@ -375,7 +380,7 @@ public class FutureBot_Teleop_alternate extends OpMode {
         }
         else if (state == 1){
             robot.dunkClawArm.setPower(1);
-            robot.dunkClawArm.setTargetPosition(1700);
+            robot.dunkClawArm.setTargetPosition(1800);
             if (!robot.dunkClawArm.isBusy()) {
                 robot.dunkClawArm.setPower(0);
                 state = 2;
