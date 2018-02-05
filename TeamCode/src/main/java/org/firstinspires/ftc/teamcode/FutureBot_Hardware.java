@@ -107,7 +107,7 @@ public class FutureBot_Hardware
         jewelArm.setPosition(1);
 
         jewelHitter = hwMap.get(Servo.class,"jewelHitter");
-        jewelHitter.setPosition(0);
+        jewelHitter.setPosition(0.5);
 
         relicElbow = hwMap.get(Servo.class, "relicElbow");
         relicElbow.setPosition(-1.0);

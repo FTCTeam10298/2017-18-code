@@ -65,6 +65,8 @@ public class FutureBot_Teleop_alternate extends OpMode {
     double   RELIC_CLAW_POSITION  = 0.0 ;           // Offset from the servo's mid position
 
     boolean  toggle2Pressed       = false;
+    boolean  toggle3Pressed       = false;
+    boolean  toggle4Pressed       = false;
     double   spinnyPosition       = 1;
 
     int      state                = 0;
@@ -226,17 +228,25 @@ public class FutureBot_Teleop_alternate extends OpMode {
         robot.spinnyClaw.setPosition(spinnyPosition);
 
         // Use a (in) and b (out) to move intake
-        if (gamepad1.a && intake != 1 && count2 > 10){
-            intake = 1;
-            count2 = 0;
+        if (gamepad1.a && !toggle3Pressed) {
+            if (intake == 1) {
+                intake = 0;
+            } else {
+                intake = 1;
+            }
+            toggle3Pressed = true;
         }
-        else if (gamepad1.b && intake != 2 && count2 > 10){
-            intake = 2;
-            count2 = 0;
+        else if (gamepad1.b && !toggle4Pressed) {
+            if (intake == 2) {
+                intake = 0;
+            } else {
+                intake = 2;
+            }
+            toggle4Pressed = true;
         }
-        else if (((gamepad1.a && intake == 1) || (gamepad1.b && intake == 2)) && count2 > 10){
-            intake = 0;
-            count2 = 0;
+        else {
+            toggle3Pressed = false;
+            toggle4Pressed = false;
         }
 
         if (intake == 0) {

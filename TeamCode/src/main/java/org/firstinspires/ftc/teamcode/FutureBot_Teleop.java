@@ -73,8 +73,16 @@ public class FutureBot_Teleop extends OpMode {
 
     boolean  togglePressed        = false;
     boolean  toggle2Pressed       = false;
+    boolean  toggle3Pressed       = false;
+    boolean  toggle4Pressed       = false;
     boolean  frontAndBackSwitched = false;
     double   spinnyPosition       = 1;
+
+    int      state                = 0;
+    int      count                = 0;
+
+    int      intake               = 0;
+    int      count2               = 0;
 
     // Code to run once when the driver hits INIT
     @Override
@@ -364,7 +372,7 @@ public class FutureBot_Teleop extends OpMode {
 
         // Start Relic control ---------------------------------------------------------------------
 
-        robot.relicLift.setPower(Range.clip(-gamepad2.left_stick_y+0.001,0,1));
+        robot.relicLift.setPower(Range.clip(-gamepad2.left_stick_y+0.001,-1,1));
         robot.relicOut.setPower(-gamepad2.right_stick_y);
 
         // Use gamepad buttons to move the elbow up (Y) and down (X)
@@ -384,6 +392,43 @@ public class FutureBot_Teleop extends OpMode {
         robot.relicElbow.setPosition(RELIC_ELBOW_POSITION);
         RELIC_CLAW_POSITION = Range.clip(RELIC_CLAW_POSITION, -0.5, 0.5);
         robot.relicClaw.setPosition(RELIC_CLAW_POSITION);
+
+        // Use a (in) and b (out) to move intake
+        if (gamepad1.a && !toggle3Pressed) {
+            if (intake == 1) {
+                intake = 0;
+            } else {
+                intake = 1;
+            }
+            toggle3Pressed = true;
+        }
+        else if (gamepad1.b && !toggle4Pressed) {
+            if (intake == 2) {
+                intake = 0;
+            } else {
+                intake = 2;
+            }
+            toggle4Pressed = true;
+        }
+        else {
+            toggle3Pressed = false;
+            toggle4Pressed = false;
+        }
+
+        if (intake == 0) {
+            robot.leftIntake.setPower(0);
+            robot.rightIntake.setPower(0);
+        }
+        else if (intake == 1){
+            robot.leftIntake.setPower(-1);
+            robot.rightIntake.setPower(-1);
+        }
+        else if (intake == 2){
+            robot.leftIntake.setPower(1);
+            robot.rightIntake.setPower(1);
+        }
+
+        count2++;
 
         // Send telemetry message to signify robot running;
         telemetry.addData("claw",  "Offset = %.2f", CLAW_OFFSET_1);

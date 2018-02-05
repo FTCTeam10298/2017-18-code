@@ -62,9 +62,9 @@ public class PresentBot_Hardware
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        leftDrive  = hwMap.get(DcMotor.class, "left drive");
-        rightDrive = hwMap.get(DcMotor.class, "right drive");
-        pivotArm = hwMap.get(DcMotor.class, "pivot arm");
+        leftDrive  = hwMap.get(DcMotor.class, "leftDrive");
+        rightDrive = hwMap.get(DcMotor.class, "rightDrive");
+        pivotArm = hwMap.get(DcMotor.class, "pivotArm");
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
         pivotArm.setDirection(DcMotor.Direction.FORWARD);

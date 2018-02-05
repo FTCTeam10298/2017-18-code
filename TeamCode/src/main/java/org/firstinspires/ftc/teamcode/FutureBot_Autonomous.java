@@ -183,8 +183,8 @@ public class FutureBot_Autonomous extends LinearOpMode implements FtcMenu.MenuBu
         if (DoTask("Init", runmode)) {
             // Init - optimized
 
-            robot.jewelHitter.setPosition(0);
-            sleep(100);
+            //robot.jewelHitter.setPosition(0);
+            //sleep(100);
             robot.jewelArm.setPosition(0);
             sleep(750);
         }
@@ -194,13 +194,13 @@ public class FutureBot_Autonomous extends LinearOpMode implements FtcMenu.MenuBu
             dashboard.displayPrintf(15, "" + color_sensor.blue());
             if ((color_sensor.red() > color_sensor.blue() && alliance == Alliance.ALLIANCE_RED)
                     || (color_sensor.blue() > color_sensor.red() && alliance == Alliance.ALLIANCE_BLUE)) {
-                robot.jewelHitter.setPosition(1);
+                robot.jewelHitter.setPosition(0);
                 sleep(500);
                 robot.jewelArm.setPosition(1);
                 sleep(500);
             } else if ((color_sensor.red() > color_sensor.blue() && alliance == Alliance.ALLIANCE_BLUE)
                     || (color_sensor.blue() > color_sensor.red() && alliance == Alliance.ALLIANCE_RED)) {
-                robot.jewelHitter.setPosition(-1);
+                robot.jewelHitter.setPosition(1);
                 sleep(500);
                 robot.jewelArm.setPosition(1);
                 sleep(500);
@@ -243,25 +243,25 @@ public class FutureBot_Autonomous extends LinearOpMode implements FtcMenu.MenuBu
                 robot.rightIntake.setPower(.5);
                 DriveRobotPosition(0.25, 6);
 
-            } else { // StartPosition.STARTPOSITION2
+            } else { // StartPosition.STARTPOSITION2 -----------------------------------------------
                 if (alliance == Alliance.ALLIANCE_RED) {
-                    DriveRobotPosition(.2, 28);
+                    DriveRobotPosition(.2, -28);
                     sleep(500);
                     if (column == Column.COLUMN_CENTER) {
-                        DriveRobotTurn(.25, -50);
+                        DriveRobotTurn(.25, 130);
                         sleep(500);
                         DriveRobotPosition(.1, 8);
                         sleep(500);
                     }
                     else if (column == Column.COLUMN_LEFT){
-                        DriveRobotTurn(.25, -67);
+                        DriveRobotTurn(.25, 100);
                         sleep(500);
                         DriveRobotPosition(.1, 14);
                         sleep(500);
                         DriveRobotTurn(.25,25);
                     }
                     else {
-                        DriveRobotTurn(.25, -25);
+                        DriveRobotTurn(.25, 160);
                         sleep(500);
                         DriveRobotPosition(.1, 7);
                         sleep(500);

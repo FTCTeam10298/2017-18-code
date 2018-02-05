@@ -118,7 +118,7 @@ public class PresentBot_TeleOp extends OpMode {
             CLAW_OFFSET -= CLAW_SPEED;
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
-        CLAW_OFFSET = Range.clip(CLAW_OFFSET, -0.15, 0.30);
+        CLAW_OFFSET = Range.clip(CLAW_OFFSET, -0.45, 0.45);
         robot.pivotClaw1.setPosition(0.5 - CLAW_OFFSET);
         robot.pivotClaw2.setPosition(0.5 + CLAW_OFFSET);
 
@@ -132,14 +132,17 @@ public class PresentBot_TeleOp extends OpMode {
         } else if (armDown < 0.1){
             robot.pivotArm.setPower(armDown/2);
         }
-        else if ((armDown < 0.1 && armUp > 0.1) || (armDown > 0.1 && armUp < 0.1)){
-            robot.pivotArm.setPower(0.005);
+//        else if ((armDown < 0.1 && armUp > 0.1) || (armDown > 0.1 && armUp < 0.1)){
+        else {
+            robot.pivotArm.setPower(0.1);
         }
 
         // Send telemetry message to signify robot running;
         telemetry.addData("claw", "Offset = %.2f", CLAW_OFFSET);
         telemetry.addData("left", "%.2f", left);
         telemetry.addData("right", "%.2f", right);
+        telemetry.addData("armUp", "%.2f", armUp);
+        telemetry.addData("arDown", "%.2f", armDown);
     }
 
 
