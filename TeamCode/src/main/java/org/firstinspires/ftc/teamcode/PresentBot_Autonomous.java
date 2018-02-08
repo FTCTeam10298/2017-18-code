@@ -30,13 +30,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-
 
 @Autonomous(name="PresentBot: Autonomous", group ="PresentBot")
 public class PresentBot_Autonomous extends LinearOpMode {
 
-    PresentBot_Hardware   robot         = new PresentBot_Hardware();
+    PresentBot_Hardware robot = new PresentBot_Hardware();
 
     @Override public void runOpMode() {
 
@@ -67,12 +65,6 @@ public class PresentBot_Autonomous extends LinearOpMode {
         sleep(ms);
         DrivePowerAll(0);
     }
-
-    /**
-     * DrivePowerAll drives the robot the specified number of inches at the specified power level.
-     * @param inches How far to drive, can be negative
-     * @param power Power level to set motors to
-     */
 
     /**
      * DrivePowerAll sets all of the drive train motors to the specified power level.

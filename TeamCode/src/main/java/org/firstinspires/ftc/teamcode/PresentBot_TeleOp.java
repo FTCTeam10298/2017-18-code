@@ -35,7 +35,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 /*
- * This is our TeleOp.
+ * This is our secondary bot's TeleOp.
  */
 
 @TeleOp(name="PresentBot: TeleOp", group="PresentBot")
@@ -43,17 +43,13 @@ public class PresentBot_TeleOp extends OpMode {
 
     /* Declare OpMode members. */
     PresentBot_Hardware robot = new PresentBot_Hardware(); // Use the class created to define OurBot's hardware
-    final double CLAW_SPEED = 0.01;                // Sets rate to move servo
-    double CLAW_OFFSET = 0.5;                  // Offset from the servo's mid position
+    double CLAW_SPEED  = 0.01;                // Sets rate to move servo
+    double CLAW_OFFSET = 0.5;                // Offset from the servo's mid position
 
-    double left = 0.0;
-    double right = 0.0;
-    double armUp = 0.0;
-    double armDown = 0.0;
-
-    double jewelPosition = 37;
-
-    //double inertia = 0.15;                              // Not currently used
+    double left        = 0.0;
+    double right       = 0.0;
+    double armUp       = 0.0;
+    double armDown     = 0.0;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -132,20 +128,17 @@ public class PresentBot_TeleOp extends OpMode {
         } else if (armDown < 0.1){
             robot.pivotArm.setPower(armDown/2);
         }
-//        else if ((armDown < 0.1 && armUp > 0.1) || (armDown > 0.1 && armUp < 0.1)){
         else {
             robot.pivotArm.setPower(0.1);
         }
 
         // Send telemetry message to signify robot running;
-        telemetry.addData("claw", "Offset = %.2f", CLAW_OFFSET);
-        telemetry.addData("left", "%.2f", left);
-        telemetry.addData("right", "%.2f", right);
-        telemetry.addData("armUp", "%.2f", armUp);
-        telemetry.addData("arDown", "%.2f", armDown);
+        telemetry.addData("claw",   "Offset = %.2f", CLAW_OFFSET);
+        telemetry.addData("left",   "%.2f",          left);
+        telemetry.addData("right",  "%.2f",          right);
+        telemetry.addData("armUp",  "%.2f",          armUp);
+        telemetry.addData("arDown", "%.2f",          armDown);
     }
-
-
 
     /*
      * Code to run ONCE after the driver hits STOP
