@@ -67,11 +67,11 @@ public class FutureBot_Hardware
         frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
-        dunkClawArm.setDirection(DcMotor.Direction.REVERSE);
+        dunkClawArm.setDirection(DcMotor.Direction.FORWARD);
         relicOut.setDirection(DcMotor.Direction.REVERSE);
 
-        leftIntake.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftIntake.setDirection(DcMotor.Direction.FORWARD);
+        rightIntake.setDirection(DcMotor.Direction.REVERSE);
 
         // Set all motors to zero power
         frontLeftMotor.setPower(0);
@@ -85,6 +85,11 @@ public class FutureBot_Hardware
         leftIntake.setPower(0);
         rightIntake.setPower(0);
 
+        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // Set (almost) all motors to run with encoders
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -92,9 +97,10 @@ public class FutureBot_Hardware
         backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         dunkClawArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        relicOut.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // These motors do not use encoders
-        relicOut.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //relicOut.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Define and initialize all installed servos
         dunkClawRight1 = hwMap.get(Servo.class, "right_back_claw");

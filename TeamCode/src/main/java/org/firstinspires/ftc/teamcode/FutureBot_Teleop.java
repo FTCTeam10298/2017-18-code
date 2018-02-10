@@ -310,9 +310,9 @@ public class FutureBot_Teleop extends OpMode {
         }
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
-        CLAW_OFFSET_1 = Range.clip(CLAW_OFFSET_1, -0.35, 0.5);
+        CLAW_OFFSET_1 = Range.clip(CLAW_OFFSET_1, -0.5, 0.5);
         robot.dunkClawRight1.setPosition(0.5 + CLAW_OFFSET_1);
-        CLAW_OFFSET_2 = Range.clip(CLAW_OFFSET_2, -0.35, 0.5);
+        CLAW_OFFSET_2 = Range.clip(CLAW_OFFSET_2, -0.5, 0.5);
         robot.dunkClawRight2.setPosition(0.5 + CLAW_OFFSET_2);
 
         // spinny claw
