@@ -32,6 +32,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
@@ -47,7 +48,7 @@ import static java.lang.Math.abs;
  */
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="FutureBot Alternate TeleOp", group="FutureBot")
-//@Disabled
+@Disabled
 public class FutureBot_Teleop_alternate extends OpMode {
 
     /* Declare OpMode members. */

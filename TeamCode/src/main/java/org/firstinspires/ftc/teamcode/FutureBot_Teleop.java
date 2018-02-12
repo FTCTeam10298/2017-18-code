@@ -36,12 +36,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
-import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_TO_POSITION;
-import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
-import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENCODER;
+//import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_TO_POSITION;
+//import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
+//import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENCODER;
 import static java.lang.Math.abs;
 
-import com.qualcomm.robotcore.util.ElapsedTime;
+//import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * This file provides Teleop driving for our robot.
@@ -56,7 +56,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class FutureBot_Teleop extends OpMode {
 
     /* Declare OpMode members. */
-    FutureBot_Hardware robot = new FutureBot_Hardware(); // use the class created to define Ourbot's hardware
+    FutureBot_Hardware robot = new FutureBot_Hardware(); // use the class created to define FutureBot's hardware
 
     double   x = 0;
     double   y = 0;
@@ -69,25 +69,25 @@ public class FutureBot_Teleop extends OpMode {
     double   RELIC_ELBOW_POSITION = 0.0 ;           // Offset from the servo's mid position
     double   RELIC_CLAW_POSITION  = 0.0 ;           // Offset from the servo's mid position
 
-    double   arm           = 0.0;
+    //double   arm                  = 0.0;
 
-    boolean  togglePressed        = false;
+    //boolean  togglePressed        = false;
     boolean  toggle2Pressed       = false;
     boolean  toggle3Pressed       = false;
     boolean  toggle4Pressed       = false;
     boolean  toggleGlyph          = false;
-    boolean  frontAndBackSwitched = false;
+    //boolean  frontAndBackSwitched = false;
     double   spinnyPosition       = 1;
 
     int      state                = 0;
     int      count                = 0;
 
     int      intake               = 0;
-    int      count2               = 0;
+    //int      count2               = 0;
 
     boolean  glyph                = true;
 
-    boolean  driving              = false;
+    //boolean  driving              = false;
 
     int     jewelPosition         = 1;
 
@@ -126,15 +126,15 @@ public class FutureBot_Teleop extends OpMode {
     public void loop() {
 
         // Send telemetry message to signify robot running
-        telemetry.addData("Say", "Running");
+        //telemetry.addData("Say", "Running");
         if (!glyph && (gamepad2.left_stick_y > .1 || gamepad2.left_stick_y < -.1)){
             DriveSideways(gamepad2.left_stick_y/2);
         }
         else if (!glyph && (gamepad2.left_stick_x < -.1 || gamepad2.left_stick_x > .1)){
-            DrivePowerAll(gamepad2.right_stick_x/4);
+            DrivePowerAll(-gamepad2.left_stick_x/4);
         }
         else if (!glyph && (gamepad2.right_stick_x > .1 || gamepad2.right_stick_x < -.1)){
-            DriveRobotTurn(gamepad2.right_stick_x/2);
+            DriveRobotTurn(-gamepad2.right_stick_x/4);
         }
         else if (gamepad1.dpad_up){
             DrivePowerAll(.5);
@@ -145,7 +145,7 @@ public class FutureBot_Teleop extends OpMode {
         else if (gamepad1.dpad_left){
             DriveSideways(.5);
         }
-        else if (gamepad1.dpad_down){
+        else if (gamepad1.dpad_right){
             DriveSideways(-.5);
         }
         // Drone drive
@@ -317,12 +317,17 @@ public class FutureBot_Teleop extends OpMode {
         // Start Relic control ---------------------------------------------------------------------
 
         else {
-            robot.relicOut.setPower(gamepad2.right_stick_y);
+            if (gamepad2.right_trigger > 0.1)
+                robot.relicOut.setPower(-gamepad2.right_trigger);
+            else if (gamepad2.left_trigger > 0.1)
+                robot.relicOut.setPower(gamepad2.left_trigger);
+            else
+                robot.relicOut.setPower(0);
 
             // Use gamepad buttons to move the elbow up (Right Trigger) and down (Left Trigger)
-            if (gamepad2.right_trigger > .1)
+            if (gamepad2.dpad_right)
                 RELIC_ELBOW_POSITION += CLAW_SPEED / 2;
-            else if (gamepad2.left_trigger > .1)
+            else if (gamepad2.dpad_left)
                 RELIC_ELBOW_POSITION -= CLAW_SPEED / 2;
             else if (gamepad2.a)
                 RELIC_ELBOW_POSITION = .5;
