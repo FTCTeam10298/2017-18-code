@@ -14,7 +14,7 @@ Redistributions in binary form must reproduce the above copyright notice, this
 list of conditions and the following disclaimer in the documentation and/or
 other materials provided with the distribution.
 
-Neither the name of Robert Atkinson nor the names of his contributors may be used to
+Neither the name of Brain Stormz nor the names of its contributors may be used to
 endorse or promote products derived from this software without specific prior
 written permission.
 
@@ -35,13 +35,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
-
-//import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_TO_POSITION;
-//import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
-//import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENCODER;
 import static java.lang.Math.abs;
-
-//import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * This file provides Teleop driving for our robot.
@@ -311,8 +305,6 @@ public class FutureBot_Teleop extends OpMode {
             } else {
                 LiftSpinDrop();
             }
-
-
         }
         // Start Relic control ---------------------------------------------------------------------
 

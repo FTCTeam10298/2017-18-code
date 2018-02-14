@@ -1,4 +1,4 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
+/* Copyright (c) 2018 Brain Stormz. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -11,7 +11,7 @@
  * list of conditions and the following disclaimer in the documentation and/or
  * other materials provided with the distribution.
  *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
+ * Neither the name of Brain Stormz nor the names of its contributors may be used to endorse or
  * promote products derived from this software without specific prior written permission.
  *
  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
@@ -31,20 +31,19 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 /*
  * This is our secondary bot's TeleOp.
  */
 
-@TeleOp(name="PresentBot: TeleOp", group="PresentBot")
-public class PresentBot_TeleOp extends OpMode {
+@TeleOp(name="ExtraBot: TeleOp", group="ExtraBot")
+public class ExtraBot_TeleOp extends OpMode {
 
     /* Declare OpMode members. */
-    PresentBot_Hardware robot = new PresentBot_Hardware(); // Use the class created to define OurBot's hardware
-    double CLAW_SPEED  = 0.01;                // Sets rate to move servo
-    double CLAW_OFFSET = 0.5;                // Offset from the servo's mid position
+    ExtraBot_Hardware robot = new ExtraBot_Hardware(); // Use the class created to define ExtraBot's hardware
+    double CLAW_SPEED  = 0.01;  // Sets rate to move servo
+    double CLAW_OFFSET = 0.5;   // Offset from the servo's mid position
 
     double left        = 0.0;
     double right       = 0.0;
@@ -84,7 +83,6 @@ public class PresentBot_TeleOp extends OpMode {
      */
     @Override
     public void loop() {
-
         if (gamepad1.dpad_up) {
             left = 1;
             right = 1;
