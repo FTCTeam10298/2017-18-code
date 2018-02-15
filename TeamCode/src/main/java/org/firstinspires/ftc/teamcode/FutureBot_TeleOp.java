@@ -45,9 +45,8 @@ import static java.lang.Math.abs;
  * All device access is managed through the FutureBot_Hardware class.
  */
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="FutureBot Teleop", group="FutureBot")
-//@Disabled
-public class FutureBot_Teleop extends OpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="FutureBot TeleOp", group="FutureBot")
+public class FutureBot_TeleOp extends OpMode {
 
     /* Declare OpMode members. */
     FutureBot_Hardware robot = new FutureBot_Hardware(); // use the class created to define FutureBot's hardware
@@ -56,7 +55,7 @@ public class FutureBot_Teleop extends OpMode {
     double   y = 0;
     double   z = 0;
 
-    double   CLAW_SPEED    = 0.01 ;                 // Sets rate to move servo
+    double   CLAW_SPEED    = 0.01 ;                 // Sets the rate to move the servos
     double   CLAW_OFFSET_1 = 0.0 ;                  // Offset from the servo's mid position
     double   CLAW_OFFSET_2 = 0.0 ;                  // Offset from the servo's mid position
     double   INTAKE_OFFSET = 0.0 ;                  // Offset from the servo's mid position
@@ -64,20 +63,18 @@ public class FutureBot_Teleop extends OpMode {
     double   RELIC_ELBOW_POSITION = 0.0 ;           // Offset from the servo's mid position
     double   RELIC_CLAW_POSITION  = 0.0 ;           // Offset from the servo's mid position
 
-    boolean  toggle2Pressed       = false;
-    boolean  toggle3Pressed       = false;
-    boolean  toggle4Pressed       = false;
-    boolean  toggleGlyph          = false;
-    double   spinnyPosition       = 1;
+    boolean  spinTogglePressed      = false;
+    boolean  intakeInTogglePressed  = false;
+    boolean  intakeOutTogglePressed = false;
+    boolean  gamepad2ModeToggle     = false;
+    double   spinnyPosition         = 1;
+    int      jewelPosition          = 1;
 
-    int      state                = 0;
-    int      count                = 0;
+    int      state   = 0;
+    int      count   = 0;
+    int      intake  = 0;
 
-    int      intake               = 0;
-
-    boolean  glyph                = true;
-
-    int      jewelPosition         = 1;
+    boolean  glyph   = true;
 
     // Code to run once when the driver hits INIT
     @Override
@@ -90,21 +87,21 @@ public class FutureBot_Teleop extends OpMode {
 
         // Send telemetry message to signify robot waiting
         telemetry.addData("Say", "Robot ready");
-//        robot.backLeftMotor.setPower(1);
+//        robot.backLeftDrive.setPower(1);
 //        sleep(1000);
-//        robot.backRightMotor.setPower(1);
+//        robot.backRightDrive.setPower(1);
 //        sleep(1000);
-//        robot.frontLeftMotor.setPower(1);
+//        robot.frontLeftDrive.setPower(1);
 //        sleep(1000);
-//        robot.frontRightMotor.setPower(1);
+//        robot.frontRightDrive.setPower(1);
 //        sleep(1000);
-//        robot.backLeftMotor.setPower(0);
+//        robot.backLeftDrive.setPower(0);
 //        sleep(1000);
-//        robot.backRightMotor.setPower(0);
+//        robot.backRightDrive.setPower(0);
 //        sleep(1000);
-//        robot.frontLeftMotor.setPower(0);
+//        robot.frontLeftDrive.setPower(0);
 //        sleep(1000);
-//        robot.frontRightMotor.setPower(0);
+//        robot.frontRightDrive.setPower(0);
     }
 
     /*
@@ -173,18 +170,18 @@ public class FutureBot_Teleop extends OpMode {
                 maxvalue = 1;
             }
 
-            robot.frontRightMotor.setPower(-1 * Range.clip(((y + x - z) / maxvalue), -1.0, 1.0));
-            robot.frontLeftMotor.setPower(-1 * Range.clip(((y - x + z) / maxvalue), -1.0, 1.0));
-            robot.backLeftMotor.setPower(-1 * Range.clip(((y + x + z) / maxvalue), -1.0, 1.0));
-            robot.backRightMotor.setPower(-1 * Range.clip(((y - x - z) / maxvalue), -1.0, 1.0));
+            robot.frontRightDrive.setPower(-1 * Range.clip(((y + x - z) / maxvalue), -1.0, 1.0));
+            robot.frontLeftDrive.setPower(-1 * Range.clip(((y - x + z) / maxvalue), -1.0, 1.0));
+            robot.backLeftDrive.setPower(-1 * Range.clip(((y + x + z) / maxvalue), -1.0, 1.0));
+            robot.backRightDrive.setPower(-1 * Range.clip(((y - x - z) / maxvalue), -1.0, 1.0));
         }
 
         // Toggle between glyph and relic control
         if (gamepad2.y) {
-            toggleGlyph = true;
-        } else if (toggleGlyph) {
+            gamepad2ModeToggle = true;
+        } else if (gamepad2ModeToggle) {
             glyph = !glyph;
-            toggleGlyph = false;
+            gamepad2ModeToggle = false;
         }
 
         /*
@@ -217,11 +214,11 @@ public class FutureBot_Teleop extends OpMode {
 
             // Move both servos to new position.  Assume servos are mirror image of each other.
             CLAW_OFFSET_1 = Range.clip(CLAW_OFFSET_1, -0.5, 0.5);
-            robot.dunkClawRight1.setPosition(0.5 + CLAW_OFFSET_1);
+            robot.dunkClaw1.setPosition(0.5 + CLAW_OFFSET_1);
             CLAW_OFFSET_2 = Range.clip(CLAW_OFFSET_2, -0.5, 0.5);
-            robot.dunkClawRight2.setPosition(0.5 + CLAW_OFFSET_2);
+            robot.dunkClaw2.setPosition(0.5 + CLAW_OFFSET_2);
 
-            // Use gamepad left & right Bumpers to open and close the claw
+            // Use gamepad left & right Bumpers to open and close the intake
             if (gamepad1.right_bumper)
                 INTAKE_OFFSET += CLAW_SPEED;
             else if (gamepad1.left_bumper)
@@ -234,19 +231,18 @@ public class FutureBot_Teleop extends OpMode {
 
             // spinny claw
             if (gamepad2.dpad_left || gamepad2.dpad_right) {
-                toggle2Pressed = true;
-            } else if (toggle2Pressed) {
+                spinTogglePressed = true;
+            } else if (spinTogglePressed) {
                 if (spinnyPosition == 0)
                     spinnyPosition = 1;
                 else
                     spinnyPosition = 0;
-                toggle2Pressed = false;
+                spinTogglePressed = false;
             }
 
             robot.spinnyClaw.setPosition(spinnyPosition);
 
             // Use gamepad buttons to move the dunk claw up (DPAD_UP) and down (DPAD_DOWN)
-
             if (gamepad2.dpad_up)
                 robot.dunkClawArm.setPower(1.0);
             else if (gamepad2.dpad_down)
@@ -260,38 +256,40 @@ public class FutureBot_Teleop extends OpMode {
             else if (gamepad2.left_stick_button)
                 jewelPosition -= .05;
 
-            robot.jewelArm.setPosition(Range.clip(jewelPosition, 0, 1));
+            jewelPosition = Range.clip(jewelPosition, 0, 1);
+            robot.jewelArm.setPosition(jewelPosition);
 
             // Use a (in) and b (out) to move intake
-            if (gamepad2.a && !toggle3Pressed) {
+            if (gamepad2.a && !intakeInTogglePressed) {
                 if (intake == 1) {
                     intake = 0;
                 } else {
                     intake = 1;
                 }
-                toggle3Pressed = true;
-            } else if (gamepad2.b && !toggle4Pressed) {
+                intakeInTogglePressed = true;
+            } else if (gamepad2.b && !intakeOutTogglePressed) {
                 if (intake == 2) {
                     intake = 0;
                 } else {
                     intake = 2;
                 }
-                toggle4Pressed = true;
+                intakeOutTogglePressed = true;
             } else {
-                toggle3Pressed = false;
-                toggle4Pressed = false;
+                intakeInTogglePressed = false;
+                intakeOutTogglePressed = false;
             }
 
             if (intake == 0) {
-                robot.leftIntake.setPower(0);
-                robot.rightIntake.setPower(0);
+                robot.IntakeLeft.setPower(0);
+                robot.IntakeRight.setPower(0);
             } else if (intake == 1) {
-                robot.leftIntake.setPower(-1);
-                robot.rightIntake.setPower(-1);
+                robot.IntakeLeft.setPower(-1);
+                robot.IntakeRight.setPower(-1);
             } else if (intake == 2) {
-                robot.leftIntake.setPower(1);
-                robot.rightIntake.setPower(1);
+                robot.IntakeLeft.setPower(1);
+                robot.IntakeRight.setPower(1);
             }
+
             // Lift, Spin, Drop
             if (gamepad2.x && state == 0) {
                 state = 1;
@@ -347,7 +345,7 @@ public class FutureBot_Teleop extends OpMode {
             }
 
             // Move both servos to new position.
-            RELIC_ELBOW_POSITION = Range.clip(RELIC_ELBOW_POSITION, -1.0, 1.0);
+            RELIC_ELBOW_POSITION = Range.clip(RELIC_ELBOW_POSITION, 0.0, 1.0);
             robot.relicElbow.setPosition(RELIC_ELBOW_POSITION);
             RELIC_CLAW_POSITION = Range.clip(RELIC_CLAW_POSITION, -0.5, 0.5);
             robot.relicClaw.setPosition(RELIC_CLAW_POSITION);
@@ -357,51 +355,45 @@ public class FutureBot_Teleop extends OpMode {
         telemetry.addData("claw",  "Offset = %.2f", CLAW_OFFSET_1);
     }
 
-    @Override
-    public void stop () {
-        // Code here runs ONCE after the driver hits stop
-
-    }
-
     /*
     FUNCTIONS------------------------------------------------------------------------------------------------------
      */
     void DrivePowerAll (double power)
     {
-        robot.frontLeftMotor.setPower(power);
-        robot.frontRightMotor.setPower(power);
-        robot.backRightMotor.setPower(power);
-        robot.backLeftMotor.setPower(power);
+        robot.frontLeftDrive.setPower(power);
+        robot.frontRightDrive.setPower(power);
+        robot.backRightDrive.setPower(power);
+        robot.backLeftDrive.setPower(power);
     }
 
     void DriveRobotTurn (double power)
     {
-        robot.frontLeftMotor.setPower(-power);
-        robot.frontRightMotor.setPower(power);
-        robot.backRightMotor.setPower(power);
-        robot.backLeftMotor.setPower(-power);
+        robot.frontLeftDrive.setPower(-power);
+        robot.frontRightDrive.setPower(power);
+        robot.backRightDrive.setPower(power);
+        robot.backLeftDrive.setPower(-power);
     }
 
     void DriveSideways (double power)
     {
-        robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (power > 0) // Drive right
         {
-            robot.frontLeftMotor.setPower(-power);
-            robot.backLeftMotor.setPower(power);
-            robot.backRightMotor.setPower(-power);
-            robot.frontRightMotor.setPower(power);
+            robot.frontLeftDrive.setPower(-power);
+            robot.backLeftDrive.setPower(power);
+            robot.backRightDrive.setPower(-power);
+            robot.frontRightDrive.setPower(power);
         }
         else // Drive left
         {
-            robot.frontRightMotor.setPower(power);
-            robot.backRightMotor.setPower(-power);
-            robot.backLeftMotor.setPower(power);
-            robot.frontLeftMotor.setPower(-power);
+            robot.frontRightDrive.setPower(power);
+            robot.backRightDrive.setPower(-power);
+            robot.backLeftDrive.setPower(power);
+            robot.frontLeftDrive.setPower(-power);
         }
     }
     void LiftSpinDrop () {
