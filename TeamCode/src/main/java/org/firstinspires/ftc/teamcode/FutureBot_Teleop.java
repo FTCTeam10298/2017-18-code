@@ -59,31 +59,25 @@ public class FutureBot_Teleop extends OpMode {
     double   CLAW_SPEED    = 0.01 ;                 // Sets rate to move servo
     double   CLAW_OFFSET_1 = 0.0 ;                  // Offset from the servo's mid position
     double   CLAW_OFFSET_2 = 0.0 ;                  // Offset from the servo's mid position
+    double   INTAKE_OFFSET = 0.0 ;                  // Offset from the servo's mid position
 
     double   RELIC_ELBOW_POSITION = 0.0 ;           // Offset from the servo's mid position
     double   RELIC_CLAW_POSITION  = 0.0 ;           // Offset from the servo's mid position
 
-    //double   arm                  = 0.0;
-
-    //boolean  togglePressed        = false;
     boolean  toggle2Pressed       = false;
     boolean  toggle3Pressed       = false;
     boolean  toggle4Pressed       = false;
     boolean  toggleGlyph          = false;
-    //boolean  frontAndBackSwitched = false;
     double   spinnyPosition       = 1;
 
     int      state                = 0;
     int      count                = 0;
 
     int      intake               = 0;
-    //int      count2               = 0;
 
     boolean  glyph                = true;
 
-    //boolean  driving              = false;
-
-    int     jewelPosition         = 1;
+    int      jewelPosition         = 1;
 
     // Code to run once when the driver hits INIT
     @Override
@@ -185,18 +179,17 @@ public class FutureBot_Teleop extends OpMode {
             robot.backRightMotor.setPower(-1 * Range.clip(((y - x - z) / maxvalue), -1.0, 1.0));
         }
 
-
-        // Glyph or not?
+        // Toggle between glyph and relic control
         if (gamepad2.y) {
             toggleGlyph = true;
         } else if (toggleGlyph) {
-            if (glyph)
-                glyph = false;
-            else
-                glyph = true;
+            glyph = !glyph;
             toggleGlyph = false;
         }
-        // Start glyph control ---------------------------------------------------------------------
+
+        /*
+         * Start glyph control ---------------------------------------------------------------------
+         */
 
         if (glyph) {
             // Use gamepad left & right Bumpers to open and close the claw
@@ -227,6 +220,17 @@ public class FutureBot_Teleop extends OpMode {
             robot.dunkClawRight1.setPosition(0.5 + CLAW_OFFSET_1);
             CLAW_OFFSET_2 = Range.clip(CLAW_OFFSET_2, -0.5, 0.5);
             robot.dunkClawRight2.setPosition(0.5 + CLAW_OFFSET_2);
+
+            // Use gamepad left & right Bumpers to open and close the claw
+            if (gamepad1.right_bumper)
+                INTAKE_OFFSET += CLAW_SPEED;
+            else if (gamepad1.left_bumper)
+                INTAKE_OFFSET -= CLAW_SPEED;
+
+            // Move both servos to new position.  Assume servos are mirror image of each other.
+            INTAKE_OFFSET = Range.clip(INTAKE_OFFSET, -0.45, 0.45);
+            robot.intakeRotateRight.setPosition(0.5 - INTAKE_OFFSET);
+            robot.intakeRotateLeft.setPosition(0.5 + INTAKE_OFFSET);
 
             // spinny claw
             if (gamepad2.dpad_left || gamepad2.dpad_right) {
@@ -306,7 +310,10 @@ public class FutureBot_Teleop extends OpMode {
                 LiftSpinDrop();
             }
         }
-        // Start Relic control ---------------------------------------------------------------------
+
+        /*
+         * Start Relic control ---------------------------------------------------------------------
+         */
 
         else {
             if (gamepad2.right_trigger > 0.1)
@@ -322,7 +329,7 @@ public class FutureBot_Teleop extends OpMode {
             else if (gamepad2.dpad_left)
                 RELIC_ELBOW_POSITION -= CLAW_SPEED / 2;
             else if (gamepad2.a)
-                RELIC_ELBOW_POSITION = .5;
+                RELIC_ELBOW_POSITION = .7;
 
             // Use gamepad buttons to open (Left Bumper) and close (Right Bumper) the claw
             if (gamepad2.left_bumper)

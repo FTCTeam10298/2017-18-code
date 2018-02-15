@@ -124,6 +124,12 @@ public class FutureBot_Hardware
         relicLift = hwMap.get(CRServo.class, "relicLift");
         relicLift.setPower(0);
         relicLift.setDirection(CRServo.Direction.FORWARD);
+
+        intakeRotateRight = hwMap.get(Servo.class, "intakeRotateRight");
+        intakeRotateRight.setPosition(0);
+
+        intakeRotateLeft = hwMap.get(Servo.class, "intakeRotateLeft");
+        intakeRotateLeft.setPosition(0);
     }
 }
 
