@@ -189,7 +189,7 @@ public class FutureBot_TeleOp extends OpMode {
          */
 
         if (glyph) {
-            // Use gamepad left & right Bumpers to open and close the claw
+            // Use gamepad left & right Bumpers and triggers to open and close the claws
             if (spinnyPosition == 1) {
                 if (gamepad2.right_bumper)
                     CLAW_OFFSET_1 += CLAW_SPEED;
@@ -217,17 +217,6 @@ public class FutureBot_TeleOp extends OpMode {
             robot.dunkClaw1.setPosition(0.5 + CLAW_OFFSET_1);
             CLAW_OFFSET_2 = Range.clip(CLAW_OFFSET_2, -0.5, 0.5);
             robot.dunkClaw2.setPosition(0.5 + CLAW_OFFSET_2);
-
-            // Use gamepad left & right Bumpers to open and close the intake
-            if (gamepad1.right_bumper)
-                INTAKE_OFFSET += CLAW_SPEED;
-            else if (gamepad1.left_bumper)
-                INTAKE_OFFSET -= CLAW_SPEED;
-
-            // Move both servos to new position.  Assume servos are mirror image of each other.
-            INTAKE_OFFSET = Range.clip(INTAKE_OFFSET, -0.45, 0.45);
-            robot.intakeRotateRight.setPosition(0.5 - INTAKE_OFFSET);
-            robot.intakeRotateLeft.setPosition(0.5 + INTAKE_OFFSET);
 
             // spinny claw
             if (gamepad2.dpad_left || gamepad2.dpad_right) {
@@ -259,15 +248,26 @@ public class FutureBot_TeleOp extends OpMode {
             jewelPosition = Range.clip(jewelPosition, 0, 1);
             robot.jewelArm.setPosition(jewelPosition);
 
+            // Use gamepad left & right Bumpers to open and close the intake
+            if (gamepad1.right_trigger > 0.5)
+                INTAKE_OFFSET += CLAW_SPEED;
+            else if (gamepad1.left_trigger > 0.5)
+                INTAKE_OFFSET -= CLAW_SPEED;
+
+            // Move both servos to new position.  Assume servos are mirror image of each other.
+            INTAKE_OFFSET = Range.clip(INTAKE_OFFSET, -0.5, 0.05);
+            robot.intakeRotateRight.setPosition(0.5 - INTAKE_OFFSET);
+            robot.intakeRotateLeft.setPosition(0.5 + INTAKE_OFFSET);
+
             // Use a (in) and b (out) to move intake
-            if (gamepad2.a && !intakeInTogglePressed) {
+            if ((gamepad1.left_bumper || gamepad1.a || gamepad2.a) && !intakeInTogglePressed) {
                 if (intake == 1) {
                     intake = 0;
                 } else {
                     intake = 1;
                 }
                 intakeInTogglePressed = true;
-            } else if (gamepad2.b && !intakeOutTogglePressed) {
+            } else if ((gamepad1.right_bumper || gamepad1.b || gamepad2.b) && !intakeOutTogglePressed) {
                 if (intake == 2) {
                     intake = 0;
                 } else {
@@ -284,10 +284,10 @@ public class FutureBot_TeleOp extends OpMode {
                 robot.IntakeRight.setPower(0);
             } else if (intake == 1) {
                 robot.IntakeLeft.setPower(-1);
-                robot.IntakeRight.setPower(-1);
+                robot.IntakeRight.setPower(-0.7);
             } else if (intake == 2) {
                 robot.IntakeLeft.setPower(1);
-                robot.IntakeRight.setPower(1);
+                robot.IntakeRight.setPower(0.7);
             }
 
             // Lift, Spin, Drop
@@ -296,6 +296,7 @@ public class FutureBot_TeleOp extends OpMode {
                 robot.dunkClawArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 robot.dunkClawArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.dunkClawArm.setPower(0);
+                INTAKE_OFFSET -= 0.15;
             }
             else if (state > 0 && (gamepad2.dpad_up || gamepad2.dpad_down || gamepad2.dpad_left
                     || gamepad2.dpad_right || gamepad2.left_bumper || gamepad2.right_bumper
@@ -304,6 +305,7 @@ public class FutureBot_TeleOp extends OpMode {
                 LiftSpinDrop();
                 robot.dunkClawArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 robot.dunkClawArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                INTAKE_OFFSET += 0.15;
             } else {
                 LiftSpinDrop();
             }
@@ -327,7 +329,7 @@ public class FutureBot_TeleOp extends OpMode {
             else if (gamepad2.dpad_left)
                 RELIC_ELBOW_POSITION -= CLAW_SPEED / 2;
             else if (gamepad2.a)
-                RELIC_ELBOW_POSITION = .7;
+                RELIC_ELBOW_POSITION = .65;
 
             // Use gamepad buttons to open (Left Bumper) and close (Right Bumper) the claw
             if (gamepad2.left_bumper)
@@ -425,6 +427,7 @@ public class FutureBot_TeleOp extends OpMode {
                 robot.dunkClawArm.setPower(0);
                 robot.dunkClawArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 robot.dunkClawArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                INTAKE_OFFSET += 0.15;
                 state = 0;
             }
         }
