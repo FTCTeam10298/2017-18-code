@@ -149,6 +149,9 @@ public class FutureBot_Autonomous extends LinearOpMode implements FtcMenu.MenuBu
 
         relicTrackables.activate();
 
+        robot.spinnyClaw.setPosition(0);
+        robot.dunkClaw1.setPosition(1);
+
         // Run though the menu ---------------------------------------------------------------------
         doMenus();
         dashboard.displayPrintf(0, "Status: Ready to start");
@@ -162,6 +165,20 @@ public class FutureBot_Autonomous extends LinearOpMode implements FtcMenu.MenuBu
 
         // Pause the program for the selected delay period
         sleep(delay);
+
+
+        if (DoTask("Init", runmode)) {
+            // Init - optimized
+
+            robot.intakeRotateLeft.setPosition(.25);
+            robot.intakeRotateRight.setPosition(.75);
+            sleep(250);
+            robot.dunkClawArm.setPower(1);
+            sleep(500);
+            robot.dunkClawArm.setPower(0);
+            robot.jewelArm.setPosition(0);
+            sleep(500);
+        }
 
         if (DoTask("Read VuMark", runmode)) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
@@ -180,130 +197,167 @@ public class FutureBot_Autonomous extends LinearOpMode implements FtcMenu.MenuBu
             }
         }
 
-        if (DoTask("Init", runmode)) {
-            // Init - optimized
-
-            //robot.jewelHitter.setPosition(0);
-            //sleep(100);
-            robot.jewelArm.setPosition(0);
-            sleep(750);
-        }
-
         if (DoTask("Knock off jewel", runmode)) {
             dashboard.displayPrintf(14, "" + color_sensor.red());
             dashboard.displayPrintf(15, "" + color_sensor.blue());
             if ((color_sensor.red() > color_sensor.blue() && alliance == Alliance.ALLIANCE_RED)
                     || (color_sensor.blue() > color_sensor.red() && alliance == Alliance.ALLIANCE_BLUE)) {
-                robot.jewelHitter.setPosition(0);
+                robot.jewelHitter.setPosition(.25);
                 sleep(500);
                 robot.jewelArm.setPosition(1);
                 sleep(500);
             } else if ((color_sensor.red() > color_sensor.blue() && alliance == Alliance.ALLIANCE_BLUE)
                     || (color_sensor.blue() > color_sensor.red() && alliance == Alliance.ALLIANCE_RED)) {
-                robot.jewelHitter.setPosition(1);
+                robot.jewelHitter.setPosition(.75);
                 sleep(500);
                 robot.jewelArm.setPosition(1);
                 sleep(500);
             } else {
                 robot.jewelArm.setPosition(1);
-                sleep(900);
+                sleep(500);
             }
         } else {
             robot.jewelArm.setPosition(1);
-            sleep(900);
+            sleep(500);
         }
 
         // drive
         if (DoTask("Drive to CryptoBox", runmode)) {
             if (startposition == StartPosition.STARTPOSITION1) {
                 if (alliance == Alliance.ALLIANCE_RED) {
-                    if (column == Column.COLUMN_RIGHT) {
-                        DriveRobotPosition(0.2, -29);
-                    } else if (column == Column.COLUMN_CENTER) {
-                        DriveRobotPosition(0.2, -36);
-                    } else {
-                        DriveRobotPosition(0.2, -43);
-                    }
+                    if (column == Column.COLUMN_RIGHT)
+                        DriveRobotPosition(0.3, -29);
+                    else if (column == Column.COLUMN_CENTER)
+                        DriveRobotPosition(0.3, -36);
+                    else
+                        DriveRobotPosition(0.3, -43);
+
                 } else { // Alliance.ALLIANCE_BLUE
-                    if (column == Column.COLUMN_LEFT) {
-                        DriveRobotPosition(0.2, 29);
-                    } else if (column == Column.COLUMN_CENTER) {
-                        DriveRobotPosition(0.2, 36);
-                    } else {
-                        DriveRobotPosition(0.2, 43);
-                    }
+                    if (column == Column.COLUMN_LEFT)
+                        DriveRobotPosition(0.3, 26);
+                    else if (column == Column.COLUMN_CENTER)
+                        DriveRobotPosition(0.3, 33);
+                    else
+                        DriveRobotPosition(0.3, 40);
+
                 }
 
-                sleep(500);
+
+
+                sleep(250);
+                robot.intakeRotateLeft.setPosition(.2);
+                robot.intakeRotateRight.setPosition(.8);
+                robot.dunkClawArm.setPower(-1);
+                sleep(250);
+                robot.dunkClawArm.setPower(0);
+                robot.intakeRotateLeft.setPosition(.6);
+                robot.intakeRotateRight.setPosition(.4);
+                sleep(250);
                 DriveRobotTurn(0.25, -90);
+                robot.intakeRotateLeft.setPosition(.2);
+                robot.intakeRotateRight.setPosition(.8);
                 sleep(500);
+                robot.dunkClaw1.setPosition(0);
+                sleep(500);
+                robot.intakeRotateLeft.setPosition(.6);
+                robot.intakeRotateRight.setPosition(.4);
+                sleep(250);
                 robot.IntakeLeft.setPower(.6);
                 robot.IntakeRight.setPower(.4);
-                sleep(1000);
-                robot.IntakeLeft.setPower(.5);
-                robot.IntakeRight.setPower(.5);
-                DriveRobotPosition(0.25, 6);
+                sleep(1500);
+                robot.IntakeLeft.setPower(0);
+                robot.IntakeRight.setPower(0);
+                DriveRobotPosition(0.15, 4);
+                robot.intakeRotateLeft.setPosition(.2);
+                robot.intakeRotateRight.setPosition(.8);
+                sleep(500);
             }
             else { // StartPosition.STARTPOSITION2 -----------------------------------------------
                 if (alliance == Alliance.ALLIANCE_RED) {
-                    DriveRobotPosition(.2, -28);
-                    sleep(500);
-                    if (column == Column.COLUMN_CENTER) {
-                        DriveRobotTurn(.25, 130);
-                        sleep(500);
-                        DriveRobotPosition(.1, 8);
-                        sleep(500);
-                    }
-                    else if (column == Column.COLUMN_LEFT){
-                        DriveRobotTurn(.25, 100);
-                        sleep(500);
-                        DriveRobotPosition(.1, 14);
-                        sleep(500);
-                        DriveRobotTurn(.25,25);
-                    }
-                    else {
-                        DriveRobotTurn(.25, 160);
-                        sleep(500);
-                        DriveRobotPosition(.1, 7);
-                        sleep(500);
-                    }
+                    DriveRobotPosition(.2, -25);
+                    sleep(100);
+                    DriveRobotTurn(.2, 90);
+                    robot.dunkClawArm.setPower(-1);
+                    sleep(300);
+                    robot.dunkClawArm.setPower(0);
+                    robot.intakeRotateLeft.setPosition(.6);
+                    robot.intakeRotateRight.setPosition(.4);
+                    sleep(250);
+                    if (column == Column.COLUMN_CENTER)
+                        DriveRobotPosition(.2, 11);
+                    else if (column == Column.COLUMN_LEFT)
+                        DriveRobotPosition(.2, 18);
+                    else
+                        DriveRobotPosition(.2, 4);
 
                 } else { // Alliance.ALLIANCE_BLUE
-                    DriveRobotPosition(.1, -26);
-                    if (column == Column.COLUMN_CENTER) {
-                        DriveRobotPosition(.1,-4);
-                        sleep(500);
-                        DriveRobotTurn(.25, -147);
-                        sleep(500);
-                        DriveRobotPosition(.1, 8);
-                        sleep(500);
-                    }
-                    else if (column == Column.COLUMN_LEFT){
-                        DriveRobotPosition(.1,-4);
-                        sleep (500);
-                        DriveRobotTurn(.25, -165);
-                        sleep(500);
-                        DriveRobotPosition(.1, 7);
-                        sleep(500);
-                    }
-                    else { // Column.COLUMN_RIGHT
-                        sleep(500);
-                        DriveRobotTurn(.25, -137);
-                        sleep(500);
-                        DriveRobotPosition(.1, 14);
-                        sleep(500);
-                    }
+                    DriveRobotPosition(.1, 22);
+                    sleep(100);
+                    DriveRobotTurn(.2, -90);
+                    robot.dunkClawArm.setPower(-1);
+                    sleep(300);
+                    robot.dunkClawArm.setPower(0);
+                    robot.intakeRotateLeft.setPosition(.6);
+                    robot.intakeRotateRight.setPosition(.4);
+                    sleep(250);
+                    if (column == Column.COLUMN_CENTER)
+                        DriveRobotPosition(.2, -12);
+                    else if (column == Column.COLUMN_LEFT)
+                        DriveRobotPosition(.2, -19);
+                    else  // Column.COLUMN_RIGHT
+                        DriveRobotPosition(.2, -5);
                 }
-                robot.IntakeLeft.setPower(.6);
-                robot.IntakeRight.setPower(.4);
-                sleep(500);
-                robot.IntakeLeft.setPower(.5);
-                robot.IntakeRight.setPower(.5);
+                DriveRobotTurn(.2, 90);
+                robot.intakeRotateLeft.setPosition(.2);
+                robot.intakeRotateRight.setPosition(.8);
+                sleep(100);
+                robot.dunkClaw1.setPosition(0);
+                sleep(100);
+                robot.intakeRotateLeft.setPosition(.6);
+                robot.intakeRotateRight.setPosition(.4);
+                sleep(100);
+                robot.IntakeRight.setPower(.6);
+                robot.IntakeLeft.setPower(.4);
+                sleep(1500);
+                robot.IntakeLeft.setPower(0);
+                robot.IntakeRight.setPower(0);
+                robot.intakeRotateLeft.setPosition(.2);
+                robot.intakeRotateRight.setPosition(.8);
+                sleep(100);
             }
         }
 
         // Drop glyph
-        DriveRobotPosition(0.25, -5);
+        DriveRobotPosition(0.15, -5);
+
+            robot.intakeRotateLeft.setPosition(.8);
+            robot.intakeRotateRight.setPosition(.2);
+            sleep(100);
+
+        //Setup
+        DrivePushGlyph(1, 0.25);
+//        if (startposition==StartPosition.STARTPOSITION2){
+//            if (alliance==Alliance.ALLIANCE_RED)
+//                DriveRobotTurn(.3, -90);
+//            else
+//                DriveRobotTurn(.3, 90);
+//        }
+//        else
+//            DriveRobotTurn(.5, 180);
+        robot.IntakeLeft.setPower(0);
+        robot.IntakeRight.setPower(0);
+        robot.intakeRotateLeft.setPosition(.45);
+        robot.intakeRotateRight.setPosition(.55);
+        robot.relicOut.setPower(-1);
+        sleep(500);
+        robot.relicElbow.setPosition(.5);
+        robot.relicOut.setPower(0);
+        sleep(500);
+        robot.relicOut.setPower(1);
+        sleep(500);
+        robot.relicOut.setPower(0);
+
+
 
         if (startposition == StartPosition.STARTPOSITION1 &&
                 (getExtraGlyph == GetExtraGlyph.ALWAYS ||
@@ -317,53 +371,31 @@ public class FutureBot_Autonomous extends LinearOpMode implements FtcMenu.MenuBu
                 )
             )
         ) {
-            DrivePushGlyph(1, 0.35);
 
             DriveRobotTurn(.5, 180);
-
-            robot.dunkClawArm.setPower(1);
-            sleep(300);
-            robot.dunkClawArm.setPower(0);
-
-            robot.spinnyClaw.setPosition(1);
-            robot.dunkClaw1.setPosition(0);
-            robot.dunkClaw2.setPosition(0);
-
+            robot.IntakeLeft.setPower(-.5);
+            robot.IntakeRight.setPower(-1);
+            if ((alliance == Alliance.ALLIANCE_RED &&
+                    (column == Column.COLUMN_LEFT || column == Column.COLUMN_CENTER)) ||
+                    (alliance == Alliance.ALLIANCE_BLUE && column == Column.COLUMN_RIGHT))
+                DriveRobotSideways(1, -8);
+            else
+                DriveRobotSideways(1, 8);
+            DriveRobotPosition(.4, 30);
+            DriveRobotPosition(.4, -30);
+            DriveRobotTurn(.4, 180);
+            robot.IntakeLeft.setPower(.6);
+            robot.IntakeRight.setPower(.4);
             sleep(500);
+            DrivePushGlyph(1, .2);
+            robot.IntakeLeft.setPower(0);
+            robot.IntakeRight.setPower(0);
+            DriveRobotPosition(0.25, 5);
 
-            robot.dunkClawArm.setPower(-.1);
-            sleep(500);
-            robot.dunkClawArm.setPower(0);
 
-            DriveRobotPosition(1, 42);
-            robot.dunkClaw1.setPosition(1);
-            robot.dunkClaw2.setPosition(1);
-            sleep(1000);
-            DriveRobotPosition(1, -10);
-            robot.dunkClawArm.setPower(1);
-            sleep(250);
-            DriveRobotPosition(1, -29);
-            robot.dunkClaw1.setPosition(0.3);
-            robot.dunkClaw2.setPosition(0.3);
-            robot.dunkClawArm.setPower(0);
-            sleep(500);
-            DriveRobotPosition(0.5, 5);
-            DrivePushGlyph(1, 1.0);
+
         }
         else { // No extra glyphs
-            DrivePushGlyph(1, 0.35);
-            if (startposition==StartPosition.STARTPOSITION2){
-                if (alliance==Alliance.ALLIANCE_RED)
-                    DriveRobotTurn(.3, -90);
-                else
-                    DriveRobotTurn(.3, 90);
-            }
-            else {
-                DriveRobotTurn(.3, 180);
-                DriveRobotPosition(1, 42);
-                DriveRobotTurn(1, 360);
-                DriveRobotPosition(1, -10);
-            }
         }
 
     }
@@ -537,6 +569,54 @@ public class FutureBot_Autonomous extends LinearOpMode implements FtcMenu.MenuBu
         DrivePowerAll(0);
     }
 
+    void DriveRobotSideways (double power, double inches)
+    {
+        double position = inches*COUNTS_PER_INCH * 2;
+
+        robot.frontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.frontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        if (power > 0) // Drive right
+        {
+            robot.frontLeftDrive.setTargetPosition((int)-position);
+            robot.backLeftDrive.setTargetPosition((int)position);
+            robot.backRightDrive.setTargetPosition((int)-position);
+            robot.frontRightDrive.setTargetPosition((int)position);
+        }
+        else // Drive left
+        {
+            robot.frontRightDrive.setTargetPosition((int)position);
+            robot.backRightDrive.setTargetPosition((int)-position);
+            robot.backLeftDrive.setTargetPosition((int)position);
+            robot.frontLeftDrive.setTargetPosition((int)-position);
+        }
+        robot.frontRightDrive.setPower(power);
+        robot.backRightDrive.setPower(power);
+        robot.backLeftDrive.setPower(power);
+        robot.frontLeftDrive.setPower(power);
+
+        for (int i=0; i < 5; i++) {    // Repeat check 5 times, sleeping 10ms between,
+            // as isBusy can be a bit unreliable
+            while (robot.frontLeftDrive.isBusy() && robot.frontRightDrive.isBusy() && robot.backLeftDrive.isBusy()
+                    && robot.backRightDrive.isBusy()) {
+                dashboard.displayPrintf(3, "Left front encoder: %d", robot.frontLeftDrive.getCurrentPosition());
+                dashboard.displayPrintf(4, "Right front encoder: %d", robot.frontRightDrive.getCurrentPosition());
+                dashboard.displayPrintf(5, "Left back encoder: %d", robot.frontLeftDrive.getCurrentPosition());
+                dashboard.displayPrintf(6, "Right back encoder %d", robot.backRightDrive.getCurrentPosition());
+            }
+            sleep(10);
+        }
+
+        DrivePowerAll(0);
+    }
+
     /**
      * DrivePowerAll sets all of the drive train motors to the specified power level.
      * @param power Power level to set motors to
@@ -556,6 +636,8 @@ public class FutureBot_Autonomous extends LinearOpMode implements FtcMenu.MenuBu
             DriveRobotPosition(power, -7);
         }
     }
+
+
 
     // MENU ----------------------------------------------------------------------------------------
     @Override

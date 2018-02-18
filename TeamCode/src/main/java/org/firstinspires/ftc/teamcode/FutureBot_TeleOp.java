@@ -67,7 +67,7 @@ public class FutureBot_TeleOp extends OpMode {
     boolean  intakeInTogglePressed  = false;
     boolean  intakeOutTogglePressed = false;
     boolean  gamepad2ModeToggle     = false;
-    double   spinnyPosition         = 1;
+    double   spinnyPosition         = 0;
     int      jewelPosition          = 1;
 
     int      state   = 0;
@@ -75,6 +75,8 @@ public class FutureBot_TeleOp extends OpMode {
     int      intake  = 0;
 
     boolean  glyph   = true;
+
+    int      downCount =0;
 
     // Code to run once when the driver hits INIT
     @Override
@@ -184,6 +186,55 @@ public class FutureBot_TeleOp extends OpMode {
             gamepad2ModeToggle = false;
         }
 
+        //Start intake controls
+
+        // Use gamepad left & right triggers to open and close the intake
+        if (gamepad1.right_trigger > 0.5)
+            INTAKE_OFFSET += CLAW_SPEED;
+        else if (gamepad1.left_trigger > 0.5)
+            INTAKE_OFFSET -= CLAW_SPEED;
+
+        // Move both servos to new position.  Assume servos are mirror image of each other.
+        INTAKE_OFFSET = Range.clip(INTAKE_OFFSET, -0.5, 0);
+        robot.intakeRotateRight.setPosition(Range.clip(0.5 - INTAKE_OFFSET + .05, 0, 1));
+        robot.intakeRotateLeft.setPosition(Range.clip(0.5 + INTAKE_OFFSET, 0, 1));
+
+        // Use a (in) and b (out) to move intake
+        if (gamepad1.left_bumper || gamepad1.a || (glyph && gamepad2.a)) {
+            intakeInTogglePressed = true;
+        } else if (gamepad1.right_bumper || gamepad1.b || (glyph && gamepad2.b)) {
+            intakeOutTogglePressed = true;
+        } else if (intakeInTogglePressed) {
+            if (intake == 1) {
+                intake = 0;
+            } else {
+                intake = 1;
+            }
+            intakeInTogglePressed = false;
+        } else if (intakeOutTogglePressed) {
+            if (intake == 2) {
+                intake = 0;
+            } else {
+                intake = 2;
+            }
+            intakeOutTogglePressed = false;
+        }
+
+        if (intake == 0) {
+            robot.IntakeLeft.setPower(0);
+            robot.IntakeRight.setPower(0);
+        } else if (intake == 1) {
+            robot.IntakeLeft.setPower(.5);
+            robot.IntakeRight.setPower(1);
+        } else if (intake == 2) {
+            robot.IntakeLeft.setPower(-.5);
+            robot.IntakeRight.setPower(-1);
+        }
+
+        //Danny Al's x
+        if (gamepad1.x)
+            INTAKE_OFFSET = 0;
+
         /*
          * Start glyph control ---------------------------------------------------------------------
          */
@@ -234,10 +285,22 @@ public class FutureBot_TeleOp extends OpMode {
             // Use gamepad buttons to move the dunk claw up (DPAD_UP) and down (DPAD_DOWN)
             if (gamepad2.dpad_up)
                 robot.dunkClawArm.setPower(1.0);
-            else if (gamepad2.dpad_down)
+            else if (gamepad2.dpad_down) {
                 robot.dunkClawArm.setPower(-1.0);
-            else
+                downCount ++;
+            }
+            else {
                 robot.dunkClawArm.setPower(0.0);
+                if (downCount > 0){
+                    downCount = 0;
+                    INTAKE_OFFSET = 0.5;
+                }
+            }
+
+            // Move the intake out when down is pressed
+            if (downCount > 100)
+                INTAKE_OFFSET -= .1;
+
 
             // Move the jewel arm so it doesn't get in the way
             if (gamepad2.right_stick_button)
@@ -247,48 +310,6 @@ public class FutureBot_TeleOp extends OpMode {
 
             jewelPosition = Range.clip(jewelPosition, 0, 1);
             robot.jewelArm.setPosition(jewelPosition);
-
-            // Use gamepad left & right Bumpers to open and close the intake
-            if (gamepad1.right_trigger > 0.5)
-                INTAKE_OFFSET += CLAW_SPEED;
-            else if (gamepad1.left_trigger > 0.5)
-                INTAKE_OFFSET -= CLAW_SPEED;
-
-            // Move both servos to new position.  Assume servos are mirror image of each other.
-            INTAKE_OFFSET = Range.clip(INTAKE_OFFSET, -0.5, 0.05);
-            robot.intakeRotateRight.setPosition(0.5 - INTAKE_OFFSET);
-            robot.intakeRotateLeft.setPosition(0.5 + INTAKE_OFFSET);
-
-            // Use a (in) and b (out) to move intake
-            if ((gamepad1.left_bumper || gamepad1.a || gamepad2.a) && !intakeInTogglePressed) {
-                if (intake == 1) {
-                    intake = 0;
-                } else {
-                    intake = 1;
-                }
-                intakeInTogglePressed = true;
-            } else if ((gamepad1.right_bumper || gamepad1.b || gamepad2.b) && !intakeOutTogglePressed) {
-                if (intake == 2) {
-                    intake = 0;
-                } else {
-                    intake = 2;
-                }
-                intakeOutTogglePressed = true;
-            } else {
-                intakeInTogglePressed = false;
-                intakeOutTogglePressed = false;
-            }
-
-            if (intake == 0) {
-                robot.IntakeLeft.setPower(0);
-                robot.IntakeRight.setPower(0);
-            } else if (intake == 1) {
-                robot.IntakeLeft.setPower(-1);
-                robot.IntakeRight.setPower(-0.7);
-            } else if (intake == 2) {
-                robot.IntakeLeft.setPower(1);
-                robot.IntakeRight.setPower(0.7);
-            }
 
             // Lift, Spin, Drop
             if (gamepad2.x && state == 0) {

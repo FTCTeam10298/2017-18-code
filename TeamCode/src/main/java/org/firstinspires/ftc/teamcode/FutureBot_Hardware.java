@@ -106,7 +106,6 @@ public class FutureBot_Hardware
         spinnyClaw = hwMap.servo.get("dunk_claw_rotate");
 
         jewelArm = hwMap.servo.get("jewel_arm");
-        jewelArm.setPosition(1);
 
         jewelHitter = hwMap.servo.get("jewelHitter");
         jewelHitter.setPosition(0.5);
