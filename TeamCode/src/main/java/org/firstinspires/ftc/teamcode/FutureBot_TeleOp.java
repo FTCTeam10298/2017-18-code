@@ -298,8 +298,8 @@ public class FutureBot_TeleOp extends OpMode {
             }
 
             // Move the intake out when down is pressed
-            if (downCount > 100)
-                INTAKE_OFFSET -= .1;
+            if (downCount == 100)
+                INTAKE_OFFSET -= .15;
 
 
             // Move the jewel arm so it doesn't get in the way
