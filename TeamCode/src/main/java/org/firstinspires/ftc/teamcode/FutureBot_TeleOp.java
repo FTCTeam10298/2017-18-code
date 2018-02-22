@@ -55,13 +55,14 @@ public class FutureBot_TeleOp extends OpMode {
     double   y = 0;
     double   z = 0;
 
-    double   CLAW_SPEED    = 0.01 ;                 // Sets the rate to move the servos
-    double   CLAW_OFFSET_1 = 0.0 ;                  // Offset from the servo's mid position
-    double   CLAW_OFFSET_2 = 0.0 ;                  // Offset from the servo's mid position
-    double   INTAKE_OFFSET = 0.0 ;                  // Offset from the servo's mid position
+    double   CLAW_SPEED        = 0.01;              // Sets the rate to move the servos
+    double   CLAW_OFFSET_1     = 0.0 ;              // Offset from the servo's mid position
+    double   CLAW_OFFSET_2     = 0.0 ;              // Offset from the servo's mid position
+    double   INTAKE_OFFSET     = 0.0 ;              // Offset from the servo's mid position
+    double   INTAKE_CORRECTION = 0.0 ;
 
-    double   RELIC_ELBOW_POSITION = 0.0 ;           // Offset from the servo's mid position
-    double   RELIC_CLAW_POSITION  = 0.0 ;           // Offset from the servo's mid position
+    double   RELIC_ELBOW_POSITION = 0.0;           // Offset from the servo's mid position
+    double   RELIC_CLAW_POSITION  = 0.0;           // Offset from the servo's mid position
 
     boolean  spinTogglePressed      = false;
     boolean  intakeInTogglePressed  = false;
@@ -70,13 +71,13 @@ public class FutureBot_TeleOp extends OpMode {
     double   spinnyPosition         = 0;
     int      jewelPosition          = 1;
 
-    int      state   = 0;
-    int      count   = 0;
-    int      intake  = 0;
+    int      state     = 0;
+    int      count     = 0;
+    int      intake    = 0;
 
-    boolean  glyph   = true;
+    boolean  glyph     = true;
 
-    int      downCount =0;
+    int      downCount = 0;
 
     // Code to run once when the driver hits INIT
     @Override
@@ -196,13 +197,14 @@ public class FutureBot_TeleOp extends OpMode {
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
         INTAKE_OFFSET = Range.clip(INTAKE_OFFSET, -0.5, 0);
-        robot.intakeRotateRight.setPosition(Range.clip(0.5 - INTAKE_OFFSET + .05, 0, 1));
-        robot.intakeRotateLeft.setPosition(Range.clip(0.5 + INTAKE_OFFSET, 0, 1));
+        INTAKE_CORRECTION = Range.clip(INTAKE_CORRECTION, -0.15, 0.15);
+        robot.intakeRotateRight.setPosition(Range.clip(0.5 - INTAKE_OFFSET + INTAKE_CORRECTION, 0, 1));
+        robot.intakeRotateLeft.setPosition(Range.clip(0.5 + INTAKE_OFFSET + INTAKE_CORRECTION, 0, 1));
 
         // Use a (in) and b (out) to move intake
-        if (gamepad1.left_bumper || gamepad1.a || (glyph && gamepad2.a)) {
+        if (gamepad1.dpad_down || (glyph && gamepad2.a)) {
             intakeInTogglePressed = true;
-        } else if (gamepad1.right_bumper || gamepad1.b || (glyph && gamepad2.b)) {
+        } else if (gamepad1.dpad_up || (glyph && gamepad2.b)) {
             intakeOutTogglePressed = true;
         } else if (intakeInTogglePressed) {
             if (intake == 1) {
@@ -231,7 +233,7 @@ public class FutureBot_TeleOp extends OpMode {
             robot.IntakeRight.setPower(-1);
         }
 
-        //Danny Al's x
+        // Danny Al's x
         if (gamepad1.x)
             INTAKE_OFFSET = 0;
 
@@ -298,7 +300,7 @@ public class FutureBot_TeleOp extends OpMode {
             }
 
             // Move the intake out when down is pressed
-            if (downCount == 100)
+            if (downCount == 20)
                 INTAKE_OFFSET -= .15;
 
 
@@ -346,9 +348,9 @@ public class FutureBot_TeleOp extends OpMode {
 
             // Use gamepad buttons to move the elbow up (Right Trigger) and down (Left Trigger)
             if (gamepad2.dpad_right)
-                RELIC_ELBOW_POSITION += CLAW_SPEED / 2;
+                RELIC_ELBOW_POSITION += CLAW_SPEED / 4;
             else if (gamepad2.dpad_left)
-                RELIC_ELBOW_POSITION -= CLAW_SPEED / 2;
+                RELIC_ELBOW_POSITION -= CLAW_SPEED / 4;
             else if (gamepad2.a)
                 RELIC_ELBOW_POSITION = .65;
 
