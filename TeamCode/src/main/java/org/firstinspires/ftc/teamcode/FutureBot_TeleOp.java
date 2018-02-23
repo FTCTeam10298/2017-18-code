@@ -55,13 +55,14 @@ public class FutureBot_TeleOp extends OpMode {
     double   y = 0;
     double   z = 0;
 
-    double   CLAW_SPEED    = .04 ;                 // Sets the rate to move the servos
-    double   CLAW_OFFSET_1 = 0.0 ;                  // Offset from the servo's mid position
-    double   CLAW_OFFSET_2 = 0.0 ;                  // Offset from the servo's mid position
-    double   INTAKE_OFFSET = 0.0 ;                  // Offset from the servo's mid position
+    double   CLAW_SPEED        = 0.01;              // Sets the rate to move the servos
+    double   CLAW_OFFSET_1     = 0.0 ;              // Offset from the servo's mid position
+    double   CLAW_OFFSET_2     = 0.0 ;              // Offset from the servo's mid position
+    double   INTAKE_OFFSET     = 0.0 ;              // Offset from the servo's mid position
+    double   INTAKE_CORRECTION = 0.0 ;
 
-    double   RELIC_ELBOW_POSITION = 0.0 ;           // Offset from the servo's mid position
-    double   RELIC_CLAW_POSITION  = 0.0 ;           // Offset from the servo's mid position
+    double   RELIC_ELBOW_POSITION = 0.0;           // Offset from the servo's mid position
+    double   RELIC_CLAW_POSITION  = 0.0;           // Offset from the servo's mid position
 
     boolean  spinTogglePressed      = false;
     boolean  intakeInTogglePressed  = false;
@@ -70,11 +71,11 @@ public class FutureBot_TeleOp extends OpMode {
     double   spinnyPosition         = 0;
     int      jewelPosition          = 1;
 
-    int      state          = 0;
-    int      count          = 0;
-    int      intake         = 0;
+    int      state     = 0;
+    int      count     = 0;
+    int      intake    = 0;
 
-    boolean  glyph          = true;
+    boolean  glyph     = true;
 
     boolean  intakeRev      = false;
 
@@ -189,7 +190,7 @@ public class FutureBot_TeleOp extends OpMode {
             gamepad2ModeToggle = false;
         }
 
-        //Start intake controls--------------------------------------------------------
+        // Start intake controls -------------------------------------------------------------------
 
         // Use gamepad left & right triggers to open and close the intake
         if (gamepad1.right_trigger > 0.5)
@@ -197,10 +198,17 @@ public class FutureBot_TeleOp extends OpMode {
         else if (gamepad1.left_trigger > 0.5)
             INTAKE_OFFSET -= CLAW_SPEED;
 
+        // Use gamepad left & right triggers to open and close the intake
+        if (gamepad1.dpad_right)
+            INTAKE_CORRECTION += CLAW_SPEED;
+        else if (gamepad1.dpad_left)
+            INTAKE_CORRECTION -= CLAW_SPEED;
+
         // Move both servos to new position.  Assume servos are mirror image of each other.
         INTAKE_OFFSET = Range.clip(INTAKE_OFFSET, -0.5, 0);
-        robot.intakeRotateRight.setPosition(Range.clip(0.5 - INTAKE_OFFSET + .05, 0, 1));
-        robot.intakeRotateLeft.setPosition(Range.clip(0.5 + INTAKE_OFFSET, 0, 1));
+        INTAKE_CORRECTION = Range.clip(INTAKE_CORRECTION, -0.15, 0.15);
+        robot.intakeRotateRight.setPosition(Range.clip(0.5 - INTAKE_OFFSET + INTAKE_CORRECTION, 0, 1));
+        robot.intakeRotateLeft.setPosition(Range.clip(0.5 + INTAKE_OFFSET + INTAKE_CORRECTION, 0, 1));
 
         // Use a (in) and b (out) to move intake
         if (gamepad1.left_bumper || gamepad1.a || (glyph && gamepad2.a)) {
@@ -234,7 +242,7 @@ public class FutureBot_TeleOp extends OpMode {
             robot.IntakeRight.setPower(-1);
         }
 
-        //Danny Al's x
+        // Danny Al's x
         if (gamepad1.x)
             INTAKE_OFFSET = 0;
 
@@ -320,8 +328,8 @@ public class FutureBot_TeleOp extends OpMode {
             }
 
             // Move the intake out when down is pressed
-            if (downCount > 100)
-                INTAKE_OFFSET -= .1;
+            if (downCount == 100)
+                INTAKE_OFFSET -= .15;
 
 
             // Move the jewel arm so it doesn't get in the way
@@ -368,9 +376,9 @@ public class FutureBot_TeleOp extends OpMode {
 
             // Use gamepad buttons to move the elbow up (Right dpad) and down (Left dpad)
             if (gamepad2.dpad_right)
-                RELIC_ELBOW_POSITION += CLAW_SPEED / 3;
+                RELIC_ELBOW_POSITION += CLAW_SPEED / 4;
             else if (gamepad2.dpad_left)
-                RELIC_ELBOW_POSITION -= CLAW_SPEED / 3;
+                RELIC_ELBOW_POSITION -= CLAW_SPEED / 4;
             else if (gamepad2.a)
                 RELIC_ELBOW_POSITION = .75;
 
