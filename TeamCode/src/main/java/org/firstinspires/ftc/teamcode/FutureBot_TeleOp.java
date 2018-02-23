@@ -187,13 +187,19 @@ public class FutureBot_TeleOp extends OpMode {
             gamepad2ModeToggle = false;
         }
 
-        //Start intake controls
+        // Start intake controls -------------------------------------------------------------------
 
         // Use gamepad left & right triggers to open and close the intake
         if (gamepad1.right_trigger > 0.5)
             INTAKE_OFFSET += CLAW_SPEED;
         else if (gamepad1.left_trigger > 0.5)
             INTAKE_OFFSET -= CLAW_SPEED;
+
+        // Use gamepad left & right triggers to open and close the intake
+        if (gamepad1.dpad_right)
+            INTAKE_CORRECTION += CLAW_SPEED;
+        else if (gamepad1.dpad_left)
+            INTAKE_CORRECTION -= CLAW_SPEED;
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
         INTAKE_OFFSET = Range.clip(INTAKE_OFFSET, -0.5, 0);
@@ -202,9 +208,9 @@ public class FutureBot_TeleOp extends OpMode {
         robot.intakeRotateLeft.setPosition(Range.clip(0.5 + INTAKE_OFFSET + INTAKE_CORRECTION, 0, 1));
 
         // Use a (in) and b (out) to move intake
-        if (gamepad1.dpad_down || (glyph && gamepad2.a)) {
+        if (gamepad1.left_bumper || gamepad1.a || (glyph && gamepad2.a)) {
             intakeInTogglePressed = true;
-        } else if (gamepad1.dpad_up || (glyph && gamepad2.b)) {
+        } else if (gamepad1.right_bumper || gamepad1.b || (glyph && gamepad2.b)) {
             intakeOutTogglePressed = true;
         } else if (intakeInTogglePressed) {
             if (intake == 1) {
@@ -300,7 +306,7 @@ public class FutureBot_TeleOp extends OpMode {
             }
 
             // Move the intake out when down is pressed
-            if (downCount == 20)
+            if (downCount == 100)
                 INTAKE_OFFSET -= .15;
 
 
