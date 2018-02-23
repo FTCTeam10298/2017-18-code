@@ -55,7 +55,7 @@ public class FutureBot_TeleOp extends OpMode {
     double   y = 0;
     double   z = 0;
 
-    double   CLAW_SPEED    = 0.01 ;                 // Sets the rate to move the servos
+    double   CLAW_SPEED    = .04 ;                 // Sets the rate to move the servos
     double   CLAW_OFFSET_1 = 0.0 ;                  // Offset from the servo's mid position
     double   CLAW_OFFSET_2 = 0.0 ;                  // Offset from the servo's mid position
     double   INTAKE_OFFSET = 0.0 ;                  // Offset from the servo's mid position
@@ -70,13 +70,16 @@ public class FutureBot_TeleOp extends OpMode {
     double   spinnyPosition         = 0;
     int      jewelPosition          = 1;
 
-    int      state   = 0;
-    int      count   = 0;
-    int      intake  = 0;
+    int      state          = 0;
+    int      count          = 0;
+    int      intake         = 0;
 
-    boolean  glyph   = true;
+    boolean  glyph          = true;
 
-    int      downCount =0;
+    boolean  intakeRev      = false;
+
+    int      downCount      = 0;
+    int      intakeCount    = 0;
 
     // Code to run once when the driver hits INIT
     @Override
@@ -186,7 +189,7 @@ public class FutureBot_TeleOp extends OpMode {
             gamepad2ModeToggle = false;
         }
 
-        //Start intake controls
+        //Start intake controls--------------------------------------------------------
 
         // Use gamepad left & right triggers to open and close the intake
         if (gamepad1.right_trigger > 0.5)
@@ -220,20 +223,39 @@ public class FutureBot_TeleOp extends OpMode {
             intakeOutTogglePressed = false;
         }
 
-        if (intake == 0) {
+        if (intake == 0 && intakeCount == 0) {
             robot.IntakeLeft.setPower(0);
             robot.IntakeRight.setPower(0);
-        } else if (intake == 1) {
-            robot.IntakeLeft.setPower(.5);
+        } else if (intake == 1 && intakeCount == 0) {
+            robot.IntakeLeft.setPower(.6);
             robot.IntakeRight.setPower(1);
-        } else if (intake == 2) {
-            robot.IntakeLeft.setPower(-.5);
+        } else if (intake == 2 && intakeCount == 0) {
+            robot.IntakeLeft.setPower(-.6);
             robot.IntakeRight.setPower(-1);
         }
 
         //Danny Al's x
         if (gamepad1.x)
             INTAKE_OFFSET = 0;
+
+        //Brief outake then intake
+        if (gamepad1.y && intakeCount < 60)
+            intakeRev = true;
+
+        if (intakeRev && intakeCount <= 60){
+            robot.IntakeLeft.setPower(-.6);
+            robot.IntakeRight.setPower(-1);
+            intakeCount++;
+            if (intakeCount == 60)
+                intakeRev = false;
+        }
+        else if (!intakeRev && intakeCount > 0){
+            robot.IntakeLeft.setPower(.6);
+            robot.IntakeRight.setPower(1);
+            intakeCount--;
+        }
+
+
 
         /*
          * Start glyph control ---------------------------------------------------------------------
@@ -344,13 +366,13 @@ public class FutureBot_TeleOp extends OpMode {
             else
                 robot.relicOut.setPower(0);
 
-            // Use gamepad buttons to move the elbow up (Right Trigger) and down (Left Trigger)
+            // Use gamepad buttons to move the elbow up (Right dpad) and down (Left dpad)
             if (gamepad2.dpad_right)
-                RELIC_ELBOW_POSITION += CLAW_SPEED / 2;
+                RELIC_ELBOW_POSITION += CLAW_SPEED / 3;
             else if (gamepad2.dpad_left)
-                RELIC_ELBOW_POSITION -= CLAW_SPEED / 2;
+                RELIC_ELBOW_POSITION -= CLAW_SPEED / 3;
             else if (gamepad2.a)
-                RELIC_ELBOW_POSITION = .65;
+                RELIC_ELBOW_POSITION = .75;
 
             // Use gamepad buttons to open (Left Bumper) and close (Right Bumper) the claw
             if (gamepad2.left_bumper)
@@ -376,6 +398,7 @@ public class FutureBot_TeleOp extends OpMode {
 
         // Send telemetry message to signify robot running;
         telemetry.addData("claw",  "Offset = %.2f", CLAW_OFFSET_1);
+        telemetry.addData("intakeCount", intakeCount);
     }
 
     /*
@@ -443,8 +466,8 @@ public class FutureBot_TeleOp extends OpMode {
             }
         } else if (state == 4) {
             robot.dunkClawArm.setPower(1);
-            robot.dunkClawArm.setTargetPosition(0);
-            if (robot.dunkClawArm.getCurrentPosition() < 30) {
+            robot.dunkClawArm.setTargetPosition(-100);
+            if (robot.dunkClawArm.getCurrentPosition() < 0) {
                 robot.dunkClawArm.setPower(0);
                 robot.dunkClawArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 robot.dunkClawArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
